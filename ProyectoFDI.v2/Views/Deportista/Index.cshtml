@@ -12,12 +12,11 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 
-<h1>ADMINISTRACIÓN DE DEPORTISTAS</h1>
-
 @if (User.IsInRole("Administrador") || User.IsInRole("Entrenador"))
 {
+    <h1>ADMINISTRACIÓN DE DEPORTISTAS</h1>
     <p>
-        <button type="button" class="btn btn-outline-primary"><a class="boton" asp-action="Create">Create New</a></button>
+        <button type="button" class="btn btn-outline-primary"><a class="boton" asp-action="Create">Crear</a></button>
     </p>
 }
 

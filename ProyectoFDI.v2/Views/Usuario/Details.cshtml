@@ -1,0 +1,49 @@
+﻿@model ProyectoFDI.v2.Models.Usuario
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<h1>DETALLES</h1>
+
+<div>
+    <h4>Usuario</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            Nombre de Usuario
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NombreUsu)
+        </dd>
+        <dt class = "col-sm-2">
+            Contraseña
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ClaveUsu)
+        </dd>
+        <dt class = "col-sm-2">
+            Fecha de Creación
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FechaCreacion)
+        </dd>
+        <dt class = "col-sm-2">
+            Roles
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.RolesUsu)
+        </dd>
+    </dl>
+</div>
+<br />
+<div>
+    <button type="button" class="btn btn-outline-warning"><a class="boton" asp-action="Edit" asp-route-id="@Model?.IdUsu">Editar</a></button>
+    <button type="button" class="btn btn-outline-danger"><a class="boton" asp-action="Index">Regresar</a></button>
+</div>

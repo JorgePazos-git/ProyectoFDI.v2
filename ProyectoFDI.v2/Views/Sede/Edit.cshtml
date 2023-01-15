@@ -1,0 +1,38 @@
+﻿@model ProyectoFDI.v2.Models.Sede
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<h1>EDITAR</h1>
+
+<h4>Sede</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdSede" />
+            <div class="form-group">
+                <label asp-for="NombreSede" class="control-label">Nombre de Sede</label>
+                <input asp-for="NombreSede" class="form-control" />
+                <span asp-validation-for="NombreSede" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Guardar" class="btn btn-outline-primary" />
+                <button type="button" class="btn btn-outline-danger"><a class="boton" asp-action="Index">Regresar</a></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

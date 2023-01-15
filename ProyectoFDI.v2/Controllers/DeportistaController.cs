@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProyectoFDI.v2.Code;
 using ProyectoFDI.v2.Models;
+using System.Data;
 using System.Runtime.Intrinsics.Arm;
 
 namespace ProyectoFDI.v2.Controllers
@@ -116,6 +118,7 @@ namespace ProyectoFDI.v2.Controllers
         }
 
 
+        [Authorize(Roles = "Administrador,Deportista,Juez,Entrenador")]
         // GET: DeportistaController/Details/5
         public ActionResult Details(int id)
         {
@@ -123,6 +126,7 @@ namespace ProyectoFDI.v2.Controllers
             return View(data);
         }
 
+        [Authorize(Roles = "Administrador,Entrenador")]
         // GET: DeportistaController/Create
         public ActionResult Create()
         {
@@ -136,6 +140,7 @@ namespace ProyectoFDI.v2.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Administrador,Entrenador")]
         // POST: DeportistaController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -153,6 +158,7 @@ namespace ProyectoFDI.v2.Controllers
             }
         }
 
+        [Authorize(Roles = "Administrador,Entrenador")]
         // GET: DeportistaController/Edit/5
         public ActionResult Edit(int id)
         {
@@ -167,6 +173,7 @@ namespace ProyectoFDI.v2.Controllers
             return View(data);
         }
 
+        [Authorize(Roles = "Administrador,Entrenador")]
         // POST: DeportistaController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -184,6 +191,7 @@ namespace ProyectoFDI.v2.Controllers
             }
         }
 
+        [Authorize(Roles = "Administrador,Entrenador")]
         // GET: DeportistaController/Delete/5
         public ActionResult Delete(int id)
         {
@@ -191,6 +199,7 @@ namespace ProyectoFDI.v2.Controllers
             return View(data);
         }
 
+        [Authorize(Roles = "Administrador,Entrenador")]
         // POST: DeportistaController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]

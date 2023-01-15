@@ -21,18 +21,6 @@ namespace ProyectoFDI.v2.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Administrador,Deportista,Juez,Entrenador")]
-        public IActionResult ListadoDeportistas()
-        {
-            return View();
-        }
-
-        [Authorize(Roles = "Administrador,Entrenador")]
-        public IActionResult AdministrarDeportistas()
-        {
-            return View();
-        }
-
         [Authorize(Roles = "Administrador,Juez,Entrenador")]
         public IActionResult Resultados()
         {
