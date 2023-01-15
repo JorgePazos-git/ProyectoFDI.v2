@@ -1,0 +1,69 @@
+﻿@model ProyectoFDI.v2.Models.Deportistum
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<h1>CREAR</h1>
+
+<h4>Deportista</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="NombresDep" class="control-label">Nombres</label>
+                <input asp-for="NombresDep" class="form-control" />
+                <span asp-validation-for="NombresDep" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ApellidosDep" class="control-label">Apellidos</label>
+                <input asp-for="ApellidosDep" class="form-control" />
+                <span asp-validation-for="ApellidosDep" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CedulaDep" class="control-label">Cédula</label>
+                <input asp-for="CedulaDep" class="form-control" />
+                <span asp-validation-for="CedulaDep" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdPro" class="control-label">Provincia</label>
+                @Html.DropDownList("IdPro" , ViewBag.ListaProvincias, "--Elija una Provincia--", new{@class ="form-select"})
+            </div>
+            <div class="form-group">
+                <label asp-for="IdUsu" class="control-label">Usuario</label>
+                @Html.DropDownList("IdUsu" , ViewBag.ListaUsuarios, "--Elija un Usuario--", new{@class ="form-select"})
+            </div>
+            <div class="form-group">
+                <label asp-for="IdCat" class="control-label">Categoría</label>
+                @Html.DropDownList("IdCat" , ViewBag.ListaCategorias, "--Elija una Categoría--", new{@class ="form-select"})
+            </div>
+            <div class="form-group">
+                <label asp-for="IdGen" class="control-label">Género</label>
+                @Html.DropDownList("IdGen" , ViewBag.ListaGeneros, "--Elija un Género--", new{@class ="form-select"})
+            </div>
+            <div class="form-group">
+                <label asp-for="IdClub" class="control-label">Club</label>
+                @Html.DropDownList("IdClub" , ViewBag.ListaClubes, "--Elija un Club--", new{@class ="form-select"})
+            </div>
+            <div class="form-group">
+                <label asp-for="IdEnt" class="control-label">Entrenador</label>
+                @Html.DropDownList("IdEnt" , ViewBag.ListaEntrenadores, "--Elija un Entrenador--", new{@class ="form-select"})
+            </div>
+            
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Crear" class="btn btn-outline-primary" />
+                <button type="button" class="btn btn-outline-danger"><a class="boton" asp-action="Index">Regresar</a></button>
+            </div>
+        </form>
+    </div>
+</div>
