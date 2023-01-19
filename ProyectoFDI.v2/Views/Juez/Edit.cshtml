@@ -1,0 +1,64 @@
+﻿@model ProyectoFDI.v2.Models.Juez
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<h1>EDITAR</h1>
+
+<h4>Juez</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdJuez" />
+            <div class="form-group">
+                <label asp-for="NombresJuez" class="control-label">Nombres</label>
+                <input asp-for="NombresJuez" class="form-control" />
+                <span asp-validation-for="NombresJuez" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ApellidosJuez" class="control-label">Apellidos</label>
+                <input asp-for="ApellidosJuez" class="form-control" />
+                <span asp-validation-for="ApellidosJuez" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CedulaJuez" class="control-label">Cédula</label>
+                <input asp-for="CedulaJuez" class="form-control" />
+                <span asp-validation-for="CedulaJuez" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PrincipalJuez" class="control-label">¿Es Juez Principal?</label>
+                @Html.DropDownList("PrincipalJuez", ViewBag.ListaEstados, "--Elija la opción--", new { @class ="form-select"} )
+                <span asp-validation-for="PrincipalJuez" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdPro" class="control-label"></label>
+                @Html.DropDownList("IdPro", ViewBag.ListaProvincias, "--Elija la Provincia--", new{@class="form-select"})
+                <span asp-validation-for="IdPro" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdUsu" class="control-label"></label>
+                @Html.DropDownList("IdUsu" , ViewBag.ListaUsuarios, "--Elija un Usuario--", new{@class ="form-select"})
+                <span asp-validation-for="IdUsu" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Guardar" class="btn btn-outline-primary" />
+                <button type="button" class="btn btn-outline-danger"><a class="boton" asp-action="Index">Regresar</a></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

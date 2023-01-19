@@ -10,68 +10,117 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ProyectoFDI.v2.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/lib/limonte-sweetalert2/sweetalert2.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css" />
+@*    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" />*@
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <style type="text/css">
+
+        .navbar .nav-item:not(:last-child) {
+            margin-right: 35px;
+        }
+
+        .dropdown-toggle::after {
+            transition: transform 0.15s linear;
+        }
+
+        .show.dropdown .dropdown-toggle::after {
+            transform: translateY(3px);
+        }
+
+        .dropdown-menu {
+            margin-top: 0;
+        }
+
+        .nav-item {
+            list-style: none;
+        }
+
+        .navbar-nav li a {
+            text-decoration: none;
+        }
+
+        .navbar-nav li ul {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ProyectoFDI.v2</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class=" collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Deportista" asp-action="Index">Deportistas</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Catálogos</a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown1">
+                                <a class="dropdown-item" asp-area="" asp-controller="Deportista" asp-action="Index">Deportistas</a>
+                                @if (User.IsInRole("Administrador"))
+                                {
+                                    <a class="dropdown-item" asp-area="" asp-controller="Juez" asp-action="Index">Jueces</a>
+                                }
+                            </div>
                         </li>
-
-                        @if (User.IsInRole("Administrador"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Index">Usuarios</a>
+                        @if (User.IsInRole("Administrador") || User.IsInRole("Juez")){
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Competencias</a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown2">
+                                    <a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Competencias">Crear Competencias</a>                                    
+                                    <a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Resultados">Agregar Resultados</a> 
+                                </div>
                             </li>
                         }
-
-                        @if (User.IsInRole("Administrador") || User.IsInRole("Juez"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Sede" asp-action="Index">Sedes</a>
-                            </li>
-                        }
-
-                        @if (User.IsInRole("Administrador") || User.IsInRole("Entrenador"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Club" asp-action="Index">Clubes</a>
-                            </li>
-                        }
-
+                        
                         @if (User.IsInRole("Administrador") || User.IsInRole("Entrenador") || User.IsInRole("Juez"))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Resultados">Resultados</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="" id="navbarDropdown3" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Entidades</a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown3">
+                                    @if (User.IsInRole("Administrador") || User.IsInRole("Juez"))
+                                    {
+                                        <a class="dropdown-item" asp-area="" asp-controller="Sede" asp-action="Index">Sedes</a>
+                                    }
+                                    @if (User.IsInRole("Administrador") || User.IsInRole("Entrenador"))
+                                    {
+                                        <a class="dropdown-item" asp-area="" asp-controller="Club" asp-action="Index">Clubes</a>
+                                    }
+                                </div>
                             </li>
                         }
-
-                        @if (User.IsInRole("Administrador") || User.IsInRole("Juez"))
+                        @if (User.IsInRole("Administrador"))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Competencias">Competencias</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="" id="navbarDropdown4" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Administración</a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown4">
+                                    <a class="dropdown-item" asp-area="" asp-controller="Usuario" asp-action="Index">Usuarios</a>   
+                                </div>
                             </li>
                         }
 
-                        @*                        <li class="nav-item">
+                        @* Home
+                        Catalogo : Deportistas - Entrenadores - Jueces  - Listado Competencias
+                        Competencias : Crear Competencia - Agregar Resultados
+                        Entidades : Sedes - Clubes
+                        Administración: Usuarios
+                        *@
+
+                        @*<li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>*@
                     </ul>
-                    <button class="alert-danger">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Acceso" asp-action="Salir">Cerrar Sesión</a>
-                    </button>
                 </div>
+                <button class="alert-danger">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Acceso" asp-action="Salir">Cerrar Sesión</a>
+                </button>
             </div>
         </nav>
     </header>
@@ -88,6 +137,32 @@
             &copy; 2022 - ProyectoFDI.v2 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+    <script>
+        const $dropdown = $(".dropdown");
+        const $dropdownToggle = $(".dropdown-toggle");
+        const $dropdownMenu = $(".dropdown-menu");
+        const showClass = "show";
+        $(window).on("load resize", function () {
+            if (this.matchMedia("(min-width: 768px)").matches) {
+                $dropdown.hover(
+                    function () {
+                        const $this = $(this);
+                        $this.addClass(showClass);
+                        $this.find($dropdownToggle).attr("aria-expanded", "true");
+                        $this.find($dropdownMenu).addClass(showClass);
+                    },
+                    function () {
+                        const $this = $(this);
+                        $this.removeClass(showClass);
+                        $this.find($dropdownToggle).attr("aria-expanded", "false");
+                        $this.find($dropdownMenu).removeClass(showClass);
+                    }
+                );
+            } else {
+                $dropdown.off("mouseenter mouseleave");
+            }
+        });
+    </script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

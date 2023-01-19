@@ -1,0 +1,77 @@
+﻿@model IEnumerable<ProyectoFDI.v2.Models.Juez>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+ <h1>LISTADO DE JUECES</h1>
+ <p>
+    <button type="button" class="btn btn-outline-primary"><a class="boton" asp-action="Create">Crear</a></button>
+ </p>
+
+<form asp-action="Index" method="get">
+    <input type="text" name="SearchFor" value="@ViewBag.SearchFor" placeholder="Buscar ..." />
+    <input type="submit" value="Buscar" class="btn-success" />
+</form>
+
+<table class="table">
+    <thead class="table-light">
+        <tr>
+            <th>
+                Nombres
+            </th>
+            <th>
+                Apellidos
+            </th>
+            <th>
+                Cédula
+            </th>
+            <th>
+                Juez Principal
+            </th>
+            <th>
+                Provincia
+            </th>
+            <th>
+                Usuario
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NombresJuez)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApellidosJuez)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CedulaJuez)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrincipalJuez)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdProNavigation.NombrePro)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdUsuNavigation.NombreUsu)
+            </td>
+            <td>
+                    <button type="button" class="btn btn-outline-warning"><a class="boton" asp-action="Edit" asp-route-id="@item.IdJuez">Editar</a></button>
+                    <button type="button" class="btn btn-outline-info"><a class="boton" asp-action="Details" asp-route-id="@item.IdJuez">Detalles</a></button>
+                    <button type="button" class="btn btn-outline-danger"><a class="boton" asp-action="Delete" asp-route-id="@item.IdJuez">Eliminar</a></button>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

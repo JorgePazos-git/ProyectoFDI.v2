@@ -24,6 +24,88 @@
             @Html.DisplayFor(model => model.NombreClub)
         </dd>
     </dl>
+    <hr />
+    <br />
+    <h6>DEPORTISTAS DEL CLUB</h6>
+    <table class="table">
+        <thead class="table-light">
+            <tr>
+                <th>
+                    Nombres
+                </th>
+                <th>
+                    Apellidos
+                </th>
+                <th>
+                    Cédula
+                </th>
+                <th>
+                    Categoría
+                </th>
+                <th>
+                    Club
+                </th>
+                <th>
+                    Entrenador
+                </th>
+                <th>
+                    Género
+                </th>
+                <th>
+                    Provincia
+                </th>
+                <th>
+                    Modalidad
+                </th>
+                <th>
+                    Usuario
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Deportista)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NombresDep)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ApellidosDep)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CedulaDep)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdCatNavigation.NombreCat)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => model.NombreClub)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdEntNavigation.NombresEnt) @Html.DisplayFor(modelItem => item.IdEntNavigation.ApellidosEnt)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdGenNavigation.NombreGen)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdProNavigation.NombrePro)
+                    </td>
+                    <td>
+                        @foreach (var modalidad in item.DeportistaModalidads)
+                        {
+                            @Html.DisplayFor(modelItem => modalidad.IdModNavigation.DescripcionMod)
+                            <br />
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdUsuNavigation.NombreUsu)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <br />
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="IdClub" />
