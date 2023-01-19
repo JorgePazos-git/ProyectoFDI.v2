@@ -1,0 +1,76 @@
+﻿@model IEnumerable<ProyectoFDI.v2.Models.Entrenador>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<h1>ADMINISTRACIÓN DE ENTRENADORES</h1>
+
+@if (User.IsInRole("Administrador") )
+
+{
+    <p>
+        <button type="button" class="btn btn-outline-primary"><a class="boton" asp-action="Create">Create New</a></button>
+    </p>
+}
+
+<form asp-action="Index" method="get">
+    <input type="text" name="SearchFor" value="@ViewBag.SearchFor" placeholder="Buscar ..." />
+    <input type="submit" value="Buscar" class="btn-success" />
+</form>
+
+<table class="table">
+    <thead class="table-light">
+        <tr>
+            <th>
+                Nombres
+            </th>
+            <th>
+                Apellidos
+            </th>
+            <th>
+                Cédula
+            </th>           
+            <th>
+                Provincia
+            </th>
+            <th>
+                Usuario
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NombresEnt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApellidosEnt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CedulaEnt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdProNavigation.NombrePro)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdUsuNavigation.NombreUsu)
+            </td>
+                @if (User.IsInRole("Administrador") )
+                {
+                    <td>
+                        <button type="button" class="btn btn-outline-warning"><a class="boton" asp-action="Edit" asp-route-id="@item.IdEnt">Editar</a></button>
+                        <button type="button" class="btn btn-outline-info"><a class="boton" asp-action="Details" asp-route-id="@item.IdEnt">Detalles</a></button>
+                        <button type="button" class="btn btn-outline-danger"><a class="boton" asp-action="Delete" asp-route-id="@item.IdEnt">Eliminar</a></button>
+                    </td>
+                }
+            </tr>
+}
+    </tbody>
+</table>

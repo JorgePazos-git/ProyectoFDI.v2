@@ -1,0 +1,55 @@
+﻿@model ProyectoFDI.v2.Models.Entrenador
+
+@{
+    ViewData["Title"] = "Delete";
+}
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<h1>ELIMINAR</h1>
+
+<h3>¿Estás seguro de eliminar a este entrenador?</h3>
+<div>
+    <h4>Entrenador</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Nombres
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NombresEnt)
+        </dd>
+        <dt class="col-sm-2">
+            Apellidos
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ApellidosEnt)
+        </dd>
+        <dt class="col-sm-2">
+            Cedula
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CedulaEnt)
+        </dd>
+        <dt class="col-sm-2">
+            Provincia
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdProNavigation.NombrePro)
+        </dd>
+        <dt class="col-sm-2">
+            Usuario
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdUsuNavigation.NombreUsu)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="IdEnt" />
+        <input type="submit" value="Delete" class="btn btn-outline-secondary" /> |
+        <button type="button" class="btn btn-outline-danger"><a class="boton" asp-action="Index">Regresar</a></button>
+    </form>
+</div>
