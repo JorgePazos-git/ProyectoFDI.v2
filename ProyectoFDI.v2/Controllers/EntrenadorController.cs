@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProyectoFDI.v2.Code;
 using ProyectoFDI.v2.Models;
+using System.Data;
 
 namespace ProyectoFDI.v2.Controllers
 {
@@ -14,6 +16,8 @@ namespace ProyectoFDI.v2.Controllers
         {
             apiUrl = configuration["urlBase"].ToString() + "Entrenador/";
         }
+
+        [Authorize(Roles = "Administrador")]
         // GET: EntrenadorController
         public ActionResult Index(string? searchFor)
         {
@@ -41,7 +45,7 @@ namespace ProyectoFDI.v2.Controllers
         }
         private List<SelectListItem> listaDeportistas()
         {
-            var deportistas = APIConsumer<Deportistum>.Select(apiUrl.Replace("Entrenador", "Deportistas"));
+            var deportistas = APIConsumer<Deportistum>.Select(apiUrl.Replace("Entrenador", "Deportista"));
             var lista = deportistas.Select(f => new SelectListItem
             {
                 Value = f.IdDep.ToString(),
@@ -62,6 +66,7 @@ namespace ProyectoFDI.v2.Controllers
             return lista;
         }
 
+        [Authorize(Roles = "Administrador")]
         // GET: EntrenadorController/Details/5
         public ActionResult Details(int id)
         {
@@ -69,15 +74,18 @@ namespace ProyectoFDI.v2.Controllers
             return View(data);
         }
 
+        [Authorize(Roles = "Administrador")]
         // GET: EntrenadorController/Create
         public ActionResult Create()
         {
+            var url = apiUrl;
             ViewBag.ListaDeportistas = listaDeportistas();
             ViewBag.ListaProvincias = listaProvincias();
             ViewBag.ListaUsuarios = listaUsuarios();
             return View();
         }
 
+        [Authorize(Roles = "Administrador")]
         // POST: EntrenadorController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -95,9 +103,11 @@ namespace ProyectoFDI.v2.Controllers
             }
         }
 
+        [Authorize(Roles = "Administrador")]
         // GET: EntrenadorController/Edit/5
         public ActionResult Edit(int id)
         {
+            var url = apiUrl;
             ViewBag.ListaDeportistas = listaDeportistas();
             ViewBag.ListaProvincias = listaProvincias();
             ViewBag.ListaUsuarios = listaUsuarios();
@@ -105,6 +115,7 @@ namespace ProyectoFDI.v2.Controllers
             return View(data);
         }
 
+        [Authorize(Roles = "Administrador")]
         // POST: EntrenadorController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -122,6 +133,7 @@ namespace ProyectoFDI.v2.Controllers
             }
         }
 
+        [Authorize(Roles = "Administrador")]
         // GET: EntrenadorController/Delete/5
         public ActionResult Delete(int id)
         {
@@ -129,6 +141,7 @@ namespace ProyectoFDI.v2.Controllers
             return View(data);
         }
 
+        [Authorize(Roles = "Administrador")]
         // POST: EntrenadorController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]

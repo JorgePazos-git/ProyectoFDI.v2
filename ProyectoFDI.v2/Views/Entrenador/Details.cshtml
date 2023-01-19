@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <head>
     <meta charset="utf-8" />
@@ -36,16 +37,17 @@
             Provincia
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdProNavigation.IdPro)
+            @Html.DisplayFor(model => model.IdProNavigation.NombrePro)
         </dd>
         <dt class="col-sm-2">
             Usuario
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdUsuNavigation.IdUsu)
+            @Html.DisplayFor(model => model.IdUsuNavigation.NombreUsu)
         </dd>
     </dl>
 </div>
+<br />
 <div>
     <button type="button" class="btn btn-outline-warning"><a class="boton" asp-action="Edit" asp-route-id="@Model?.IdEnt">Editar</a></button>
     <button type="button" class="btn btn-outline-danger"><a class="boton" asp-action="Index">Regresar</a></button>

@@ -2,21 +2,18 @@
 
 @{
     ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
-<h1>ADMINISTRACIÓN DE ENTRENADORES</h1>
+<h1>LISTA DE ENTRENADORES</h1>
 
-@if (User.IsInRole("Administrador") )
-
-{
     <p>
-        <button type="button" class="btn btn-outline-primary"><a class="boton" asp-action="Create">Create New</a></button>
+        <button type="button" class="btn btn-outline-primary"><a class="boton" asp-action="Create">Crear</a></button>
     </p>
-}
 
 <form asp-action="Index" method="get">
     <input type="text" name="SearchFor" value="@ViewBag.SearchFor" placeholder="Buscar ..." />
@@ -62,15 +59,14 @@
             <td>
                 @Html.DisplayFor(modelItem => item.IdUsuNavigation.NombreUsu)
             </td>
-                @if (User.IsInRole("Administrador") )
-                {
-                    <td>
-                        <button type="button" class="btn btn-outline-warning"><a class="boton" asp-action="Edit" asp-route-id="@item.IdEnt">Editar</a></button>
-                        <button type="button" class="btn btn-outline-info"><a class="boton" asp-action="Details" asp-route-id="@item.IdEnt">Detalles</a></button>
-                        <button type="button" class="btn btn-outline-danger"><a class="boton" asp-action="Delete" asp-route-id="@item.IdEnt">Eliminar</a></button>
-                    </td>
-                }
-            </tr>
+
+            <td>
+                <button type="button" class="btn btn-outline-warning"><a class="boton" asp-action="Edit" asp-route-id="@item.IdEnt">Editar</a></button>
+                <button type="button" class="btn btn-outline-info"><a class="boton" asp-action="Details" asp-route-id="@item.IdEnt">Detalles</a></button>
+                <button type="button" class="btn btn-outline-danger"><a class="boton" asp-action="Delete" asp-route-id="@item.IdEnt">Eliminar</a></button>
+            </td>
+                
+        </tr>
 }
     </tbody>
 </table>

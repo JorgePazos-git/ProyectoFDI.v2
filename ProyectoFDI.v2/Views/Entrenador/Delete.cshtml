@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <head>
     <meta charset="utf-8" />
@@ -49,7 +50,7 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="IdEnt" />
-        <input type="submit" value="Delete" class="btn btn-outline-secondary" /> |
+        <input type="submit" value="Delete" class="btn btn-outline-secondary" />
         <button type="button" class="btn btn-outline-danger"><a class="boton" asp-action="Index">Regresar</a></button>
     </form>
 </div>
