@@ -1,0 +1,68 @@
+﻿@model IEnumerable<ProyectoFDI.v2.Models.DetalleCompetencium>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<h1>DETALLE DE COMPETENCIAS</h1>
+<p>
+    <button type="button" class="btn btn-outline-primary"><a class="boton" asp-action="Create">Crear</a></button>
+</p>
+
+<table class="table">
+    <thead class="table-light">
+        <tr>
+            <th>
+                Puesto
+            </th>
+            <th>
+                Resultado de Clasificación
+            </th>
+            <th>
+                Resultado Final
+            </th>
+            <th>
+                Competencia
+            </th>
+            <th>
+                Deportista
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Puesto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ClasRes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FinalRes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdComNavigation.NombreCom)
+            </td>
+            <td>
+                <p>
+                    @Html.DisplayFor(modelItem => item.IdDepNavigation.NombresDep) @Html.DisplayFor(modelItem => item.IdDepNavigation.ApellidosDep)
+                </p>
+            </td>
+            <td>
+                    <button type="button" class="btn btn-outline-warning"><a class="boton" asp-action="Edit" asp-route-id="@item.IdDetalle">Editar</a></button>
+                    <button type="button" class="btn btn-outline-info"><a class="boton" asp-action="Details" asp-route-id="@item.IdDetalle">Detalles</a></button>
+                    <button type="button" class="btn btn-outline-danger"><a class="boton" asp-action="Delete" asp-route-id="@item.IdDetalle">Eliminar</a></button>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

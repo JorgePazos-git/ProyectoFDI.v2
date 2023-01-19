@@ -1,0 +1,76 @@
+﻿@model ProyectoFDI.v2.Models.Competencium
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<h1>ELIMINAR</h1>
+
+<h3>¿Estás seguro de eliminar esta Competencia?</h3>
+<div>
+    <h4>Competencia</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            Nombre
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NombreCom)
+        </dd>
+        <dt class = "col-sm-2">
+            Fecha de Inicio
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FechaInicioCom)
+        </dd>
+        <dt class = "col-sm-2">
+            Fecha de Fin
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FechaFinCom)
+        </dd>
+        <dt class = "col-sm-2">
+            Categoría
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdCatNavigation.NombreCat)
+        </dd>
+        <dt class = "col-sm-2">
+            Género
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdGenNavigation.NombreGen)
+        </dd>
+        <dt class = "col-sm-2">
+            Juez
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdJuezNavigation.NombresJuez) @Html.DisplayFor(model => model.IdJuezNavigation.ApellidosJuez)
+        </dd>
+        <dt class = "col-sm-2">
+            Modalidad
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdModNavigation.DescripcionMod)
+        </dd>
+        <dt class = "col-sm-2">
+            Sede
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdSedeNavigation.NombreSede)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="IdCom" />
+        <input type="submit" value="Delete" class="btn btn-outline-secondary" />
+        <button type="button" class="btn btn-outline-danger"><a class="boton" asp-action="Index">Regresar</a></button>
+    </form>
+</div>

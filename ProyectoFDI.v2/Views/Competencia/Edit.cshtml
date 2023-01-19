@@ -1,0 +1,127 @@
+﻿@model ProyectoFDI.v2.Models.Competencium
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<h1>EDITAR</h1>
+
+<h4>Competencia</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdCom" />
+            <div class="form-group">
+                <label asp-for="NombreCom" class="control-label">Nombre</label>
+                <input asp-for="NombreCom" class="form-control" />
+                <span asp-validation-for="NombreCom" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FechaInicioCom" class="control-label">Fecha Inicio</label>
+                <input asp-for="FechaInicioCom" class="form-control" />
+                <span asp-validation-for="FechaInicioCom" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FechaFinCom" class="control-label">Fecha de Finalización</label>
+                <input asp-for="FechaFinCom" class="form-control" />
+                <span asp-validation-for="FechaFinCom" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdGen" class="control-label">Género</label>
+                @Html.DropDownList("IdGen" , ViewBag.ListaGeneros, "--Elija un Género--", new{@class ="form-select"})
+                <span asp-validation-for="IdGen" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdJuez" class="control-label">Juez</label>
+                @Html.DropDownList("IdJuez" , ViewBag.ListaJueces, "--Elija un Juez--", new{@class ="form-select"})
+                <span asp-validation-for="IdJuez" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdCat" class="control-label">Categoría</label>
+                @Html.DropDownList("IdCat" , ViewBag.ListaCategorias, "--Elija una Categoría--", new{@class ="form-select"})
+                <span asp-validation-for="IdCat" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdSede" class="control-label">Sede</label>
+                @Html.DropDownList("IdSede" , ViewBag.ListaSedes, "--Elija una Sede--", new{@class ="form-select"})
+                <span asp-validation-for="IdSede" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdMod" class="control-label">Modalidad</label>
+                @Html.DropDownList("IdMod" , ViewBag.ListaModalidades, "--Elija una Modalidad--", new{@class ="form-select"})
+                <span asp-validation-for="IdMod" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Guardar" class="btn btn-outline-primary" />
+                <button type="button" class="btn btn-outline-danger"><a class="boton" asp-action="Index">Regresar</a></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@Html.ActionLink("Agregar Deportista","Create", "DetalleCompetencia", new {returnTo="edit" })
+
+<table class="table">
+    <thead class="table-light">
+        <tr>
+            <th>
+                Puesto
+            </th>
+            <th>
+                Resultado de Clasificación
+            </th>
+            <th>
+                Resultado Final
+            </th>
+            <th>
+                Competencia
+            </th>
+            <th>
+                Deportista
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.DetalleCompetencia)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Puesto)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ClasRes)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FinalRes)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.NombreCom)
+                </td>
+                <td>
+                    <p>
+                        @Html.DisplayFor(modelItem => item.IdDepNavigation.NombresDep) @Html.DisplayFor(modelItem => item.IdDepNavigation.ApellidosDep)
+                    </p>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-outline-warning">@Html.ActionLink("Edit", "Edit","DetalleCompetencia", new { id=item.IdDetalle, returnTo = "edit" })</button>
+                    <button type="button" class="btn btn-outline-danger">@Html.ActionLink("Delete","Delete", "DetalleCompetencia", new {id=item.IdDetalle, returnTo= "edit" })</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

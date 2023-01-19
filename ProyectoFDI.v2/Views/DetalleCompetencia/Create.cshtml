@@ -1,0 +1,57 @@
+﻿@model ProyectoFDI.v2.Models.DetalleCompetencium
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<h1>CREAR</h1>
+
+<h4>Detalle de la Competencia</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <input type="hidden" name="returnTo" id="returnTo" value="@ViewBag.ReturnTo" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+@*                <label asp-for="Puesto" class="control-label"> Puesto</label>*@
+                <input type="hidden" asp-for="Puesto" class="form-control" />
+                <span asp-validation-for="Puesto" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                @*<label asp-for="ClasRes" class="control-label">Resultado de Clasificación</label>*@
+                <input type="hidden" asp-for="ClasRes" class="form-control" />
+                <span asp-validation-for="ClasRes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                @*<label asp-for="FinalRes" class="control-label">Resultado de la Final</label>*@
+                <input type="hidden" asp-for="FinalRes" class="form-control" />
+                <span asp-validation-for="FinalRes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdDep" class="control-label">Deportista</label>
+                @Html.DropDownList("IdDep", ViewBag.ListaDeportistas, "--Elija un Deportista--", new{@class="form-select"})
+            </div>
+            <div class="form-group">
+                <label asp-for="IdCom" class="control-label">Competencia</label>
+                @Html.DropDownList("IdCom", ViewBag.ListaCompetencias, "--Elija una Competencia--", new{@class="form-select"})
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Crear" class="btn btn-outline-primary" />
+                <button type="button" class="btn btn-outline-danger"><a class="boton" asp-action="Index">Regresar</a></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

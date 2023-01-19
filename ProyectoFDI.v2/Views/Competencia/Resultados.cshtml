@@ -1,0 +1,89 @@
+﻿@model IEnumerable<ProyectoFDI.v2.Models.Competencium>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<h1>LISTADO DE COMPETENCIAS</h1>
+
+<form asp-action="Index" method="get">
+    <input type="text" name="SearchFor" value="@ViewBag.SearchFor" placeholder="Buscar ..." />
+    <input type="submit" value="Buscar" class="btn-success" />
+</form>
+
+<table class="table">
+    <thead class="table-light">
+        <tr>
+            <th>
+                Nombre
+            </th>
+            <th>
+                Fecha de Inicio
+            </th>
+            <th>
+                Fecha de Finalización
+            </th>
+            <th>
+                Categoría
+            </th>
+            <th>
+                Género
+            </th>
+            <th>
+                Juez
+            </th>
+            <th>
+                Modalidad
+            </th>
+            <th>
+                Sede
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NombreCom)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaInicioCom)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaFinCom)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdCatNavigation.NombreCat)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdGenNavigation.NombreGen)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdJuezNavigation.NombresJuez) @Html.DisplayFor(modelItem => item.IdJuezNavigation.ApellidosJuez)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdModNavigation.DescripcionMod)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdSedeNavigation.NombreSede)
+                </td>
+
+                @if (User.IsInRole("Administrador") || User.IsInRole("Juez"))
+                {
+                    <td>
+                        <button type="button" class="btn btn-outline-warning"><a class="boton" asp-action="AgregarResultados" asp-route-id="@item.IdCom">Agregar Resultados</a></button>
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>

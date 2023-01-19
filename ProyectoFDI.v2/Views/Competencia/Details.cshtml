@@ -1,0 +1,120 @@
+﻿@model ProyectoFDI.v2.Models.Competencium
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<h1>DETALLES</h1>
+
+<div>
+    <h4>Competencia</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            Nombre
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NombreCom)
+        </dd>
+        <dt class = "col-sm-2">
+            Fecha de Inicio
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FechaInicioCom)
+        </dd>
+        <dt class = "col-sm-2">
+            Fecha de Fin
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FechaFinCom)
+        </dd>
+        <dt class = "col-sm-2">
+            Categoría
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdCatNavigation.NombreCat)
+        </dd>
+        <dt class = "col-sm-2">
+            Género
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdGenNavigation.NombreGen)
+        </dd>
+        <dt class = "col-sm-2">
+            Juez
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdJuezNavigation.NombresJuez) @Html.DisplayFor(model => model.IdJuezNavigation.ApellidosJuez)
+        </dd>
+        <dt class = "col-sm-2">
+            Modalidad
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdModNavigation.DescripcionMod)
+        </dd>
+        <dt class = "col-sm-2">
+            Sede
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdSedeNavigation.NombreSede)
+        </dd>
+    </dl>
+    <table class="table">
+        <thead class="table-light">
+            <tr>
+                <th>
+                    Puesto
+                </th>
+                <th>
+                    Resultado de Clasificación
+                </th>
+                <th>
+                    Resultado Final
+                </th>
+                <th>
+                    Competencia
+                </th>
+                <th>
+                    Deportista
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.DetalleCompetencia)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Puesto)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ClasRes)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FinalRes)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => model.NombreCom)
+                    </td>
+                    <td>
+                        <p>
+                            @Html.DisplayFor(modelItem => item.IdDepNavigation.NombresDep) @Html.DisplayFor(modelItem => item.IdDepNavigation.ApellidosDep)
+                        </p>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<br />
+<div>
+    <button type="button" class="btn btn-outline-warning"><a class="boton" asp-action="Edit" asp-route-id="@Model?.IdCom">Editar</a></button>
+    <button type="button" class="btn btn-outline-danger"><a class="boton" asp-action="Index">Regresar</a></button>
+</div>
+

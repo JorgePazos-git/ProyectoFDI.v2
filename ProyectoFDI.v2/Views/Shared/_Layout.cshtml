@@ -66,16 +66,18 @@
                                 <a class="dropdown-item" asp-area="" asp-controller="Deportista" asp-action="Index">Deportistas</a>
                                 @if (User.IsInRole("Administrador"))
                                 {
+                                    <a class="dropdown-item" href="" @*asp-area="" asp-controller="Entrenador" asp-action="Index"*@>Entrenadores</a>
                                     <a class="dropdown-item" asp-area="" asp-controller="Juez" asp-action="Index">Jueces</a>
                                 }
+                                <a class="dropdown-item" asp-area="" asp-controller="Competencia" asp-action="Index">Listado de Competencias</a>
                             </div>
                         </li>
                         @if (User.IsInRole("Administrador") || User.IsInRole("Juez")){
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Competencias</a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown2">
-                                    <a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Competencias">Crear Competencias</a>                                    
-                                    <a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Resultados">Agregar Resultados</a> 
+                                    <a class="dropdown-item" asp-area="" asp-controller="Competencia" asp-action="Create">Crear Competencias</a>                                    
+                                    <a class="dropdown-item" asp-area="" asp-controller="Competencia" asp-action="Resultados">Agregar Resultados</a> 
                                 </div>
                             </li>
                         }
