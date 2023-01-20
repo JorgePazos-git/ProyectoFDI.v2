@@ -69,20 +69,15 @@
     </div>
 </div>
 
-@Html.ActionLink("Agregar Deportista","Create", "DetalleCompetencia", new {returnTo="edit" })
+<br />
+<h4>DETALLE</h4>
+
+<button type="button" class="btn btn-outline-success">@Html.ActionLink("Agregar Deportista","Create", "DetalleCompetencia", new {returnTo="edit"})</button>
+
 
 <table class="table">
     <thead class="table-light">
         <tr>
-            <th>
-                Puesto
-            </th>
-            <th>
-                Resultado de Clasificación
-            </th>
-            <th>
-                Resultado Final
-            </th>
             <th>
                 Competencia
             </th>
@@ -96,15 +91,6 @@
         @foreach (var item in Model.DetalleCompetencia)
         {
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Puesto)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ClasRes)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FinalRes)
-                </td>
                 <td>
                     @Html.DisplayFor(model => model.NombreCom)
                 </td>

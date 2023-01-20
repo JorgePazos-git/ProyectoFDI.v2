@@ -16,7 +16,7 @@ namespace ProyectoFDI.v2.Controllers
         public DetalleCompetenciaController(IConfiguration configuration)
         {
             apiUrl = configuration["urlBase"].ToString() + "DetalleCompetencia/";
-            ViewBag.ReturnTo = "index";
+            ViewBag.ReturnTo = "";
         }
 
         [Authorize(Roles = "Administrador,Juez")]
@@ -77,7 +77,7 @@ namespace ProyectoFDI.v2.Controllers
             try
             {
                 APIConsumer<DetalleCompetencium>.Insert(apiUrl, detalle);
-                if (returnTo == "index")
+                if (returnTo == null)
                 {
                     return RedirectToAction(nameof(Index));
                 }
@@ -113,7 +113,7 @@ namespace ProyectoFDI.v2.Controllers
             try
             {
                 APIConsumer<DetalleCompetencium>.Update(apiUrl + id.ToString(), detalle);
-                if (returnTo == "index")
+                if (returnTo == null)
                 {
                     return RedirectToAction(nameof(Index));
                 }
@@ -147,7 +147,7 @@ namespace ProyectoFDI.v2.Controllers
             try
             {
                 APIConsumer<DetalleCompetencium>.Delete(apiUrl + id.ToString());
-                if (returnTo == "index")
+                if (returnTo == null)
                 {
                     return RedirectToAction(nameof(Index));
                 }
