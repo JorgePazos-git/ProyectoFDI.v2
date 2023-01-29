@@ -1,7 +1,7 @@
 ﻿@model ProyectoFDI.v2.Models.DetalleCompetencium
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Resultados";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -11,26 +11,29 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 
-<h1>EDITAR</h1>
+<h1>Agregar Resultados</h1>
 
 <h4>Detalle de la Competencia</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Resultados">
             <input type="hidden" name="returnTo" id="returnTo" value="@ViewBag.ReturnTo" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="IdDetalle" />
             <div class="form-group">
+                @*<label asp-for="Puesto" class="control-label">Puesto</label>*@
                 <input type="hidden" asp-for="Puesto" class="form-control" />
                 <span asp-validation-for="Puesto" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="hidden"  asp-for="ClasRes" class="form-control" />
+                <label asp-for="ClasRes" class="control-label">Resultado de Clasificación</label>
+                <input asp-for="ClasRes" class="form-control" />
                 <span asp-validation-for="ClasRes" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="hidden" asp-for="FinalRes" class="form-control" />
+                <label asp-for="FinalRes" class="control-label">Resultado de la Final</label>
+                <input asp-for="FinalRes" class="form-control" />
                 <span asp-validation-for="FinalRes" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -46,7 +49,7 @@
             <br />
             <div class="form-group">
                 <input type="submit" value="Guardar" class="btn btn-outline-primary" />
-                <button type="button" class="btn btn-outline-danger"><a class="boton" asp-controller="Competencia" asp-action="Index">Regresar</a></button>
+                <button type="button" class="btn btn-outline-danger"><a class="boton" asp-controller="Competencia" asp-action="Resultados">Regresar</a></button>
             </div>
         </form>
     </div>

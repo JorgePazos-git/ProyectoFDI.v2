@@ -16,7 +16,7 @@ namespace ProyectoFDI.v2.Controllers
         public DetalleCompetenciaController(IConfiguration configuration)
         {
             apiUrl = configuration["urlBase"].ToString() + "DetalleCompetencia/";
-            ViewBag.ReturnTo = "";
+            ViewBag.ReturnTo = "index";
         }
 
         [Authorize(Roles = "Administrador,Juez")]
@@ -105,6 +105,18 @@ namespace ProyectoFDI.v2.Controllers
         }
 
         [Authorize(Roles = "Administrador,Juez")]
+        // GET: DetalleCompetenciaController/Edit/5
+        public ActionResult Resultados(int id, string? returnTo)
+        {
+            ViewBag.listaDeportistas = listaDeportistas();
+            ViewBag.listaCompetencias = listaCompetencias();
+            ViewBag.ReturnTo = returnTo;
+            var data = APIConsumer<DetalleCompetencium>.SelectOne(apiUrl + id.ToString());
+            ViewBag.data = data;
+            return View(data);
+        }
+
+        [Authorize(Roles = "Administrador,Juez")]
         // POST: DetalleCompetenciaController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -118,8 +130,33 @@ namespace ProyectoFDI.v2.Controllers
                     return RedirectToAction(nameof(Index));
                 }
                 else
+                {   
+                    return RedirectToAction("Edit", "Competencia", new { id = detalle.IdCom });           
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View(detalle);
+            }
+        }
+
+        [Authorize(Roles = "Administrador,Juez")]
+        // POST: DetalleCompetenciaController/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Resultados(int id, DetalleCompetencium detalle, string returnTo)
+        {
+            try
+            {
+                APIConsumer<DetalleCompetencium>.Update(apiUrl + id.ToString(), detalle);
+                if (returnTo == null)
                 {
-                    return RedirectToAction("Edit", "Competencia", new { id = id });
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    return RedirectToAction("AgregarResultados", "Competencia", new { id = detalle.IdCom });
                 }
             }
             catch (Exception ex)

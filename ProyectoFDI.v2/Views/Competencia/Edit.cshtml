@@ -100,8 +100,7 @@
                     </p>
                 </td>
                 <td>
-                    <button type="button" class="btn btn-outline-warning">@Html.ActionLink("Edit", "Edit","DetalleCompetencia", new { id=item.IdDetalle, returnTo = "edit" })</button>
-                    <button type="button" class="btn btn-outline-danger">@Html.ActionLink("Delete","Delete", "DetalleCompetencia", new {id=item.IdDetalle, returnTo= "edit" })</button>
+                    <button type="button" class="btn btn-outline-danger">@Html.ActionLink("Eliminar","Delete", "DetalleCompetencia", new {id=item.IdDetalle, returnTo= "edit" })</button>
                 </td>
             </tr>
         }

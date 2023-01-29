@@ -190,7 +190,7 @@ namespace ProyectoFDI.v2.Controllers
         }
 
         [Authorize(Roles = "Administrador,Juez")]
-        // POST: CompetenciaController/Edit/5
+        // POST: CompetenciaController/AgregarResultados/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult AgregarResultados(int id, Competencium competencia)

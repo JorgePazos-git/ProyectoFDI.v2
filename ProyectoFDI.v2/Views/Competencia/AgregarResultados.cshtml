@@ -1,7 +1,7 @@
 ﻿@model ProyectoFDI.v2.Models.Competencium
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "AgregarResultados";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -63,11 +63,64 @@
             <br />
             <div class="form-group">
                 <input type="submit" value="Guardar" class="btn btn-outline-primary" />
-                <button type="button" class="btn btn-outline-danger"><a class="boton" asp-action="Index">Regresar</a></button>
+                <button type="button" class="btn btn-outline-danger"><a class="boton" asp-action="Resultados">Regresar</a></button>
             </div>
         </form>
     </div>
 </div>
+
+<br />
+<h4>DETALLE</h4>
+
+<table class="table">
+    <thead class="table-light">
+        <tr>
+            <th>
+                Puesto
+            </th>
+            <th>
+                Resultado de Clasificación
+            </th>
+            <th>
+                Resultado Final
+            </th>
+            <th>
+                Competencia
+            </th>
+            <th>
+                Deportista
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.DetalleCompetencia)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Puesto)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ClasRes)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FinalRes)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.NombreCom)
+                </td>
+                <td>
+                    <p>
+                        @Html.DisplayFor(modelItem => item.IdDepNavigation.NombresDep) @Html.DisplayFor(modelItem => item.IdDepNavigation.ApellidosDep)
+                    </p>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-outline-warning">@Html.ActionLink("Agregar", "Resultados","DetalleCompetencia", new { id=item.IdDetalle, returnTo = "resultados" })</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 
 @section Scripts {
     @{
