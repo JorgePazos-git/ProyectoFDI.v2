@@ -17,7 +17,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="AgregarResultados">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="IdCom" />
             <div class="form-group">
@@ -60,10 +60,14 @@
                 @Html.DropDownList("IdMod" , ViewBag.ListaModalidades, "--Elija una Modalidad--", new{@class ="form-select", disabled="disabled"})
                 <span asp-validation-for="IdMod" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="ActivoCom" class="control-label">Estado</label>
+                @Html.DropDownList("ActivoCom" , ViewBag.ListadoEstados, "--Elija una Estado--", new{@class ="form-select", disabled="disabled"})
+                <span asp-validation-for="ActivoCom" class="text-danger"></span>
+            </div>
             <br />
             <div class="form-group">
-                <input type="submit" value="Guardar" class="btn btn-outline-primary" />
-                <button type="button" class="btn btn-outline-danger"><a class="boton" asp-action="Resultados">Regresar</a></button>
+                <button type="button" class="btn btn-outline-danger"><a class="boton" asp-action="Resultados" asp-controller="Competencia">Regresar</a></button>
             </div>
         </form>
     </div>

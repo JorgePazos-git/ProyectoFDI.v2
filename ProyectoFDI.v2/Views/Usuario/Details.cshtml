@@ -40,6 +40,19 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.RolesUsu)
         </dd>
+        <dt class="col-sm-2">
+            Estado
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.ActivoUsu == true)
+            {
+                <p>Activo</p>
+            }
+            else
+            {
+                <p>Inactivo</p>
+            }
+        </dd>
     </dl>
 </div>
 <br />

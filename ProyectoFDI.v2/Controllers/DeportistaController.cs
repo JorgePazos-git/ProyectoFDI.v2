@@ -148,7 +148,18 @@ namespace ProyectoFDI.v2.Controllers
         {
             try
             {
+                Usuario usuario = new Usuario();
+                usuario.IdUsu = 0;
+                usuario.NombreUsu = deportista.CedulaDep;
+                usuario.ClaveUsu = deportista.CedulaDep;
+                usuario.FechaCreacion = DateTime.Now;
+                usuario.RolesUsu = "Deportista";
+                usuario.ActivoUsu = true;
+
+                deportista.IdUsuNavigation = usuario;
+
                 APIConsumer<Deportistum>.Insert(apiUrl, deportista);
+
                 return RedirectToAction(nameof(Index));
             }
             catch(Exception ex)
@@ -207,6 +218,10 @@ namespace ProyectoFDI.v2.Controllers
         {
             try
             {
+                var data = APIConsumer<Deportistum>.SelectOne(apiUrl + id.ToString());
+                Usuario usuario = data.IdUsuNavigation;
+                usuario.ActivoUsu = false;
+                APIConsumer<Usuario>.Update(apiUrl.Replace("Deportista", "Usuario") + usuario.IdUsu.ToString(), usuario);   
                 APIConsumer<Deportistum>.Delete(apiUrl + id.ToString());
                 return RedirectToAction(nameof(Index));
             }

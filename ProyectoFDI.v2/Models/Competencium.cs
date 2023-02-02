@@ -22,6 +22,7 @@ public partial class Competencium
     public int? IdSede { get; set; }
 
     public int? IdMod { get; set; }
+    public bool? ActivoCom { get; set; }
 
     public virtual ICollection<DetalleCompetencium> DetalleCompetencia { get; } = new List<DetalleCompetencium>();
 

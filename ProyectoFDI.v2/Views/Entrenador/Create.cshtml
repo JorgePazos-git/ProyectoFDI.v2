@@ -37,10 +37,6 @@
                 <label asp-for="IdPro" class="control-label">Provincia</label>
                 @Html.DropDownList("IdPro" , ViewBag.ListaProvincias, "--Elija una Provincia--", new{@class ="form-select"})
             </div>
-            <div class="form-group">
-                <label asp-for="IdUsu" class="control-label">Usuario</label>
-                @Html.DropDownList("IdUsu" , ViewBag.ListaUsuarios, "--Elija un Usuario--", new{@class ="form-select"})
-            </div>
             <br />
             <div class="form-group">
                 <input type="submit" value="Crear" class="btn btn-outline-primary" />

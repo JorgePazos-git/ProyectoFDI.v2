@@ -14,6 +14,7 @@ public partial class Usuario
     public DateTime? FechaCreacion { get; set; }
 
     public string? RolesUsu { get; set; }
+    public bool? ActivoUsu { get; set; }
 
     public virtual ICollection<Deportistum> Deportista { get; } = new List<Deportistum>();
 

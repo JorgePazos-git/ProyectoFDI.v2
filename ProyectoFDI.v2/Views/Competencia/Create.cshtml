@@ -54,6 +54,10 @@
                 <label asp-for="IdMod" class="control-label"></label>
                 @Html.DropDownList("IdMod" , ViewBag.ListaModalidades, "--Elija una Modalidad--", new{@class ="form-select"})
             </div>
+            <div class="form-group">
+                <label asp-for="ActivoCom" class="control-label"></label>
+                @Html.DropDownList("ActivoCom" , ViewBag.ListadoEstados, "--Elija un Estado--", new{@class ="form-select"})
+            </div>
             <br />
             <div class="form-group">
                 <input type="submit" value="Crear" class="btn btn-outline-primary" />

@@ -30,6 +30,9 @@
             <th>
                 Roles
             </th>
+            <th>
+                Estado
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -48,6 +51,14 @@
             <td>
                 @Html.DisplayFor(modelItem => item.RolesUsu)
             </td>
+                <td>
+                    @if(item.ActivoUsu == true){
+                        <p>Activo</p>
+                    }else{
+                        <p>Inactivo</p>
+                    }
+                    
+                </td>
             <td>
                 <button type="button" class="btn btn-outline-warning"><a class="boton" asp-action="Edit" asp-route-id="@item.IdUsu">Editar</a></button>
                 <button type="button" class="btn btn-outline-info"><a class="boton" asp-action="Details" asp-route-id="@item.IdUsu">Detalles</a></button>

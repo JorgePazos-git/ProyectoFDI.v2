@@ -65,6 +65,16 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.IdSedeNavigation.NombreSede)
         </dd>
+        <dt class="col-sm-2">
+            Estado
+        </dt>
+        <dd class="col-sm-10">
+            @if(Model.ActivoCom == true){
+                 <p>ACTIVO</p>
+            }else{
+                 <p>INACTIVO</p>
+            }
+        </dd>
     </dl>
     <table class="table">
         <thead class="table-light">

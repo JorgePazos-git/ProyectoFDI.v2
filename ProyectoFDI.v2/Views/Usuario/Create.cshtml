@@ -38,6 +38,10 @@
                 @Html.DropDownList("RolesUsu", ViewBag.ListadoRoles, "--Elija un Rol", new {@class = "form-select"})
                 <span asp-validation-for="RolesUsu" class="text-danger"></span>
             </div>
+            <label asp-for="ActivoUsu" class="control-label">Estado</label>
+            @Html.DropDownList("ActivoUsu", ViewBag.ListadoEstados, "--Elija un Estado", new {@class = "form-select"})
+            <span asp-validation-for="ActivoUsu" class="text-danger"></span>
+    
             <br />
             <div class="form-group">
                 <input type="submit" value="Crear" class="btn btn-outline-primary" />

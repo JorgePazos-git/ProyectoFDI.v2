@@ -45,6 +45,9 @@
             <th>
                 Sede
             </th>
+            <th>
+                Estado
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -75,6 +78,16 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.IdSedeNavigation.NombreSede)
+                </td>
+                <td>
+                    @if (item.ActivoCom == true)
+                    {
+                        <p>ACTIVO</p>
+                    }
+                    else
+                    {
+                        <p>INACTIVO</p>
+                    }
                 </td>
 
                 @if (User.IsInRole("Administrador") || User.IsInRole("Juez"))

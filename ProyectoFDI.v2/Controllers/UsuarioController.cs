@@ -27,6 +27,14 @@ namespace ProyectoFDI.v2.Controllers
             return roles;
         }
 
+        private List<SelectListItem> listaEstados()
+        {
+            var roles = new List<SelectListItem>();
+            roles.Add(new SelectListItem { Text = "Activo", Value = "true" });
+            roles.Add(new SelectListItem { Text = "Inactivo", Value = "false" });
+            return roles;
+        }
+
         [Authorize(Roles = "Administrador")]
         // GET: UsuarioController
         public ActionResult Index()
@@ -48,6 +56,7 @@ namespace ProyectoFDI.v2.Controllers
         public ActionResult Create()
         {
             ViewBag.ListadoRoles = listaRoles();
+            ViewBag.ListadoEstados = listaEstados();
             return View();
         }
 
@@ -74,6 +83,7 @@ namespace ProyectoFDI.v2.Controllers
         public ActionResult Edit(int id)
         {
             ViewBag.ListadoRoles = listaRoles();
+            ViewBag.ListadoEstados = listaEstados();
             var data = APIConsumer<Usuario>.SelectOne(apiUrl + id.ToString());
             return View(data);
         }

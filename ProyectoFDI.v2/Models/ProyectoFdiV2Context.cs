@@ -91,6 +91,7 @@ public partial class ProyectoFdiV2Context : DbContext
             entity.Property(e => e.IdJuez).HasColumnName("id_juez");
             entity.Property(e => e.IdMod).HasColumnName("id_mod");
             entity.Property(e => e.IdSede).HasColumnName("id_sede");
+            entity.Property(e => e.ActivoCom).HasColumnName("activo_com");
             entity.Property(e => e.NombreCom)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -337,6 +338,7 @@ public partial class ProyectoFdiV2Context : DbContext
             entity.ToTable("usuario");
 
             entity.Property(e => e.IdUsu).HasColumnName("id_usu");
+            entity.Property(e => e.ActivoUsu).HasColumnName("activo_usu");
             entity.Property(e => e.ClaveUsu)
                 .HasMaxLength(50)
                 .IsUnicode(false)

@@ -95,6 +95,14 @@ namespace ProyectoFDI.v2.Controllers
             return lista;
         }
 
+        private List<SelectListItem> listaEstados()
+        {
+            var roles = new List<SelectListItem>();
+            roles.Add(new SelectListItem { Text = "Activo", Value = "true" });
+            roles.Add(new SelectListItem { Text = "Inactivo", Value = "false" });
+            return roles;
+        }
+
         private List<SelectListItem> listaJueces()
         {
             var jueces = APIConsumer<Juez>.Select(apiUrl.Replace("Competencia", "Juez"));
@@ -123,6 +131,7 @@ namespace ProyectoFDI.v2.Controllers
             ViewBag.ListaModalidades = listaModalidades();
             ViewBag.ListaJueces = listaJueces();
             ViewBag.ListaSedes = listaSedes();
+            ViewBag.ListadoEstados = listaEstados();
             return View();
         }
 
@@ -154,7 +163,8 @@ namespace ProyectoFDI.v2.Controllers
             ViewBag.ListaModalidades = listaModalidades();
             ViewBag.ListaJueces = listaJueces();
             ViewBag.ListaSedes = listaSedes();
-            
+            ViewBag.ListadoEstados = listaEstados();
+
             return View(data);
         }
 
@@ -167,7 +177,8 @@ namespace ProyectoFDI.v2.Controllers
             ViewBag.ListaModalidades = listaModalidades();
             ViewBag.ListaJueces = listaJueces();
             ViewBag.ListaSedes = listaSedes();
-            
+            ViewBag.ListadoEstados = listaEstados();
+
             return View(data);
         }
 

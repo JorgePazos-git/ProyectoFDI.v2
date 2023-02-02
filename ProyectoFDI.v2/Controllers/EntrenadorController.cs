@@ -93,6 +93,16 @@ namespace ProyectoFDI.v2.Controllers
         {
             try
             {
+                Usuario usuario = new Usuario();
+                usuario.IdUsu = 0;
+                usuario.NombreUsu = entrenador.CedulaEnt;
+                usuario.ClaveUsu = entrenador.CedulaEnt;
+                usuario.FechaCreacion = DateTime.Now;
+                usuario.RolesUsu = "Entrenador";
+                usuario.ActivoUsu = true;
+
+                entrenador.IdUsuNavigation = usuario;
+
                 APIConsumer<Entrenador>.Insert(apiUrl, entrenador);
                 return RedirectToAction(nameof(Index));
             }
@@ -149,6 +159,10 @@ namespace ProyectoFDI.v2.Controllers
         {
             try
             {
+                var data = APIConsumer<Entrenador>.SelectOne(apiUrl + id.ToString());
+                Usuario usuario = data.IdUsuNavigation;
+                usuario.ActivoUsu = false;
+                APIConsumer<Usuario>.Update(apiUrl.Replace("Entrenador", "Usuario") + usuario.IdUsu.ToString(), usuario);
                 APIConsumer<Entrenador>.Delete(apiUrl + id.ToString());
                 return RedirectToAction(nameof(Index));
             }
