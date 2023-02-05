@@ -74,10 +74,37 @@
         </dd>
     </dl>
     
-    <form asp-action="Delete">
+    <form asp-action="Delete" class="form-eliminar">
         <input type="hidden" asp-for="IdDep" />
         <input type="submit" value="Delete" class="btn btn-outline-secondary" />
         <button type="button" class="btn btn-outline-danger"><a class="boton" asp-action="Index">Regresar</a></button>
     </form>
 </div>
+
+<script>
+    $('.form-eliminar').submit(function(e){
+        e.preventDefault();
+
+        Swal.fire({
+            title: '¿Está seguro de eliminarlo?',
+            text: "No se podrá revertir!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire(
+                    'Eliminado!',
+                    'success'
+                )
+                this.submit();
+
+            }
+        })
+    });
+    
+</script>
 

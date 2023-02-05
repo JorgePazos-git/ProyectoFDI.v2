@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ProyectoFDI.v2.Models;
 
@@ -7,10 +8,16 @@ public partial class Deportistum
 {
     public int IdDep { get; set; }
 
+    [Required(ErrorMessage = "Debe ingresar el Nombre del Deportista")]
+    [StringLength(maximumLength: 50, MinimumLength = 2, ErrorMessage = "El Nombre es muy corto")]
     public string? NombresDep { get; set; }
 
+    [Required(ErrorMessage = "Debe ingresar el Apellido del Deportista")]
+    [StringLength(maximumLength: 50, MinimumLength = 2, ErrorMessage = "El Apellido es muy corto")]
     public string? ApellidosDep { get; set; }
 
+    [Required(ErrorMessage = "Ingrese la Cédula")]
+    [StringLength(maximumLength: 10, MinimumLength = 10, ErrorMessage = "Cédula Inválida")]
     public string? CedulaDep { get; set; }
 
     public int? IdPro { get; set; }
