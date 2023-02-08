@@ -10,6 +10,9 @@ public partial class DetalleCompetencium
     public int? Puesto { get; set; }
 
     public string? ClasRes { get; set; }
+    public string? OctavosRes { get; set; }
+    public string? CuartosRes { get; set; }
+    public string? SemiRes { get; set; }
 
     public string? FinalRes { get; set; }
 

@@ -14,6 +14,7 @@ public partial class Juez
     public string? CedulaJuez { get; set; }
 
     public bool? PrincipalJuez { get; set; }
+    public bool? ActivoJuez { get; set; }
 
     public int? IdPro { get; set; }
 

@@ -12,6 +12,7 @@ public partial class Entrenador
     public string? ApellidosEnt { get; set; }
 
     public string? CedulaEnt { get; set; }
+    public bool? ActivoEnt { get; set; }
 
     public int? IdPro { get; set; }
 

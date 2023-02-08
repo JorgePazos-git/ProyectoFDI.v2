@@ -19,6 +19,7 @@ public partial class Deportistum
     [Required(ErrorMessage = "Ingrese la Cédula")]
     [StringLength(maximumLength: 10, MinimumLength = 10, ErrorMessage = "Cédula Inválida")]
     public string? CedulaDep { get; set; }
+    public bool? ActivoDep { get; set; }
 
     public int? IdPro { get; set; }
 
