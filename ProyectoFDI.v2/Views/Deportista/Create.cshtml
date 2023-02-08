@@ -54,6 +54,10 @@
                 <label asp-for="IdEnt" class="control-label">Entrenador</label>
                 @Html.DropDownList("IdEnt" , ViewBag.ListaEntrenadores, "--Elija un Entrenador--", new{@class ="form-select"})
             </div>
+            <div class="form-group">
+                <label asp-for="ActivoDep" class="control-label">Estado</label>
+                @Html.DropDownList("ActivoDep" , ViewBag.ListaEstados, "--Elija un Estado--", new{@class ="form-select"})
+            </div>
             
             <br />
             <div class="form-group">

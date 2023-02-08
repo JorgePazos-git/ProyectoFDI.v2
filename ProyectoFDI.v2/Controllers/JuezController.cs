@@ -65,6 +65,14 @@ namespace ProyectoFDI.v2.Controllers
             return lista;
         }
 
+        private List<SelectListItem> listaEstados2()
+        {
+            var roles = new List<SelectListItem>();
+            roles.Add(new SelectListItem { Text = "Activo", Value = "true" });
+            roles.Add(new SelectListItem { Text = "Inactivo", Value = "false" });
+            return roles;
+        }
+
         [Authorize(Roles = "Administrador")]
         // GET: JuezController/Details/5
         public ActionResult Details(int id)
@@ -80,6 +88,7 @@ namespace ProyectoFDI.v2.Controllers
             ViewBag.ListaProvincias = listaProvincias();
             ViewBag.ListaUsuarios = listaUsuarios();
             ViewBag.ListaEstados = listaEstados();
+            ViewBag.ListaEstados2 = listaEstados2();
             return View();
         }
 
@@ -118,6 +127,7 @@ namespace ProyectoFDI.v2.Controllers
             ViewBag.ListaProvincias = listaProvincias();
             ViewBag.ListaUsuarios = listaUsuarios();
             ViewBag.ListaEstados = listaEstados();
+            ViewBag.ListaEstados2 = listaEstados2();
             var data = APIConsumer<Juez>.SelectOne(apiUrl + id.ToString());
             return View(data);
         }
@@ -159,8 +169,9 @@ namespace ProyectoFDI.v2.Controllers
                 var data = APIConsumer<Juez>.SelectOne(apiUrl + id.ToString());
                 Usuario usuario = data.IdUsuNavigation;
                 usuario.ActivoUsu = false;
+                data.ActivoJuez = false;
+                APIConsumer<Juez>.Update(apiUrl + id.ToString(), data);
                 APIConsumer<Usuario>.Update(apiUrl.Replace("Juez", "Usuario") + usuario.IdUsu.ToString(), usuario);
-                APIConsumer<Juez>.Delete(apiUrl + id.ToString());
                 return RedirectToAction(nameof(Index));
             }
             catch

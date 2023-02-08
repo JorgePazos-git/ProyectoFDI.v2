@@ -66,6 +66,14 @@ namespace ProyectoFDI.v2.Controllers
             return lista;
         }
 
+        private List<SelectListItem> listaEstados()
+        {
+            var roles = new List<SelectListItem>();
+            roles.Add(new SelectListItem { Text = "Activo", Value = "true" });
+            roles.Add(new SelectListItem { Text = "Inactivo", Value = "false" });
+            return roles;
+        }
+
         [Authorize(Roles = "Administrador")]
         // GET: EntrenadorController/Details/5
         public ActionResult Details(int id)
@@ -82,6 +90,7 @@ namespace ProyectoFDI.v2.Controllers
             ViewBag.ListaDeportistas = listaDeportistas();
             ViewBag.ListaProvincias = listaProvincias();
             ViewBag.ListaUsuarios = listaUsuarios();
+            ViewBag.ListaEstados = listaEstados();
             return View();
         }
 
@@ -121,6 +130,7 @@ namespace ProyectoFDI.v2.Controllers
             ViewBag.ListaDeportistas = listaDeportistas();
             ViewBag.ListaProvincias = listaProvincias();
             ViewBag.ListaUsuarios = listaUsuarios();
+            ViewBag.ListaEstados = listaEstados();
             var data = APIConsumer<Entrenador>.SelectOne(apiUrl + id.ToString());
             return View(data);
         }
@@ -162,8 +172,9 @@ namespace ProyectoFDI.v2.Controllers
                 var data = APIConsumer<Entrenador>.SelectOne(apiUrl + id.ToString());
                 Usuario usuario = data.IdUsuNavigation;
                 usuario.ActivoUsu = false;
+                data.ActivoEnt = false;
+                APIConsumer<Entrenador>.Update(apiUrl + id.ToString(), data);
                 APIConsumer<Usuario>.Update(apiUrl.Replace("Entrenador", "Usuario") + usuario.IdUsu.ToString(), usuario);
-                APIConsumer<Entrenador>.Delete(apiUrl + id.ToString());
                 return RedirectToAction(nameof(Index));
             }
             catch
