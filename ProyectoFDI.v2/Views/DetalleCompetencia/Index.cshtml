@@ -26,6 +26,15 @@
                 Resultado de Clasificación
             </th>
             <th>
+                Resultado de Octavos
+            </th>
+            <th>
+                Resultado de Cuartos
+            </th>
+            <th>
+                Resultado de SemiFinal
+            </th>
+            <th>
                 Resultado Final
             </th>
             <th>
@@ -46,6 +55,15 @@
             <td>
                 @Html.DisplayFor(modelItem => item.ClasRes)
             </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OctavosRes)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CuartosRes)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SemiRes)
+                </td>
             <td>
                 @Html.DisplayFor(modelItem => item.FinalRes)
             </td>

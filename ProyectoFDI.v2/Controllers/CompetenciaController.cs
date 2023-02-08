@@ -234,7 +234,10 @@ namespace ProyectoFDI.v2.Controllers
         {
             try
             {
-                APIConsumer<Competencium>.Delete(apiUrl + id.ToString());
+                var data = APIConsumer<Competencium>.SelectOne(apiUrl + id.ToString());
+                data.ActivoCom = false;
+                APIConsumer<Competencium>.Update(apiUrl + id.ToString(), data);
+
                 return RedirectToAction(nameof(Index));
             }
             catch

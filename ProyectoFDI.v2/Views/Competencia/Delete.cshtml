@@ -11,9 +11,9 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 
-<h1>ELIMINAR</h1>
+<h1>DESHABILITAR</h1>
 
-<h3>¿Estás seguro de eliminar esta Competencia?</h3>
+<h3>¿Estás seguro de deshabilitar esta Competencia?</h3>
 <div>
     <h4>Competencia</h4>
     <hr />
@@ -66,11 +66,44 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.IdSedeNavigation.NombreSede)
         </dd>
+        <dt class="col-sm-2">
+            Estado
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ActivoCom)
+        </dd>
     </dl>
     
-    <form asp-action="Delete">
+    <form asp-action="Delete" class="form-eliminar">
         <input type="hidden" asp-for="IdCom" />
-        <input type="submit" value="Delete" class="btn btn-outline-secondary" />
+        <input type="submit" value="Deshabilitar" class="btn btn-outline-secondary" />
         <button type="button" class="btn btn-outline-danger"><a class="boton" asp-action="Index">Regresar</a></button>
     </form>
 </div>
+
+<script>
+    $('.form-eliminar').submit(function (e) {
+        e.preventDefault();
+
+        Swal.fire({
+            title: '¿Está seguro de Deshabilitarlo?',
+            text: "No se podrá revertir!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Deshabilitar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire(
+                    'Deshabilitado!',
+                    'success'
+                )
+                this.submit();
+
+            }
+        })
+    });
+
+</script>
