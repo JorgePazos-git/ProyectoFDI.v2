@@ -20,6 +20,12 @@ namespace ProyectoFDI.v2.Controllers
         // GET: CompetenciaController
         public ActionResult Index(string? searchFor)
         {
+            ViewBag.ListadoCategorias = listadoCategorias();
+            ViewBag.ListadoGeneros = listadoGeneros();
+            ViewBag.ListadoModalidades = listadoModalidades();
+            ViewBag.ListadoJueces = listadoJueces();
+            ViewBag.ListadoSedes = listadoSedes();
+
             ViewBag.SearchFor = "" + searchFor;
 
             if (string.IsNullOrWhiteSpace(searchFor))
@@ -35,6 +41,12 @@ namespace ProyectoFDI.v2.Controllers
         [Authorize(Roles = "Administrador,Juez")]
         public ActionResult Resultados(string? searchFor)
         {
+            ViewBag.ListadoCategorias = listadoCategorias();
+            ViewBag.ListadoGeneros = listadoGeneros();
+            ViewBag.ListadoModalidades = listadoModalidades();
+            ViewBag.ListadoJueces = listadoJueces();
+            ViewBag.ListadoSedes = listadoSedes();
+
             ViewBag.SearchFor = "" + searchFor;
 
             if (string.IsNullOrWhiteSpace(searchFor))
@@ -95,14 +107,6 @@ namespace ProyectoFDI.v2.Controllers
             return lista;
         }
 
-        private List<SelectListItem> listaEstados()
-        {
-            var roles = new List<SelectListItem>();
-            roles.Add(new SelectListItem { Text = "Activo", Value = "true" });
-            roles.Add(new SelectListItem { Text = "Inactivo", Value = "false" });
-            return roles;
-        }
-
         private List<SelectListItem> listaJueces()
         {
             var jueces = APIConsumer<Juez>.Select(apiUrl.Replace("Competencia", "Juez"));
@@ -114,10 +118,84 @@ namespace ProyectoFDI.v2.Controllers
             return lista;
         }
 
+        private List<SelectListItem> listaEstados()
+        {
+            var roles = new List<SelectListItem>();
+            roles.Add(new SelectListItem { Text = "Activo", Value = "true" });
+            roles.Add(new SelectListItem { Text = "Inactivo", Value = "false" });
+            return roles;
+        }
+
+        private List<Modalidad> listadoModalidades()
+        {
+            var modalidades = APIConsumer<Modalidad>.Select(apiUrl.Replace("Competencia", "Modalidad"));
+            var lista = modalidades.Select(f => new Modalidad
+            {
+                IdMod = f.IdMod,
+                DescripcionMod = f.DescripcionMod
+            }).ToList();
+
+            return lista;
+        }
+
+        private List<Categorium> listadoCategorias()
+        {
+            var categorias = APIConsumer<Categorium>.Select(apiUrl.Replace("Competencia", "Categoria"));
+            var lista = categorias.Select(f => new Categorium
+            {
+                IdCat = f.IdCat,
+                NombreCat = f.NombreCat
+            }).ToList();
+
+            return lista;
+        }
+
+        private List<Genero> listadoGeneros()
+        {
+            var generos = APIConsumer<Genero>.Select(apiUrl.Replace("Competencia", "Genero"));
+            var lista = generos.Select(f => new Genero
+            {
+                IdGen = f.IdGen,
+                NombreGen = f.NombreGen
+            }).ToList();
+
+            return lista;
+        }
+
+        private List<Sede> listadoSedes()
+        {
+            var sedes = APIConsumer<Sede>.Select(apiUrl.Replace("Competencia", "Sede"));
+            var lista = sedes.Select(f => new Sede
+            {
+                IdSede = f.IdSede,
+                NombreSede = f.NombreSede
+            }).ToList();
+
+            return lista;
+        }
+
+        private List<Juez> listadoJueces()
+        {
+            var jueces = APIConsumer<Juez>.Select(apiUrl.Replace("Competencia", "Juez"));
+            var lista = jueces.Select(f => new Juez
+            {
+                IdJuez = f.IdJuez,
+                NombresJuez = f.NombresJuez,
+                ApellidosJuez = f.ApellidosJuez
+            }).ToList();
+            return lista;
+        }
+
         [Authorize(Roles = "Administrador,Deportista,Juez,Entrenador")]
         // GET: CompetenciaController/Details/5
         public ActionResult Details(int id)
         {
+            ViewBag.ListadoCategorias = listadoCategorias();
+            ViewBag.ListadoGeneros = listadoGeneros();
+            ViewBag.ListadoModalidades = listadoModalidades();
+            ViewBag.ListadoJueces = listadoJueces();
+            ViewBag.ListadoSedes = listadoSedes();
+
             var data = APIConsumer<Competencium>.SelectOne(apiUrl + id.ToString());
             return View(data);
         }

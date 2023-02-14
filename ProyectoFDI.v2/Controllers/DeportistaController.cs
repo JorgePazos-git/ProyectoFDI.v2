@@ -21,6 +21,14 @@ namespace ProyectoFDI.v2.Controllers
         // GET: DeportistaController
         public ActionResult Index(string? searchFor)
         {
+            ViewBag.ListaCategorias = listaCategorias();
+            ViewBag.ListaClubes = listaClubes();
+            ViewBag.ListaEntrenadores = listaEntrenadores();
+            ViewBag.ListaGeneros = listaGeneros();
+            ViewBag.ListaModalidades = listaModalidades();
+            ViewBag.ListaProvincias = listaProvincias();
+            ViewBag.ListaUsuarios = listaUsuarios();
+            ViewBag.ListaEstados = listaEstados();
             ViewBag.SearchFor = "" + searchFor;
 
             if (string.IsNullOrWhiteSpace(searchFor))
@@ -33,85 +41,86 @@ namespace ProyectoFDI.v2.Controllers
             }
         }
 
-        private List<SelectListItem> listaModalidades()
+        private List<Modalidad> listaModalidades()
         {
             var modalidades = APIConsumer<Modalidad>.Select(apiUrl.Replace("Deportista", "Modalidad"));
-            var lista = modalidades.Select(f => new SelectListItem
+            var lista = modalidades.Select(f => new Modalidad
             {
-                Value = f.IdMod.ToString(),
-                Text = f.DescripcionMod
+                IdMod = f.IdMod,
+                DescripcionMod = f.DescripcionMod
             }).ToList();
 
             return lista;
         }
 
-        private List<SelectListItem> listaProvincias()
+        private List<Provincium> listaProvincias()
         { 
             var provincias = APIConsumer<Provincium>.Select(apiUrl.Replace("Deportista", "Provincia"));
-            var lista = provincias.Select(f => new SelectListItem
+            var lista = provincias.Select(f => new Provincium
             {
-                Value = f.IdPro.ToString(),
-                Text = f.NombrePro
+                IdPro = f.IdPro,
+                NombrePro = f.NombrePro
             }).ToList();
 
             return lista;
         }
 
-        private List<SelectListItem> listaCategorias()
+        private List<Categorium> listaCategorias()
         {
             var categorias = APIConsumer<Categorium>.Select(apiUrl.Replace("Deportista", "Categoria"));
-            var lista = categorias.Select(f => new SelectListItem
+            var lista = categorias.Select(f => new Categorium
             {
-                Value = f.IdCat.ToString(),
-                Text = f.NombreCat
+                IdCat = f.IdCat,
+                NombreCat = f.NombreCat
             }).ToList();
 
             return lista;
         }
 
-        private List<SelectListItem> listaClubes()
+        private List<Club> listaClubes()
         {
             var clubes = APIConsumer<Club>.Select(apiUrl.Replace("Deportista", "Club"));
-            var lista = clubes.Select(f => new SelectListItem
+            var lista = clubes.Select(f => new Club
             {
-                Value = f.IdClub.ToString(),
-                Text = f.NombreClub
+                IdClub = f.IdClub,
+                NombreClub = f.NombreClub
             }).ToList();
 
             return lista;
         }
 
-        private List<SelectListItem> listaGeneros()
+        private List<Genero> listaGeneros()
         {
             var generos = APIConsumer<Genero>.Select(apiUrl.Replace("Deportista", "Genero"));
-            var lista = generos.Select(f => new SelectListItem
+            var lista = generos.Select(f => new Genero
             {
-                Value = f.IdGen.ToString(),
-                Text = f.NombreGen
+                IdGen = f.IdGen,
+                NombreGen = f.NombreGen
             }).ToList();
 
             return lista;
         }
 
-        private List<SelectListItem> listaEntrenadores()
+        private List<Entrenador> listaEntrenadores()
         {
             var entrenadores = APIConsumer<Entrenador>.Select(apiUrl.Replace("Deportista", "Entrenador"));
-            var lista = entrenadores.Select(f => new SelectListItem
+            var lista = entrenadores.Select(f => new Entrenador
             {
-                Value = f.IdEnt.ToString(),
-                Text = f.NombresEnt + " " + f.ApellidosEnt,
+                IdEnt = f.IdEnt,
+                NombresEnt = f.NombresEnt,
+                ApellidosEnt = f.ApellidosEnt
             }).ToList();
 
             return lista;
         }
 
-        private List<SelectListItem> listaUsuarios()
+        private List<Usuario> listaUsuarios()
         {
             var usuarios = APIConsumer<Usuario>.Select(apiUrl.Replace("Deportista", "Usuario"));
-            var lista = usuarios.Select(f => new SelectListItem
+            var lista = usuarios.Select(f => new Usuario
             {
-                Value = f.IdUsu.ToString(),
-                Text = f.NombreUsu
+                IdUsu = f.IdUsu,
+                NombreUsu = f.NombreUsu
             }).ToList();
 
             return lista;
@@ -125,18 +134,94 @@ namespace ProyectoFDI.v2.Controllers
             return roles;
         }
 
+        private List<SelectListItem> listadoModalidades()
+        {
+            var modalidades = APIConsumer<Modalidad>.Select(apiUrl.Replace("Deportista", "Modalidad"));
+            var lista = modalidades.Select(f => new SelectListItem
+            {
+                Value = f.IdMod.ToString(),
+                Text = f.DescripcionMod
+            }).ToList();
+
+            return lista;
+        }
+
+        private List<SelectListItem> listadoProvincias()
+        {
+            var provincias = APIConsumer<Provincium>.Select(apiUrl.Replace("Deportista", "Provincia"));
+            var lista = provincias.Select(f => new SelectListItem
+            {
+                Value = f.IdPro.ToString(),
+                Text = f.NombrePro
+            }).ToList();
+
+            return lista;
+        }
+
+        private List<SelectListItem> listadoCategorias()
+        {
+            var categorias = APIConsumer<Categorium>.Select(apiUrl.Replace("Deportista", "Categoria"));
+            var lista = categorias.Select(f => new SelectListItem
+            {
+                Value = f.IdCat.ToString(),
+                Text = f.NombreCat
+            }).ToList();
+
+            return lista;
+        }
+
+        private List<SelectListItem> listadoClubes()
+        {
+            var clubes = APIConsumer<Club>.Select(apiUrl.Replace("Deportista", "Club"));
+            var lista = clubes.Select(f => new SelectListItem
+            {
+                Value = f.IdClub.ToString(),
+                Text = f.NombreClub
+            }).ToList();
+
+            return lista;
+        }
+
+        private List<SelectListItem> listadoGeneros()
+        {
+            var generos = APIConsumer<Genero>.Select(apiUrl.Replace("Deportista", "Genero"));
+            var lista = generos.Select(f => new SelectListItem
+            {
+                Value = f.IdGen.ToString(),
+                Text = f.NombreGen
+            }).ToList();
+
+            return lista;
+        }
+
+        private List<SelectListItem> listadoEntrenadores()
+        {
+            var entrenadores = APIConsumer<Entrenador>.Select(apiUrl.Replace("Deportista", "Entrenador"));
+            var lista = entrenadores.Select(f => new SelectListItem
+            {
+                Value = f.IdEnt.ToString(),
+                Text = f.NombresEnt + " " + f.ApellidosEnt
+            }).ToList();
+
+            return lista;
+        }
+
+        private List<SelectListItem> listadoUsuarios()
+        {
+            var usuarios = APIConsumer<Usuario>.Select(apiUrl.Replace("Deportista", "Usuario"));
+            var lista = usuarios.Select(f => new SelectListItem
+            {
+                Value = f.IdUsu.ToString(),
+                Text = f.NombreUsu
+            }).ToList();
+
+            return lista;
+        }
+
 
         [Authorize(Roles = "Administrador,Deportista,Juez,Entrenador")]
         // GET: DeportistaController/Details/5
         public ActionResult Details(int id)
-        {
-            var data = APIConsumer<Deportistum>.SelectOne(apiUrl + id.ToString());
-            return View(data);
-        }
-
-        [Authorize(Roles = "Administrador,Entrenador")]
-        // GET: DeportistaController/Create
-        public ActionResult Create()
         {
             ViewBag.ListaCategorias = listaCategorias();
             ViewBag.ListaClubes = listaClubes();
@@ -145,7 +230,26 @@ namespace ProyectoFDI.v2.Controllers
             ViewBag.ListaModalidades = listaModalidades();
             ViewBag.ListaProvincias = listaProvincias();
             ViewBag.ListaUsuarios = listaUsuarios();
+
             ViewBag.ListaEstados = listaEstados();
+            var data = APIConsumer<Deportistum>.SelectOne(apiUrl + id.ToString());
+            return View(data);
+        }
+
+        [Authorize(Roles = "Administrador,Entrenador")]
+        // GET: DeportistaController/Create
+        public ActionResult Create()
+        {
+            ViewBag.ListaEstados = listaEstados();
+
+            ViewBag.ListadoCategorias = listadoCategorias();
+            ViewBag.ListadoClubes = listadoClubes();
+            ViewBag.ListadoEntrenadores = listadoEntrenadores();
+            ViewBag.ListadoGeneros = listadoGeneros();
+            ViewBag.ListadoModalidades = listadoModalidades();
+            ViewBag.ListadoProvincias = listadoProvincias();
+            ViewBag.ListadoUsuarios = listadoUsuarios();
+
             return View();
         }
 
@@ -182,13 +286,13 @@ namespace ProyectoFDI.v2.Controllers
         // GET: DeportistaController/Edit/5
         public ActionResult Edit(int id)
         {
-            ViewBag.ListaCategorias = listaCategorias();
-            ViewBag.ListaClubes = listaClubes();
-            ViewBag.ListaEntrenadores = listaEntrenadores();
-            ViewBag.ListaGeneros = listaGeneros();
-            ViewBag.ListaModalidades = listaModalidades();
-            ViewBag.ListaProvincias = listaProvincias();
-            ViewBag.ListaUsuarios = listaUsuarios();
+            ViewBag.ListadoCategorias = listadoCategorias();
+            ViewBag.ListadoClubes = listadoClubes();
+            ViewBag.ListadoEntrenadores = listadoEntrenadores();
+            ViewBag.ListadoGeneros = listadoGeneros();
+            ViewBag.ListadoModalidades = listadoModalidades();
+            ViewBag.ListadoProvincias = listadoProvincias();
+            ViewBag.ListadoUsuarios = listadoUsuarios();
             ViewBag.ListaEstados = listaEstados();
             var data = APIConsumer<Deportistum>.SelectOne(apiUrl + id.ToString());
             return View(data);

@@ -67,7 +67,9 @@
             </div>
             <br />
             <div class="form-group">
-                <input type="submit" value="Guardar" class="btn btn-outline-primary" />
+                @if(Model.ActivoCom == true){
+                    <input type="submit" value="Guardar" class="btn btn-outline-primary" />
+                }             
                 <button type="button" class="btn btn-outline-danger"><a class="boton" asp-action="Index">Regresar</a></button>
             </div>
         </form>
@@ -77,15 +79,15 @@
 <br />
 <h4>DETALLE</h4>
 
-<button type="button" class="btn btn-outline-success">@Html.ActionLink("Agregar Deportista","Create", "DetalleCompetencia", new {returnTo="edit"})</button>
+@if (Model.ActivoCom == true)
+{
+    <button type="button" class="btn btn-outline-success">@Html.ActionLink("Agregar Deportista","Create", "DetalleCompetencia", new {returnTo="edit"})</button>
+}
 
 
 <table class="table">
     <thead class="table-light">
         <tr>
-            <th>
-                Competencia
-            </th>
             <th>
                 Deportista
             </th>
@@ -97,16 +99,17 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(model => model.NombreCom)
-                </td>
-                <td>
                     <p>
                         @Html.DisplayFor(modelItem => item.IdDepNavigation.NombresDep) @Html.DisplayFor(modelItem => item.IdDepNavigation.ApellidosDep)
                     </p>
                 </td>
-                <td>
-                    <button type="button" class="btn btn-outline-danger">@Html.ActionLink("Eliminar","Delete", "DetalleCompetencia", new {id=item.IdDetalle, returnTo= "edit" })</button>
-                </td>
+                
+                @if (Model.ActivoCom == true){
+                    <td>
+                        <button type="button" class="btn btn-outline-danger">@Html.ActionLink("Eliminar","Delete", "DetalleCompetencia", new {id=item.IdDetalle, returnTo= "edit" })</button>
+                    </td>
+                    
+                }              
             </tr>
         }
     </tbody>

@@ -80,9 +80,11 @@ namespace ProyectoFDI.v2.Controllers
                 if (returnTo == null)
                 {
                     return RedirectToAction(nameof(Index));
+                    //return RedirectToAction("Edit", "Competencia", new { id = detalle.IdCom });
                 }
                 else
                 {
+                    //return RedirectToAction(nameof(Create));
                     return RedirectToAction("Edit", "Competencia", new { id = detalle.IdCom });
                 }
             }
@@ -156,7 +158,7 @@ namespace ProyectoFDI.v2.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("AgregarResultados", "Competencia", new { id = detalle.IdCom });
+                    return RedirectToAction("Resultados", "Competencia");
                 }
             }
             catch (Exception ex)
@@ -184,14 +186,16 @@ namespace ProyectoFDI.v2.Controllers
             try
             {
                 APIConsumer<DetalleCompetencium>.Delete(apiUrl + id.ToString());
-                if (returnTo == null)
-                {
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                {
-                    return RedirectToAction("Edit", "Competencia", new { id = id });
-                }
+
+                return RedirectToAction("Resultados", "Competencia");
+                //if (returnTo == null)
+                //{
+                //    return RedirectToAction(nameof(Index));
+                //}
+                //else
+                //{
+                //    return RedirectToAction("Edit", "Competencia", new { id = detalle.IdCom });
+                //}
             }
             catch
             {

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using ProyectoFDI.v2.Models;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -69,21 +69,62 @@
             <td>
                 @Html.DisplayFor(modelItem => item.FechaFinCom)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdCatNavigation.NombreCat)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdGenNavigation.NombreGen)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.IdJuezNavigation.NombresJuez) @Html.DisplayFor(modelItem => item.IdJuezNavigation.ApellidosJuez)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdModNavigation.DescripcionMod)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdSedeNavigation.NombreSede)
-            </td>
+                <td>
+                    @for (var i = 0; i < ViewBag.ListadoCategorias.Count; i++)
+                    {
+                        if (item.IdCat == (ViewBag.ListadoCategorias[i]).IdCat)
+                        {
+                            <p>
+                                @((ViewBag.ListadoCategorias[i]).NombreCat)
+                            </p>
+                        }
+                    }
+                </td>
+                <td>
+                    @for (var i = 0; i < ViewBag.ListadoGeneros.Count; i++)
+                    {
+                        if (item.IdGen == (ViewBag.ListadoGeneros[i]).IdGen)
+                        {
+                            <p>
+                                @((ViewBag.ListadoGeneros[i]).NombreGen)
+                            </p>
+                        }
+                    }
+                </td>
+                <td>
+                    @for (var i = 0; i < ViewBag.ListadoJueces.Count; i++)
+                    {
+                        if (item.IdJuez == (ViewBag.ListadoJueces[i]).IdJuez)
+                        {
+                            <p>
+                                @((ViewBag.ListadoJueces[i]).NombresJuez)
+                                @((ViewBag.ListadoJueces[i]).ApellidosJuez)
+                            </p>
+                        }
+                    }
+                </td>
+                <td>
+                    @for (var i = 0; i < ViewBag.ListadoModalidades.Count; i++)
+                    {
+                        if (item.IdMod == (ViewBag.ListadoModalidades[i]).IdMod)
+                        {
+                            <p>
+                                @((ViewBag.ListadoModalidades[i]).DescripcionMod)
+                            </p>
+                        }
+                    }
+                </td>
+                <td>
+                    @for (var i = 0; i < ViewBag.ListadoSedes.Count; i++)
+                    {
+                        if (item.IdSede == (ViewBag.ListadoSedes[i]).IdSede)
+                        {
+                            <p>
+                                @((ViewBag.ListadoSedes[i]).NombreSede)
+                            </p>
+                        }
+                    }
+                </td>
                 <td>
                     @if(item.ActivoCom == true){
                         <p>ACTIVO</p>
@@ -95,7 +136,7 @@
                 @if (User.IsInRole("Administrador") || User.IsInRole("Juez"))
                 {
                     <td>
-                        <button type="button" class="btn btn-outline-warning"><a class="boton" asp-action="Edit" asp-route-id="@item.IdCom">Editar</a></button>
+                        <button type="button" class="btn btn-outline-warning"><a class="boton" asp-action="Edit" asp-route-id="@item.IdCom">Llenar</a></button>
                         <button type="button" class="btn btn-outline-info"><a class="boton" asp-action="Details" asp-route-id="@item.IdCom">Detalles</a></button>
                         <button type="button" class="btn btn-outline-danger"><a class="boton" asp-action="Delete" asp-route-id="@item.IdCom">Deshabilitar</a></button>
                     </td>

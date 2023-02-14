@@ -65,19 +65,60 @@
                     @Html.DisplayFor(modelItem => item.FechaFinCom)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.IdCatNavigation.NombreCat)
+                    @for (var i = 0; i < ViewBag.ListadoCategorias.Count; i++)
+                    {
+                        if (item.IdCat == (ViewBag.ListadoCategorias[i]).IdCat)
+                        {
+                            <p>
+                                @((ViewBag.ListadoCategorias[i]).NombreCat)
+                            </p>
+                        }
+                    }
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.IdGenNavigation.NombreGen)
+                    @for (var i = 0; i < ViewBag.ListadoGeneros.Count; i++)
+                    {
+                        if (item.IdGen == (ViewBag.ListadoGeneros[i]).IdGen)
+                        {
+                            <p>
+                                @((ViewBag.ListadoGeneros[i]).NombreGen)
+                            </p>
+                        }
+                    }
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.IdJuezNavigation.NombresJuez) @Html.DisplayFor(modelItem => item.IdJuezNavigation.ApellidosJuez)
+                    @for (var i = 0; i < ViewBag.ListadoJueces.Count; i++)
+                    {
+                        if (item.IdJuez == (ViewBag.ListadoJueces[i]).IdJuez)
+                        {
+                            <p>
+                                @((ViewBag.ListadoJueces[i]).NombresJuez)
+                                @((ViewBag.ListadoJueces[i]).ApellidosJuez)
+                            </p>
+                        }
+                    }
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.IdModNavigation.DescripcionMod)
+                    @for (var i = 0; i < ViewBag.ListadoModalidades.Count; i++)
+                    {
+                        if (item.IdMod == (ViewBag.ListadoModalidades[i]).IdMod)
+                        {
+                            <p>
+                                @((ViewBag.ListadoModalidades[i]).DescripcionMod)
+                            </p>
+                        }
+                    }
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.IdSedeNavigation.NombreSede)
+                    @for (var i = 0; i < ViewBag.ListadoSedes.Count; i++)
+                    {
+                        if (item.IdSede == (ViewBag.ListadoSedes[i]).IdSede)
+                        {
+                            <p>
+                                @((ViewBag.ListadoSedes[i]).NombreSede)
+                            </p>
+                        }
+                    }
                 </td>
                 <td>
                     @if (item.ActivoCom == true)
@@ -92,9 +133,13 @@
 
                 @if (User.IsInRole("Administrador") || User.IsInRole("Juez"))
                 {
-                    <td>
-                        <button type="button" class="btn btn-outline-warning"><a class="boton" asp-action="AgregarResultados" asp-route-id="@item.IdCom">Agregar Resultados</a></button>
-                    </td>
+                    @if (item.ActivoCom == true)
+                    {
+                        <td>
+                            <button type="button" class="btn btn-outline-warning"><a class="boton" asp-action="AgregarResultados" asp-route-id="@item.IdCom">Agregar Resultados</a></button>
+                        </td>
+                    }
+                   
                 }
             </tr>
         }

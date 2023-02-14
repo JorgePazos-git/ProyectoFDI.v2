@@ -86,9 +86,6 @@
                 Resultado de Clasificación
             </th>
             <th>
-                Resultado Final
-            </th>
-            <th>
                 Competencia
             </th>
             <th>
@@ -108,9 +105,6 @@
                     @Html.DisplayFor(modelItem => item.ClasRes)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.FinalRes)
-                </td>
-                <td>
                     @Html.DisplayFor(model => model.NombreCom)
                 </td>
                 <td>
@@ -125,6 +119,25 @@
         }
     </tbody>
 </table>
+
+<div class="card">
+    <div class="card-header">
+        <h2>
+            RESULTADOS
+        </h2>
+    </div>
+    <div class="card-body">
+        <div class="row align-items-end">
+            <div class="col-sm-4">
+                <div class="mb-2">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
 
 @section Scripts {
     @{

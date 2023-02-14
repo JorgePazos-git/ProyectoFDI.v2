@@ -73,21 +73,62 @@
             <td>
                 @Html.DisplayFor(modelItem => item.CedulaDep)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdCatNavigation.NombreCat)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdClubNavigation.NombreClub)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.IdEntNavigation.NombresEnt) @Html.DisplayFor(modelItem => item.IdEntNavigation.ApellidosEnt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdGenNavigation.NombreGen)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdProNavigation.NombrePro)
-            </td>
+                <td>
+                    @for (var i = 0; i < ViewBag.ListaCategorias.Count; i++)
+                    {
+                        if (item.IdCat == (ViewBag.ListaCategorias[i]).IdCat)
+                        {
+                            <p>
+                                @((ViewBag.ListaCategorias[i]).NombreCat)
+                            </p>
+                        }
+                    }
+                </td>
+                <td>
+                    @for (var i = 0; i < ViewBag.ListaClubes.Count; i++)
+                    {
+                        if (item.IdClub == (ViewBag.ListaClubes[i]).IdClub)
+                        {
+                            <p>
+                                @((ViewBag.ListaClubes[i]).NombreClub)
+                            </p>
+                        }
+                    }
+                </td>
+                <td>
+                    @for (var i = 0; i < ViewBag.ListaEntrenadores.Count; i++)
+                    {
+                        if (item.IdEnt == (ViewBag.ListaEntrenadores[i]).IdEnt)
+                        {
+                            <p>
+                                @((ViewBag.ListaEntrenadores[i]).NombresEnt) 
+                                @((ViewBag.ListaEntrenadores[i]).ApellidosEnt)
+                            </p>
+                        }
+                    }
+                </td>
+                <td>
+                    @for (var i = 0; i < ViewBag.ListaGeneros.Count; i++)
+                    {
+                        if (item.IdGen == (ViewBag.ListaGeneros[i]).IdGen)
+                        {
+                            <p>
+                                @((ViewBag.ListaGeneros[i]).NombreGen)
+                            </p>
+                        }
+                    }
+                </td>
+                <td>
+                    @for (var i = 0; i < ViewBag.ListaProvincias.Count; i++)
+                    {
+                        if (item.IdPro == (ViewBag.ListaProvincias[i]).IdPro)
+                        {
+                            <p>
+                                @((ViewBag.ListaProvincias[i]).NombrePro)
+                            </p>
+                        }
+                    }
+                </td>
 @*            <td>
                 @foreach (var modalidad in item.DeportistaModalidads)
                 {
@@ -95,9 +136,17 @@
                         <br />                      
                 }
             </td>*@
-            <td>
-                @Html.DisplayFor(modelItem => item.IdUsuNavigation.NombreUsu)
-            </td>
+                <td>
+                    @for (var i = 0; i < ViewBag.ListaUsuarios.Count; i++)
+                    {
+                        if (item.IdUsu == (ViewBag.ListaUsuarios[i]).IdUsu)
+                        {
+                            <p>
+                                @((ViewBag.ListaUsuarios[i]).NombreUsu)
+                            </p>
+                        }
+                    }
+                </td>
             <td>
                 @if(item.ActivoDep == true){
                     <p>Activo</p>

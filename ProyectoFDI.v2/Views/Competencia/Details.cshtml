@@ -39,31 +39,72 @@
             Categoría
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdCatNavigation.NombreCat)
+            @for (var i = 0; i < ViewBag.ListadoCategorias.Count; i++)
+            {
+                if (Model.IdCat == (ViewBag.ListadoCategorias[i]).IdCat)
+                {
+                    <p>
+                        @((ViewBag.ListadoCategorias[i]).NombreCat)
+                    </p>
+                }
+            }
         </dd>
         <dt class = "col-sm-2">
             Género
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdGenNavigation.NombreGen)
+            @for (var i = 0; i < ViewBag.ListadoGeneros.Count; i++)
+            {
+                if (Model.IdGen == (ViewBag.ListadoGeneros[i]).IdGen)
+                {
+                    <p>
+                        @((ViewBag.ListadoGeneros[i]).NombreGen)
+                    </p>
+                }
+            }
         </dd>
         <dt class = "col-sm-2">
             Juez
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdJuezNavigation.NombresJuez) @Html.DisplayFor(model => model.IdJuezNavigation.ApellidosJuez)
-        </dd>
+            @for (var i = 0; i < ViewBag.ListadoJueces.Count; i++)
+            {
+                if (Model.IdJuez == (ViewBag.ListadoJueces[i]).IdJuez)
+                {
+                    <p>
+                        @((ViewBag.ListadoJueces[i]).NombresJuez)
+                        @((ViewBag.ListadoJueces[i]).ApellidosJuez)
+                    </p>
+                }
+            }
+       </dd>
         <dt class = "col-sm-2">
             Modalidad
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdModNavigation.DescripcionMod)
+            @for (var i = 0; i < ViewBag.ListadoModalidades.Count; i++)
+            {
+                if (Model.IdMod == (ViewBag.ListadoModalidades[i]).IdMod)
+                {
+                    <p>
+                        @((ViewBag.ListadoModalidades[i]).DescripcionMod)
+                    </p>
+                }
+            }
         </dd>
         <dt class = "col-sm-2">
             Sede
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdSedeNavigation.NombreSede)
+            @for (var i = 0; i < ViewBag.ListadoSedes.Count; i++)
+            {
+                if (Model.IdSede == (ViewBag.ListadoSedes[i]).IdSede)
+                {
+                    <p>
+                        @((ViewBag.ListadoSedes[i]).NombreSede)
+                    </p>
+                }
+            }
         </dd>
         <dt class="col-sm-2">
             Estado
