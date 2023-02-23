@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using ProyectoFDI.v2.Code;
 using ProyectoFDI.v2.Models;
 using System.Data;
+using System.Globalization;
 
 namespace ProyectoFDI.v2.Controllers
 {
@@ -333,7 +334,7 @@ namespace ProyectoFDI.v2.Controllers
             List<DetalleCompetencium> resultadosOrdenados = new List<DetalleCompetencium>();
             int falsos = 0;
 
-            var lista = APIConsumer<DetalleCompetencium>.Select(apiUrl.Replace("Competencia", "Juez"))
+            var lista = APIConsumer<DetalleCompetencium>.Select(apiUrl.Replace("Competencia", "DetalleCompetencia"))
                 .Where(f => f.IdCom == id);
 
             var listaDetalles = lista.Select(f => new DetalleCompetencium
@@ -352,11 +353,13 @@ namespace ProyectoFDI.v2.Controllers
 
 
             // Recorremos la lista de resultados de clasificatoria y extraemos los tiempos
+            CultureInfo culture = CultureInfo.InvariantCulture;
             foreach (DetalleCompetencium resultado in listaDetalles)
             {
                 if(resultado.ClasRes != null)
                 {
-                    double tiempo = Double.Parse(resultado.ClasRes);
+                    
+                    double tiempo = double.Parse(resultado.ClasRes,culture);
                     tiempos.Add(tiempo);
                 }
                 else
@@ -389,14 +392,14 @@ namespace ProyectoFDI.v2.Controllers
             // Recorremos la lista de resultados de clasificatoria y agregamos los resultados con los mejores tiempos a una nueva lista
             foreach (DetalleCompetencium resultado in listaDetalles)
             {
-                if (mejoresTiempos.Contains(Double.Parse(resultado.ClasRes)))
+                if (mejoresTiempos.Contains(Double.Parse(resultado.ClasRes, culture)))
                 {
                     resultadosOrdenados.Add(resultado);
                 }
             }
 
             // Ordenamos la lista de los 16 mejores resultados de menor a mayor tiempo
-            resultadosOrdenados = resultadosOrdenados.OrderBy(r => Double.Parse(r.ClasRes)).ToList();
+            resultadosOrdenados = resultadosOrdenados.OrderBy(r => Double.Parse(r.ClasRes, culture)).ToList();
 
             // Retornamos la lista de los 16 mejores resultados
             return resultadosOrdenados;
