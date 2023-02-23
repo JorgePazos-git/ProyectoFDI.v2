@@ -257,6 +257,8 @@ namespace ProyectoFDI.v2.Controllers
             ViewBag.ListaSedes = listaSedes();
             ViewBag.ListadoEstados = listaEstados();
 
+            ViewBag.ListaClasificados = listaClasificacion(id);
+
             return View(data);
         }
 
@@ -322,6 +324,83 @@ namespace ProyectoFDI.v2.Controllers
             {
                 return View(competencia);
             }
+        }
+
+        public List<DetalleCompetencium> listaClasificacion(int id)
+        {
+            List<double> tiempos = new List<double>();
+            List<double> mejoresTiempos = new List<double>();
+            List<DetalleCompetencium> resultadosOrdenados = new List<DetalleCompetencium>();
+            int falsos = 0;
+
+            var lista = APIConsumer<DetalleCompetencium>.Select(apiUrl.Replace("Competencia", "Juez"))
+                .Where(f => f.IdCom == id);
+
+            var listaDetalles = lista.Select(f => new DetalleCompetencium
+            {
+                IdCom = f.IdCom,
+                IdDep = f.IdDep,
+                ClasRes = f.ClasRes,
+                CuartosRes = f.CuartosRes,
+                FinalRes = f.FinalRes,
+                IdDetalle = f.IdDetalle,
+                OctavosRes = f.OctavosRes,
+                Puesto = f.Puesto,
+                SemiRes = f.SemiRes,
+                IdDepNavigation = f.IdDepNavigation
+            }).ToList();
+
+
+            // Recorremos la lista de resultados de clasificatoria y extraemos los tiempos
+            foreach (DetalleCompetencium resultado in listaDetalles)
+            {
+                if(resultado.ClasRes != null)
+                {
+                    double tiempo = Double.Parse(resultado.ClasRes);
+                    tiempos.Add(tiempo);
+                }
+                else
+                {
+                    falsos++;
+                }               
+            }
+
+            int cantidad = listaDetalles.Count - falsos;
+
+            // Ordenamos los tiempos de menor a mayor y tomamos los primeros 16
+            if (cantidad >= 16)
+            {
+                List<double> tiemposOrdenados = tiempos.OrderBy(t => t).ToList();
+                mejoresTiempos = tiemposOrdenados.Take(16).ToList();
+            }
+
+            if (cantidad < 16 && cantidad >= 8)
+            {
+                List<double> tiemposOrdenados = tiempos.OrderBy(t => t).ToList();
+                mejoresTiempos = tiemposOrdenados.Take(8).ToList();
+            }
+
+            if (cantidad < 8 && cantidad >= 4)
+            {
+                List<double> tiemposOrdenados = tiempos.OrderBy(t => t).ToList();
+                mejoresTiempos = tiemposOrdenados.Take(4).ToList();
+            }
+
+            // Recorremos la lista de resultados de clasificatoria y agregamos los resultados con los mejores tiempos a una nueva lista
+            foreach (DetalleCompetencium resultado in listaDetalles)
+            {
+                if (mejoresTiempos.Contains(Double.Parse(resultado.ClasRes)))
+                {
+                    resultadosOrdenados.Add(resultado);
+                }
+            }
+
+            // Ordenamos la lista de los 16 mejores resultados de menor a mayor tiempo
+            resultadosOrdenados = resultadosOrdenados.OrderBy(r => Double.Parse(r.ClasRes)).ToList();
+
+            // Retornamos la lista de los 16 mejores resultados
+            return resultadosOrdenados;
+
         }
     }
 }
