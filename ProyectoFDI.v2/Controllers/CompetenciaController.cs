@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 using ProyectoFDI.v2.Code;
 using ProyectoFDI.v2.Models;
 using System.Data;
@@ -259,7 +260,7 @@ namespace ProyectoFDI.v2.Controllers
             ViewBag.ListadoEstados = listaEstados();
 
             ViewBag.ListaClasificados = listaClasificacion(id);
-
+            ViewBag.ListaClasificadosSerializada = JsonClasificacion(listaClasificacion(id));
             return View(data);
         }
 
@@ -326,7 +327,11 @@ namespace ProyectoFDI.v2.Controllers
                 return View(competencia);
             }
         }
-
+        public String JsonClasificacion(List<DetalleCompetencium> lista)
+        {
+            string json = JsonConvert.SerializeObject(lista);
+            return json;
+        }
         public List<DetalleCompetencium> listaClasificacion(int id)
         {
             List<double> tiempos = new List<double>();
