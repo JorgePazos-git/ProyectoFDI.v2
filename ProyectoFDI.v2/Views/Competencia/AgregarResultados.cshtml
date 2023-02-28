@@ -114,16 +114,58 @@
                     @Html.DisplayFor(modelItem => item.ClasRes)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.OctavosRes)
+                    @if(item.OctavosRes == null){
+                        <p>
+                            ----
+                        </p>
+                    }else{
+                        <p>
+                            @Html.DisplayFor(modelItem => item.OctavosRes)
+                        </p>
+                    }            
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CuartosRes)
+                    @if (item.CuartosRes == null)
+                    {
+                        <p>
+                            ----
+                        </p>
+                    }
+                    else
+                    {
+                        <p>
+                            @Html.DisplayFor(modelItem => item.CuartosRes)
+                        </p>
+                    }
+                    
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.SemiRes)
+                    @if (item.SemiRes == null)
+                    {
+                        <p>
+                            ----
+                        </p>
+                    }
+                    else
+                    {
+                        <p>
+                            @Html.DisplayFor(modelItem => item.SemiRes)
+                        </p>
+                    }
+                    
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.FinalRes)
+                    @if (item.FinalRes == null)
+                    {
+                        <p>
+                            ----
+                        </p>
+                    }else{
+                        <p>
+                            @Html.DisplayFor(modelItem => item.FinalRes)
+                        </p>
+                    } 
+                    
                 </td>
                 <td>
                     <p>
@@ -145,7 +187,20 @@
         </h2>
     </div>
     <div class="card-body">
-        <button class="btn btn-outline-info" onclick="Clasificacion('octavos')">Tabla Clasificacion</button>
+        @if(Model.DetalleCompetencia.Count >= 16){
+            <button class="btn btn-outline-info" onclick="Clasificacion('octavos')">Tabla Clasificacion a Octavos</button>
+        }
+
+        @if (Model.DetalleCompetencia.Count < 16 && Model.DetalleCompetencia.Count >= 8)
+        {
+            <button class="btn btn-outline-info" onclick="Clasificacion('cuartos')">Tabla Clasificacion a Cuartos</button>
+        }
+
+        @if (Model.DetalleCompetencia.Count < 8 && Model.DetalleCompetencia.Count >= 4)
+        {
+            <button class="btn btn-outline-info" onclick="Clasificacion('semi')">Tabla Clasificacion a Semis</button>
+        }
+        
         <div class="row align-items-end">
 
                 
@@ -180,10 +235,130 @@
 
 
                         tabla.innerHTML = tablaHTML;
+
+
+                        if(fase == 'octavos'){
+                        boton = document.getElementById('btn-octavos');
+                        botonHTML = '<button class="btn btn-outline-info" onclick="OctavosACuartos(\'' + fase + '\')">Tabla Clasificacion a Cuartos</button>'
+                        boton.innerHTML = botonHTML;
+                        }
+                        if (fase == 'cuartos') {
+                        boton = document.getElementById('btn-cuartos');
+                        botonHTML = '<button class="btn btn-outline-info" onclick="CuartosASemi(\'' + fase + '\')">Tabla Clasificacion a SemiFinal</button>'
+                        boton.innerHTML = botonHTML;
+                        }
+                        if (fase == 'semi') {
+                        boton = document.getElementById('btn-semi');
+                        botonHTML = '<button class="btn btn-outline-info" onclick="SemiAFinal(\'' + fase + '\')">Tabla Clasificacion a Final</button>'
+                        boton.innerHTML = botonHTML;
+                        }
+                        
+                    }
+                </script>
+                <script>
+                    function OctavosACuartos(fase) {
+                        
                     }
 
+                    function CuartosASemi(fase){
+                        var resultados = JSON.parse('@Html.Raw(ViewBag.ListaSemiJSON)');
+                        var fasesiguiente = 'semi';
+                        var tabla = document.getElementById('tabla-semi');
 
+                        var tablaHTML = '<table class="table"><thead class="table-light"><tr><th>Puesto</th><th>Resultado Cuartos</th><th>Deportista</th><th></th></tr></thead><tbody>';
+
+                        resultados.forEach(function (resultado) {
+
+                            var fila = '<tr>';
+
+
+                            fila += '<td>' + resultado.Puesto + '</td>';
+                            fila += '<td>' + resultado.CuartosRes + '</td>';
+                            fila += '<td>' + resultado.IdDepNavigation.NombresDep + " " +
+                                resultado.IdDepNavigation.ApellidosDep + '</td>';
+
+                            fila += '<td>' + '<input type="button" class="agregar btn-danger" onclick="Alerta(\'' + resultado.IdDetalle + '\', \'' + fasesiguiente + '\')" value="Agregar"/>' + '</td>';
+
+                            fila += '</tr>';
+
+
+                            tablaHTML += fila;
+                        });
+
+                        tablaHTML += '</tbody></table>';
+
+
+                        tabla.innerHTML = tablaHTML;
+
+                        boton = document.getElementById('btn-semi');
+                        botonHTML = '<button class="btn btn-outline-info" onclick="SemiAFinal(\'' + fasesiguiente + '\')">Tabla Clasificacion a Final</button>'
+                        boton.innerHTML = botonHTML;
+                    }
+
+                    function SemiAFinal(fase) {
+                        var resultados = JSON.parse('@Html.Raw(ViewBag.ListaFinalJSON)');
+                        var fasesiguiente = 'final';
+                        var tabla = document.getElementById('tabla-final');
+
+                        var tablaHTML = '<table class="table"><thead class="table-light"><tr><th>Puesto</th><th>Resultado SemiFinal</th><th>Deportista</th><th></th></tr></thead><tbody>';
+
+                        resultados.forEach(function (resultado) {
+
+                            var fila = '<tr>';
+
+
+                            fila += '<td>' + resultado.Puesto + '</td>';
+                            fila += '<td>' + resultado.SemiRes + '</td>';
+                            fila += '<td>' + resultado.IdDepNavigation.NombresDep + " " +
+                                resultado.IdDepNavigation.ApellidosDep + '</td>';
+
+                            fila += '<td>' + '<input type="button" class="agregar btn-danger" onclick="Alerta(\'' + resultado.IdDetalle + '\', \'' + fasesiguiente + '\')" value="Agregar"/>' + '</td>';
+
+                            fila += '</tr>';
+
+
+                            tablaHTML += fila;
+                        });
+
+                        tablaHTML += '</tbody></table>';
+
+
+                        tabla.innerHTML = tablaHTML;
+
+                        boton = document.getElementById('btn-final');
+                        botonHTML = '<button class="btn btn-outline-info" onclick="Ganador(\'' + fasesiguiente + '\')">Ganador</button>'
+                        boton.innerHTML = botonHTML;
+                    }
+
+                    function Ganador(fase){
+                        var resultados = JSON.parse('@Html.Raw(ViewBag.GanadorJSON)');
+                        var tabla = document.getElementById('tabla-ganador');
+
+                        var tablaHTML = '<table class="table"><thead class="table-light"><tr><th>Puesto</th><th>Resultado Final</th><th>Deportista</th><th></th></tr></thead><tbody>';
+
+                        resultados.forEach(function (resultado) {
+
+                            var fila = '<tr>';
+
+
+                            fila += '<td>' + resultado.Puesto + '</td>';
+                            fila += '<td>' + resultado.FinalRes + '</td>';
+                            fila += '<td>' + resultado.IdDepNavigation.NombresDep + " " +
+                                resultado.IdDepNavigation.ApellidosDep + '</td>';
+
+                            fila += '</tr>';
+
+
+                            tablaHTML += fila;
+                        });
+
+                        tablaHTML += '</tbody></table>';
+
+
+                        tabla.innerHTML = tablaHTML;
+                    }
                 </script>
+
             <script>
                 async function Alerta(id, fase) {
                     const { value: result } = await Swal.fire({
@@ -223,11 +398,39 @@
                 }
 
             </script>
-                
-                <div id="tabla-resultados">
+                <div>
+                    
+                    <div id="tabla-resultados">
 
+                    </div>
+                <div id="btn-octavos"></div>
                 </div>
+
+            <div>
                 
+                <div id="tabla-cuartos">
+                </div>
+                <div id="btn-cuartos"></div>
+            </div>
+
+            <div>
+                
+                <div id="tabla-semi">
+                </div>
+                <div id="btn-semi"></div>
+            </div>
+
+            <div>              
+                <div id="tabla-final">
+                </div>
+                <div id="btn-final"></div>
+            </div>    
+            
+            <div>
+                <div id="tabla-ganador">
+                </div>
+
+            </div>
         </div>
     </div>
 </div>

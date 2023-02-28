@@ -262,6 +262,9 @@ namespace ProyectoFDI.v2.Controllers
             ViewBag.ListadoEstados = listaEstados();
 
             ViewBag.ListaClasificados = listaClasificacion(id);
+            ViewBag.ListaClasififadosCuartos = PrimeraVezEnfrentar(listaClasificacion(id), "cuartos");
+            ViewBag.ListaClasificadosSemi = SiguienteRonda(PrimeraVezEnfrentar(listaClasificacion(id), "cuartos"), "semi");
+            ViewBag.ListaClasificadosFinal = SiguienteRonda(SiguienteRonda(PrimeraVezEnfrentar(listaClasificacion(id), "cuartos"), "semi"), "final");
             return View(data);
         }
 
@@ -422,37 +425,82 @@ namespace ProyectoFDI.v2.Controllers
             return resultadosOrdenados;
 
         }
-        public List<DetalleCompetencium> SiguienteRonda(List<DetalleCompetencium> clasificados, string fase)
+        public List<DetalleCompetencium> PrimeraVezEnfrentar(List<DetalleCompetencium> clasificados, string fase)
         {
             List<DetalleCompetencium> siguienteRonda = new List<DetalleCompetencium>();
-
+            
             // Ordena la lista de deportistas por clasificación
-            if(fase == "octavos")
-            {
-                clasificados = clasificados.OrderBy(d => d.OctavosRes).ToList();
-            }
+            //if (fase == "octavos")
+            //{
+            //    clasificados = clasificados.OrderBy(d => d.OctavosRes).ToList();
+            //}
 
-            if (fase == "cuartos")
-            {
-                clasificados = clasificados.OrderBy(d => d.CuartosRes).ToList();
-            }
+            //if (fase == "cuartos")
+            //{
+            //    clasificados = clasificados.OrderBy(d => d.CuartosRes).ToList();
+                
+            //}
 
-            if (fase == "semi")
-            {
-                clasificados = clasificados.OrderBy(d => d.SemiRes).ToList();
-            }
-
-            if (fase == "final")
-            {
-                clasificados = clasificados.OrderBy(d => d.FinalRes).ToList();
-            }
-
+            //if (fase == "semi")
+            //{
+            //    clasificados = clasificados.OrderBy(d => d.SemiRes).ToList();
+            //}
 
             // Enfrenta a los deportistas de las posiciones simétricas
             for (int i = 0; i < clasificados.Count / 2; i++)
             {
                 DetalleCompetencium mejorDeportista = Enfrentar(clasificados[i], clasificados[clasificados.Count - i - 1], fase);
                 siguienteRonda.Add(mejorDeportista);
+            }
+
+            if(fase == "octavos")
+            {
+                ViewBag.ListaCuartos = siguienteRonda;
+                ViewBag.ListaCuartosJSON = JsonSerializer.Serialize(siguienteRonda);
+            }
+
+            if (fase == "cuartos")
+            {
+                ViewBag.ListaSemi = siguienteRonda;
+                ViewBag.ListaSemiJSON = JsonSerializer.Serialize(siguienteRonda);
+            }
+
+            if (fase == "semi")
+            {
+                ViewBag.ListaFinal = siguienteRonda;
+                ViewBag.ListaFinalJSON = JsonSerializer.Serialize(siguienteRonda);
+            }
+
+            return siguienteRonda;
+        }
+
+        public List<DetalleCompetencium> SiguienteRonda(List<DetalleCompetencium> clasificados, string fase)
+        {
+            List<DetalleCompetencium> siguienteRonda = new List<DetalleCompetencium>();
+
+            // Enfrenta a los deportistas de las posiciones simétricas
+            for (int i = 0; i < clasificados.Count / 2; i++)
+            {
+                DetalleCompetencium mejorDeportista = Enfrentar(clasificados[i], clasificados[clasificados.Count - i - 1], fase);
+                siguienteRonda.Add(mejorDeportista);
+            }
+
+            if (fase == "cuartos")
+            {
+                ViewBag.ListaSemi = siguienteRonda;
+                ViewBag.ListaSemiJSON = JsonSerializer.Serialize(siguienteRonda);
+            }
+
+            if (fase == "semi")
+            {
+                ViewBag.ListaFinal = siguienteRonda;
+                ViewBag.ListaFinalJSON = JsonSerializer.Serialize(siguienteRonda);
+            }
+
+            if(fase == "final")
+            {
+                ViewBag.Ganador = siguienteRonda;
+                ViewBag.GanadorJSON = JsonSerializer.Serialize(siguienteRonda);
             }
 
             return siguienteRonda;
@@ -468,11 +516,11 @@ namespace ProyectoFDI.v2.Controllers
             {
                 if (Double.Parse(deportista1.OctavosRes, culture) > Double.Parse(deportista2.OctavosRes, culture))
                 {
-                    return deportista1;
+                    return deportista2;
                 }
                 else
                 {
-                    return deportista2;
+                    return deportista1;
                 }
             }
             else
@@ -481,11 +529,11 @@ namespace ProyectoFDI.v2.Controllers
                 {
                     if (Double.Parse(deportista1.CuartosRes, culture) > Double.Parse(deportista2.CuartosRes, culture))
                     {
-                        return deportista1;
+                        return deportista2;
                     }
                     else
                     {
-                        return deportista2;
+                        return deportista1;
                     }
                 }
                 else
@@ -494,22 +542,22 @@ namespace ProyectoFDI.v2.Controllers
                     {
                         if (Double.Parse(deportista1.SemiRes, culture) > Double.Parse(deportista2.SemiRes, culture))
                         {
-                            return deportista1;
+                            return deportista2;
                         }
                         else
                         {
-                            return deportista2;
+                            return deportista1;
                         }
                     }
                     else
                     {
                         if (Double.Parse(deportista1.FinalRes, culture) > Double.Parse(deportista2.FinalRes, culture))
                         {
-                            return deportista1;
+                            return deportista2;
                         }
                         else
                         {
-                            return deportista2;
+                            return deportista1;
                         }
                     }
                 }

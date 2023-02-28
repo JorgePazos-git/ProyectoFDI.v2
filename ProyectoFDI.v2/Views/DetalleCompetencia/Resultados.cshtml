@@ -17,7 +17,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Resultados">
+        <form asp-action="Resultados" onsubmit="agregarClasRes()">
             <input type="hidden" name="returnTo" id="returnTo" value="@ViewBag.ReturnTo" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="IdDetalle" />
@@ -27,9 +27,13 @@
                 <span asp-validation-for="Puesto" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ClasRes" class="control-label">Resultado de Clasificación</label>
+                <label asp-for="ClasRes" class="control-label">Resultado de Clasificación 1</label>
                 <input asp-for="ClasRes" class="form-control" />
                 <span asp-validation-for="ClasRes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Resultado de Clasificación 2</label>
+                <input id="nuevoClasRes" class="form-control" />
             </div>
             <div class="form-group">
                 <label asp-for="IdDep" class="control-label">Deportista</label>
@@ -50,6 +54,23 @@
     </div>
 </div>
 
+<script>
+    function agregarClasRes() {
+        var nuevoClasRes = document.getElementById('nuevoClasRes').value;
+        var clasResActual = document.getElementById('ClasRes').value;
+
+        // Convertir los valores a números flotantes
+        var nuevoClasResNum = parseFloat(nuevoClasRes);
+        var clasResActualNum = parseFloat(clasResActual);
+
+        // Comparar los valores y guardar el número menor
+        if (nuevoClasResNum < clasResActualNum) {
+            document.getElementById('ClasRes').value = nuevoClasResNum.toString();
+        } else {
+            document.getElementById('ClasRes').value = clasResActualNum.toString();
+        }
+    }
+</script>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
