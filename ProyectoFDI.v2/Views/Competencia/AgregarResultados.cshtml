@@ -86,7 +86,16 @@
                 Resultado de Clasificación
             </th>
             <th>
-                Competencia
+                Resultado de Octavos
+            </th>
+            <th>
+                Resultado de Cuartos
+            </th>
+            <th>
+                Resultado de SemiFinal
+            </th>
+            <th>
+                Resultado de Final
             </th>
             <th>
                 Deportista
@@ -105,7 +114,16 @@
                     @Html.DisplayFor(modelItem => item.ClasRes)
                 </td>
                 <td>
-                    @Html.DisplayFor(model => model.NombreCom)
+                    @Html.DisplayFor(modelItem => item.OctavosRes)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CuartosRes)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SemiRes)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FinalRes)
                 </td>
                 <td>
                     <p>
@@ -127,55 +145,93 @@
         </h2>
     </div>
     <div class="card-body">
+        <button class="btn btn-outline-info" onclick="Clasificacion('octavos')">Tabla Clasificacion</button>
         <div class="row align-items-end">
-            <div class="col-sm-4">
-                <button class="btn btn-outline-info" onclick="Clasificacion()">Tabla Clasificacion</button>
-                
-                <div class="mb-2">
-                    <div id="tabla-resultados">
 
-                    </div>
+                
+                <script>
+                    function Clasificacion(fase) {
+                        var resultados = JSON.parse('@Html.Raw(ViewBag.ListaClasificadosJSON)');
+
+                        var tabla = document.getElementById('tabla-resultados');
+
+                        var tablaHTML = '<table class="table"><thead class="table-light"><tr><th>Puesto</th><th>Resultado Clasificacion</th><th>Deportista</th><th></th></tr></thead><tbody>';
+
+                        resultados.forEach(function (resultado) {
+
+                            var fila = '<tr>';
+
+
+                            fila += '<td>' + resultado.Puesto + '</td>';
+                            fila += '<td>' + resultado.ClasRes + '</td>';
+                            fila += '<td>' + resultado.IdDepNavigation.NombresDep + " " + 
+                            resultado.IdDepNavigation.ApellidosDep + '</td>';
+
+                        fila += '<td>' + '<input type="button" class="agregar btn-danger" onclick="Alerta(\'' + resultado.IdDetalle + '\', \'' + fase + '\')" value="Agregar"/>' + '</td>';
+
+                            fila += '</tr>';
+
+
+                            tablaHTML += fila;
+                        });
+
+
+                        tablaHTML += '</tbody></table>';
+
+
+                        tabla.innerHTML = tablaHTML;
+                    }
+
+
+                </script>
+            <script>
+                async function Alerta(id, fase) {
+                    const { value: result } = await Swal.fire({
+                        title: 'Ingrese el resultado de ' + fase,
+                        input: 'number',
+                        inputAttributes: {
+                            minlength: 0,
+                            autocapitalize: 'off',
+                            autocorrect: 'off'
+                        },
+                        inputValidator: (value) => {
+                            if (value < 0) {
+                                return 'Número Inválido'
+                            }
+                            if (value == "") {
+                                return 'Ingrese un resultado';
+                            }
+                        },
+                        inputPlaceholder: 'Resultado'
+                    })
+
+
+
+                    if (result) {
+                        await agregarResult(id, result, fase);
+                    }
+                }
+
+                async function agregarResult(id, result, fase) {
+                    const url = '/Competencia/AgregarResult?id=' + id + '&result=' + result + '&fase=' + fase;
+                    const response = await fetch(url, {
+                        method: 'POST'
+                    });
+                    if (!response.ok) {
+                        throw new Error('Error al agregar resultado');
+                    }
+                }
+
+            </script>
+                
+                <div id="tabla-resultados">
+
                 </div>
-            </div>
+                
         </div>
     </div>
 </div>
 
-<script>
-    function Clasificacion() {
-        
-        // Supongamos que tienes una lista de objetos llamada 'resultados'
-        var resultados = @ViewBag.ListaClasificadosSerializada;
 
-        // Seleccionamos el elemento HTML donde queremos agregar la tabla
-        var tabla = document.getElementById('tabla-resultados');
-
-        // Creamos la estructura bÃ¡sica de la tabla
-        var tablaHTML = '<table><thead><tr><th>Puesto</th><th>Resultado Clasificacion</th><th>Deportista</th></tr></thead><tbody>';
-
-        // Recorremos la lista de resultados y creamos una fila por cada objeto
-        resultados.forEach(function (resultado) {
-            // Creamos una nueva fila
-            var fila = '<tr>';
-
-            // Agregamos una celda por cada atributo que queremos mostrar
-            fila += '<td>' + resultado.Puesto + '</td>';
-            fila += '<td>' + resultado.ClasRes + '</td>';
-            fila += '<td>' + resultado.NombresDep + '</td>';
-
-            // Cerramos la fila
-            fila += '</tr>';
-
-            // Agregamos la fila a la tabla
-            tablaHTML += fila;
-        });
-
-        // Cerramos la tabla
-        tablaHTML += '</tbody></table>';
-
-        // Agregamos la tabla al elemento HTML
-        tabla.innerHTML = tablaHTML;
-    }
-</script>
 
 

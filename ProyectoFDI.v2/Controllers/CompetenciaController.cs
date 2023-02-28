@@ -7,6 +7,8 @@ using ProyectoFDI.v2.Code;
 using ProyectoFDI.v2.Models;
 using System.Data;
 using System.Globalization;
+using System.Text.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ProyectoFDI.v2.Controllers
 {
@@ -260,7 +262,6 @@ namespace ProyectoFDI.v2.Controllers
             ViewBag.ListadoEstados = listaEstados();
 
             ViewBag.ListaClasificados = listaClasificacion(id);
-            ViewBag.ListaClasificadosSerializada = JsonClasificacion(listaClasificacion(id));
             return View(data);
         }
 
@@ -290,6 +291,7 @@ namespace ProyectoFDI.v2.Controllers
         {
             try
             {
+                ViewBag.ListaClasificados = listaClasificacion(id);
                 APIConsumer<Competencium>.Update(apiUrl + id.ToString(), competencia);
                 return RedirectToAction(nameof(Index));
             }
@@ -327,17 +329,14 @@ namespace ProyectoFDI.v2.Controllers
                 return View(competencia);
             }
         }
-        public String JsonClasificacion(List<DetalleCompetencium> lista)
-        {
-            string json = JsonConvert.SerializeObject(lista);
-            return json;
-        }
+
         public List<DetalleCompetencium> listaClasificacion(int id)
         {
             List<double> tiempos = new List<double>();
             List<double> mejoresTiempos = new List<double>();
             List<DetalleCompetencium> resultadosOrdenados = new List<DetalleCompetencium>();
             int falsos = 0;
+            int puesto = 1;
 
             var lista = APIConsumer<DetalleCompetencium>.Select(apiUrl.Replace("Competencia", "DetalleCompetencia"))
                 .Where(f => f.IdCom == id);
@@ -406,9 +405,141 @@ namespace ProyectoFDI.v2.Controllers
             // Ordenamos la lista de los 16 mejores resultados de menor a mayor tiempo
             resultadosOrdenados = resultadosOrdenados.OrderBy(r => Double.Parse(r.ClasRes, culture)).ToList();
 
+            for(int i = 0; i < resultadosOrdenados.Count; i++)
+            {
+                resultadosOrdenados[i].Puesto = puesto;
+                APIConsumer<DetalleCompetencium>.Update(apiUrl.Replace("Competencia", "DetalleCompetencia") +
+                    resultadosOrdenados[i].IdDetalle, resultadosOrdenados[i]);
+
+                puesto++;
+            }
+
+            puesto = 1;
+
             // Retornamos la lista de los 16 mejores resultados
+            ViewBag.ListaClasifica = resultadosOrdenados;
+            ViewBag.ListaClasificadosJSON = JsonSerializer.Serialize(resultadosOrdenados);
             return resultadosOrdenados;
 
+        }
+        public List<DetalleCompetencium> SiguienteRonda(List<DetalleCompetencium> clasificados, string fase)
+        {
+            List<DetalleCompetencium> siguienteRonda = new List<DetalleCompetencium>();
+
+            // Ordena la lista de deportistas por clasificación
+            if(fase == "octavos")
+            {
+                clasificados = clasificados.OrderBy(d => d.OctavosRes).ToList();
+            }
+
+            if (fase == "cuartos")
+            {
+                clasificados = clasificados.OrderBy(d => d.CuartosRes).ToList();
+            }
+
+            if (fase == "semi")
+            {
+                clasificados = clasificados.OrderBy(d => d.SemiRes).ToList();
+            }
+
+            if (fase == "final")
+            {
+                clasificados = clasificados.OrderBy(d => d.FinalRes).ToList();
+            }
+
+
+            // Enfrenta a los deportistas de las posiciones simétricas
+            for (int i = 0; i < clasificados.Count / 2; i++)
+            {
+                DetalleCompetencium mejorDeportista = Enfrentar(clasificados[i], clasificados[clasificados.Count - i - 1], fase);
+                siguienteRonda.Add(mejorDeportista);
+            }
+
+            return siguienteRonda;
+        }
+
+        private DetalleCompetencium Enfrentar(DetalleCompetencium deportista1, DetalleCompetencium deportista2, string fase)
+        {
+            // Simula un enfrentamiento entre los dos deportistas
+            // y devuelve al mejor de ellos
+            CultureInfo culture = CultureInfo.InvariantCulture;
+
+            if(fase == "octavos")
+            {
+                if (Double.Parse(deportista1.OctavosRes, culture) > Double.Parse(deportista2.OctavosRes, culture))
+                {
+                    return deportista1;
+                }
+                else
+                {
+                    return deportista2;
+                }
+            }
+            else
+            {
+                if (fase == "cuartos")
+                {
+                    if (Double.Parse(deportista1.CuartosRes, culture) > Double.Parse(deportista2.CuartosRes, culture))
+                    {
+                        return deportista1;
+                    }
+                    else
+                    {
+                        return deportista2;
+                    }
+                }
+                else
+                {
+                    if(fase == "semi")
+                    {
+                        if (Double.Parse(deportista1.SemiRes, culture) > Double.Parse(deportista2.SemiRes, culture))
+                        {
+                            return deportista1;
+                        }
+                        else
+                        {
+                            return deportista2;
+                        }
+                    }
+                    else
+                    {
+                        if (Double.Parse(deportista1.FinalRes, culture) > Double.Parse(deportista2.FinalRes, culture))
+                        {
+                            return deportista1;
+                        }
+                        else
+                        {
+                            return deportista2;
+                        }
+                    }
+                }
+            }
+        }
+
+        public void AgregarResult(int id, string result, string fase)
+        {
+                DetalleCompetencium detalle = APIConsumer<DetalleCompetencium>.SelectOne(
+                    apiUrl.Replace("Competencia", "DetalleCompetencia") + id.ToString());
+
+                if(fase == "octavos")
+                {
+                    detalle.OctavosRes = result;
+                }
+                if (fase == "cuartos")
+                {
+                    detalle.CuartosRes = result;
+                }
+                if (fase == "semi")
+                {
+                    detalle.SemiRes = result;
+                }
+                if (fase == "final")
+                {
+                    detalle.FinalRes = result;
+                }
+
+                APIConsumer<DetalleCompetencium>.Update(apiUrl.Replace("Competencia", "DetalleCompetencia")
+                    + id.ToString(), detalle);
         }
     }
 }
