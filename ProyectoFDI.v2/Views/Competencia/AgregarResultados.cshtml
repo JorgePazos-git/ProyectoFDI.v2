@@ -257,7 +257,38 @@
                 </script>
                 <script>
                     function OctavosACuartos(fase) {
-                        
+                        var resultados = JSON.parse('@Html.Raw(ViewBag.ListaCuartosJSON)');
+                        var fasesiguiente = 'cuartos';
+                        var tabla = document.getElementById('tabla-cuartos');
+
+                        var tablaHTML = '<table class="table"><thead class="table-light"><tr><th>Puesto</th><th>Resultado Octavos</th><th>Deportista</th><th></th></tr></thead><tbody>';
+
+                        resultados.forEach(function (resultado) {
+
+                            var fila = '<tr>';
+
+
+                            fila += '<td>' + resultado.Puesto + '</td>';
+                            fila += '<td>' + resultado.OctavosRes + '</td>';
+                            fila += '<td>' + resultado.IdDepNavigation.NombresDep + " " +
+                                resultado.IdDepNavigation.ApellidosDep + '</td>';
+
+                            fila += '<td>' + '<input type="button" class="agregar btn-danger" onclick="Alerta(\'' + resultado.IdDetalle + '\', \'' + fasesiguiente + '\')" value="Agregar"/>' + '</td>';
+
+                            fila += '</tr>';
+
+
+                            tablaHTML += fila;
+                        });
+
+                        tablaHTML += '</tbody></table>';
+
+
+                        tabla.innerHTML = tablaHTML;
+
+                        boton = document.getElementById('btn-cuartos');
+                        botonHTML = '<button class="btn btn-outline-info" onclick="CuartosASemi(\'' + fasesiguiente + '\')">Tabla Clasificacion a SemiFinal</button>'
+                        boton.innerHTML = botonHTML;
                     }
 
                     function CuartosASemi(fase){
@@ -356,6 +387,24 @@
 
 
                         tabla.innerHTML = tablaHTML;
+
+                        boton = document.getElementById('btn-reporte');
+                        botonHTML = '<button class="btn btn-outline-info" onclick="Reporte()">Reporte</button>'
+                        boton.innerHTML = botonHTML;
+                    }
+
+                    function Reporte(){
+                        fetch('/Competencia/ExportarExcel/' + @Model.IdCom)
+                            .then(response => response.blob())
+                            .then(blob => {
+                                // Descargar el archivo
+                                const url = window.URL.createObjectURL(new Blob([blob]));
+                                const link = document.createElement('a');
+                                link.href = url;
+                                link.setAttribute('download', 'reporte.xlsx');
+                                document.body.appendChild(link);
+                                link.click();
+                        });
                     }
                 </script>
 
@@ -429,7 +478,7 @@
             <div>
                 <div id="tabla-ganador">
                 </div>
-
+                <div id="btn-reporte"></div>
             </div>
         </div>
     </div>

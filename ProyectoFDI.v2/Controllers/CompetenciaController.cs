@@ -7,8 +7,12 @@ using ProyectoFDI.v2.Code;
 using ProyectoFDI.v2.Models;
 using System.Data;
 using System.Globalization;
+using System.Text;
 using System.Text.Json;
+using System.Data.SqlClient;
+using ClosedXML.Excel;
 using JsonSerializer = System.Text.Json.JsonSerializer;
+using Microsoft.JSInterop;
 
 namespace ProyectoFDI.v2.Controllers
 {
@@ -262,9 +266,13 @@ namespace ProyectoFDI.v2.Controllers
             ViewBag.ListadoEstados = listaEstados();
 
             ViewBag.ListaClasificados = listaClasificacion(id);
-            ViewBag.ListaClasififadosCuartos = PrimeraVezEnfrentar(listaClasificacion(id), "cuartos");
-            ViewBag.ListaClasificadosSemi = SiguienteRonda(PrimeraVezEnfrentar(listaClasificacion(id), "cuartos"), "semi");
-            ViewBag.ListaClasificadosFinal = SiguienteRonda(SiguienteRonda(PrimeraVezEnfrentar(listaClasificacion(id), "cuartos"), "semi"), "final");
+            if(data.DetalleCompetencia.Count >= 8 && data.DetalleCompetencia.Count < 16)
+            {
+                ViewBag.ListaClasififadosCuartos = PrimeraVezEnfrentar(listaClasificacion(id), "cuartos");
+                ViewBag.ListaClasificadosSemi = SiguienteRonda(PrimeraVezEnfrentar(listaClasificacion(id), "cuartos"), "semi");
+                ViewBag.ListaClasificadosFinal = SiguienteRonda(SiguienteRonda(PrimeraVezEnfrentar(listaClasificacion(id), "cuartos"), "semi"), "final");
+            }
+            
             return View(data);
         }
 
@@ -560,6 +568,149 @@ namespace ProyectoFDI.v2.Controllers
                             return deportista1;
                         }
                     }
+                }
+            }
+        }
+
+        public FileResult ExportarExcel(int id)
+        {
+            var ganador = SiguienteRonda(SiguienteRonda(PrimeraVezEnfrentar(listaClasificacion(id), "cuartos"), "semi"), "final");
+            var final = SiguienteRonda(PrimeraVezEnfrentar(listaClasificacion(id), "cuartos"), "semi");
+            var semi = PrimeraVezEnfrentar(listaClasificacion(id), "cuartos");
+            var cuartos = listaClasificacion(id);
+
+            var lista = APIConsumer<DetalleCompetencium>.Select(apiUrl.Replace("Competencia", "DetalleCompetencia"))
+                .Where(f => f.IdCom == id);
+
+            var listaDetalles = lista.Select(f => new DetalleCompetencium
+            {
+                IdCom = f.IdCom,
+                IdDep = f.IdDep,
+                ClasRes = f.ClasRes,
+                CuartosRes = f.CuartosRes,
+                FinalRes = f.FinalRes,
+                IdDetalle = f.IdDetalle,
+                OctavosRes = f.OctavosRes,
+                Puesto = f.Puesto,
+                SemiRes = f.SemiRes,
+                IdDepNavigation = f.IdDepNavigation
+            }).ToList();
+
+            //Primer Lugar
+            DetalleCompetencium detalle = APIConsumer<DetalleCompetencium>.SelectOne(apiUrl.Replace("Competencia", "DetalleCompetencia") + ganador[0].IdDetalle.ToString());
+            detalle.Puesto = 1;
+            APIConsumer<DetalleCompetencium>.Update(apiUrl.Replace("Competencia", "DetalleCompetencia") + ganador[0].IdDetalle.ToString(), detalle);
+
+            //Segundo Lugar
+            DetalleCompetencium segundo = new DetalleCompetencium();
+
+            for(int i = 0; i < final.Count; i++)
+            {
+                if (final[i].IdDetalle != ganador[0].IdDetalle)
+                {
+                    segundo = APIConsumer<DetalleCompetencium>.SelectOne(apiUrl.Replace("Competencia", "DetalleCompetencia") + final[i].IdDetalle.ToString());
+                    segundo.Puesto = 2;
+                    APIConsumer<DetalleCompetencium>.Update(apiUrl.Replace("Competencia", "DetalleCompetencia") + segundo.IdDetalle.ToString(), segundo);
+                }
+            }
+
+            //Tercer Lugar / Cuarto Lugar
+            semi.RemoveAll(deportista => deportista.IdDetalle == ganador[0].IdDetalle);
+            semi.RemoveAll(deportista => deportista.IdDetalle == segundo.IdDetalle);
+            semi = semi.OrderBy(d => d.SemiRes).ToList();
+            DetalleCompetencium tercero = new DetalleCompetencium();
+            DetalleCompetencium cuarto = new DetalleCompetencium();
+
+
+            tercero = APIConsumer<DetalleCompetencium>.SelectOne(apiUrl.Replace("Competencia", "DetalleCompetencia") + semi[0].IdDetalle.ToString());
+            tercero.Puesto = 3;
+            APIConsumer<DetalleCompetencium>.Update(apiUrl.Replace("Competencia", "DetalleCompetencia") + tercero.IdDetalle.ToString(), tercero);
+
+            cuarto = APIConsumer<DetalleCompetencium>.SelectOne(apiUrl.Replace("Competencia", "DetalleCompetencia") + semi[1].IdDetalle.ToString());
+            cuarto.Puesto = 4;
+            APIConsumer<DetalleCompetencium>.Update(apiUrl.Replace("Competencia", "DetalleCompetencia") + cuarto.IdDetalle.ToString(), cuarto);
+
+            //Quinto a Octavo
+            cuartos.RemoveAll(deportista => deportista.IdDetalle == ganador[0].IdDetalle);
+            cuartos.RemoveAll(deportista => deportista.IdDetalle == segundo.IdDetalle);
+            cuartos.RemoveAll(deportista => deportista.IdDetalle == tercero.IdDetalle);
+            cuartos.RemoveAll(deportista => deportista.IdDetalle == cuarto.IdDetalle);
+            cuartos = cuartos.OrderBy(d => d.CuartosRes).ToList();
+
+            DetalleCompetencium quinto = APIConsumer<DetalleCompetencium>.SelectOne(apiUrl.Replace("Competencia", "DetalleCompetencia") + cuartos[0].IdDetalle.ToString());
+            quinto.Puesto = 5;
+            APIConsumer<DetalleCompetencium>.Update(apiUrl.Replace("Competencia", "DetalleCompetencia") + quinto.IdDetalle.ToString(), quinto);
+
+            DetalleCompetencium sexto = APIConsumer<DetalleCompetencium>.SelectOne(apiUrl.Replace("Competencia", "DetalleCompetencia") + cuartos[1].IdDetalle.ToString());
+            sexto.Puesto = 6;
+            APIConsumer<DetalleCompetencium>.Update(apiUrl.Replace("Competencia", "DetalleCompetencia") + sexto.IdDetalle.ToString(), sexto);
+
+            DetalleCompetencium septimo = APIConsumer<DetalleCompetencium>.SelectOne(apiUrl.Replace("Competencia", "DetalleCompetencia") + cuartos[2].IdDetalle.ToString());
+            septimo.Puesto = 7;
+            APIConsumer<DetalleCompetencium>.Update(apiUrl.Replace("Competencia", "DetalleCompetencia") + septimo.IdDetalle.ToString(), septimo);
+
+            DetalleCompetencium octavo = APIConsumer<DetalleCompetencium>.SelectOne(apiUrl.Replace("Competencia", "DetalleCompetencia") + cuartos[3].IdDetalle.ToString());
+            octavo.Puesto = 8;
+            APIConsumer<DetalleCompetencium>.Update(apiUrl.Replace("Competencia", "DetalleCompetencia") + octavo.IdDetalle.ToString(), octavo);
+
+
+            //Demas
+            listaDetalles.RemoveAll(deportista => deportista.IdDetalle == ganador[0].IdDetalle);
+            listaDetalles.RemoveAll(deportista => deportista.IdDetalle == segundo.IdDetalle);
+            listaDetalles.RemoveAll(deportista => deportista.IdDetalle == tercero.IdDetalle);
+            listaDetalles.RemoveAll(deportista => deportista.IdDetalle == cuarto.IdDetalle);
+            listaDetalles.RemoveAll(deportista => deportista.IdDetalle == quinto.IdDetalle);
+            listaDetalles.RemoveAll(deportista => deportista.IdDetalle == sexto.IdDetalle);
+            listaDetalles.RemoveAll(deportista => deportista.IdDetalle == septimo.IdDetalle);
+            listaDetalles.RemoveAll(deportista => deportista.IdDetalle == octavo.IdDetalle);
+
+            listaDetalles = listaDetalles.OrderBy(d => d.ClasRes).ToList();
+            int puesto = 9;
+
+            for (int i = 0; i < listaDetalles.Count; i++)
+            {
+                DetalleCompetencium data = APIConsumer<DetalleCompetencium>.SelectOne(apiUrl.Replace("Competencia", "DetalleCompetencia") + listaDetalles[i].IdDetalle.ToString());
+                data.Puesto = puesto;
+                APIConsumer<DetalleCompetencium>.Update(apiUrl.Replace("Competencia", "DetalleCompetencia") + data.IdDetalle.ToString(), data);
+                puesto++;
+            }
+
+            DataTable dt = new DataTable();
+            using (SqlConnection cn = new SqlConnection("Data Source=proyectofdi.database.windows.net;Initial Catalog=ProyectoFDI.v2;User ID=proyectofdi;Password=Allistar123.;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"))
+            {
+                StringBuilder sb = new StringBuilder();
+
+                sb.AppendLine("select dt.puesto as PUESTO, CONCAT(dp.nombres_dep,' ',dp.apellidos_dep) as DEPORTISTA" +
+                    ", dt.clas_res as ResultadoClasificacion, dt.octavos_res as ResultadoOctavos" +
+                    ", dt.cuartos_res as ResultadoCuartos, dt.semi_res as ResultadoSemiFinal, dt.final_res as ResultadoFinal" +
+                    " from detalle_competencia dt INNER JOIN deportista dp on dt.id_dep = dp.id_dep where id_com = " + id +
+                    " group by dt.puesto, dp.nombres_dep, dp.apellidos_dep, dt.clas_res, dt.octavos_res, dt.cuartos_res, dt.semi_res, dt.final_res order by puesto");
+
+                sb.AppendLine("select * from detalle_competencia where id_com =" + id);
+
+                SqlCommand cmd = new SqlCommand(sb.ToString(), cn);
+                cmd.CommandType = CommandType.Text;
+
+                cn.Open();
+
+                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                {
+                    da.Fill(dt);
+                }
+            }
+
+            dt.TableName = "Reporte Competencia";
+
+            using (XLWorkbook libro = new XLWorkbook())
+            {
+                var hoja = libro.Worksheets.Add(dt);
+
+                hoja.ColumnsUsed().AdjustToContents();
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    libro.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Reporte Competencia" + ".xlsx");
                 }
             }
         }
