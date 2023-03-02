@@ -264,14 +264,29 @@ namespace ProyectoFDI.v2.Controllers
             ViewBag.ListaJueces = listaJueces();
             ViewBag.ListaSedes = listaSedes();
             ViewBag.ListadoEstados = listaEstados();
-
-            ViewBag.ListaClasificados = listaClasificacion(id);
-            if(data.DetalleCompetencia.Count >= 8 && data.DetalleCompetencia.Count < 16)
+            
+            if(data.DetalleCompetencia.All(a => a.ClasRes != null))
             {
-                ViewBag.ListaClasififadosCuartos = PrimeraVezEnfrentar(listaClasificacion(id), "cuartos");
-                ViewBag.ListaClasificadosSemi = SiguienteRonda(PrimeraVezEnfrentar(listaClasificacion(id), "cuartos"), "semi");
-                ViewBag.ListaClasificadosFinal = SiguienteRonda(SiguienteRonda(PrimeraVezEnfrentar(listaClasificacion(id), "cuartos"), "semi"), "final");
+                ViewBag.ListaClasificados = listaClasificacion(id);
+                if (data.DetalleCompetencia.Count >= 8 && data.DetalleCompetencia.Count < 16)
+                {
+                    if (data.DetalleCompetencia.Count(a => a.CuartosRes != null) >= 2)
+                    {
+                        ViewBag.ListaClasififadosCuartos = PrimeraVezEnfrentar(listaClasificacion(id), "cuartos");
+                        if (data.DetalleCompetencia.Count(a => a.SemiRes != null) >= 2)
+                        {
+                            ViewBag.ListaClasificadosSemi = SiguienteRonda(PrimeraVezEnfrentar(listaClasificacion(id), "cuartos"), "semi");
+                            if (data.DetalleCompetencia.Count(a => a.FinalRes != null) >= 2)
+                            {
+                                ViewBag.ListaClasificadosFinal = SiguienteRonda(SiguienteRonda(PrimeraVezEnfrentar(listaClasificacion(id), "cuartos"), "semi"), "final");
+                            }
+                        }
+
+                    }
+                    
+                }
             }
+
             
             return View(data);
         }
@@ -617,7 +632,7 @@ namespace ProyectoFDI.v2.Controllers
             //Tercer Lugar / Cuarto Lugar
             semi.RemoveAll(deportista => deportista.IdDetalle == ganador[0].IdDetalle);
             semi.RemoveAll(deportista => deportista.IdDetalle == segundo.IdDetalle);
-            semi = semi.OrderBy(d => d.SemiRes).ToList();
+            semi = semi.OrderByDescending(d => Double.Parse(d.SemiRes)).ToList();
             DetalleCompetencium tercero = new DetalleCompetencium();
             DetalleCompetencium cuarto = new DetalleCompetencium();
 
@@ -635,7 +650,7 @@ namespace ProyectoFDI.v2.Controllers
             cuartos.RemoveAll(deportista => deportista.IdDetalle == segundo.IdDetalle);
             cuartos.RemoveAll(deportista => deportista.IdDetalle == tercero.IdDetalle);
             cuartos.RemoveAll(deportista => deportista.IdDetalle == cuarto.IdDetalle);
-            cuartos = cuartos.OrderBy(d => d.CuartosRes).ToList();
+            cuartos = cuartos.OrderBy(d => Double.Parse(d.CuartosRes)).ToList();
 
             DetalleCompetencium quinto = APIConsumer<DetalleCompetencium>.SelectOne(apiUrl.Replace("Competencia", "DetalleCompetencia") + cuartos[0].IdDetalle.ToString());
             quinto.Puesto = 5;
@@ -664,7 +679,7 @@ namespace ProyectoFDI.v2.Controllers
             listaDetalles.RemoveAll(deportista => deportista.IdDetalle == septimo.IdDetalle);
             listaDetalles.RemoveAll(deportista => deportista.IdDetalle == octavo.IdDetalle);
 
-            listaDetalles = listaDetalles.OrderBy(d => d.ClasRes).ToList();
+            listaDetalles = listaDetalles.OrderBy(d => Double.Parse(d.ClasRes)).ToList();
             int puesto = 9;
 
             for (int i = 0; i < listaDetalles.Count; i++)
