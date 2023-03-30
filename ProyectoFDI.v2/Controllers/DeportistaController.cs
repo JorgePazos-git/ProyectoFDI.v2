@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.IdentityModel.Tokens;
 using ProyectoFDI.v2.Code;
 using ProyectoFDI.v2.Models;
 using System.Data;
@@ -261,15 +262,18 @@ namespace ProyectoFDI.v2.Controllers
         {
             try
             {
-                Usuario usuario = new Usuario();
-                usuario.IdUsu = 0;
-                usuario.NombreUsu = deportista.CedulaDep;
-                usuario.ClaveUsu = deportista.CedulaDep;
-                usuario.FechaCreacion = DateTime.Now;
-                usuario.RolesUsu = "Deportista";
-                usuario.ActivoUsu = true;
+                if (!string.IsNullOrEmpty(deportista.CedulaDep))
+                {
+                    Usuario usuario = new Usuario();
+                    usuario.IdUsu = 0;
+                    usuario.NombreUsu = deportista.CedulaDep;
+                    usuario.ClaveUsu = deportista.CedulaDep;
+                    usuario.FechaCreacion = DateTime.Now;
+                    usuario.RolesUsu = "Deportista";
+                    usuario.ActivoUsu = true;
 
-                deportista.IdUsuNavigation = usuario;
+                    deportista.IdUsuNavigation = usuario;
+                }
 
                 APIConsumer<Deportistum>.Insert(apiUrl, deportista);
 

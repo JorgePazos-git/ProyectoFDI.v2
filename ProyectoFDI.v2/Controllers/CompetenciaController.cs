@@ -268,6 +268,28 @@ namespace ProyectoFDI.v2.Controllers
             if(data.DetalleCompetencia.All(a => a.ClasRes != null))
             {
                 ViewBag.ListaClasificados = listaClasificacion(id);
+
+                if (data.DetalleCompetencia.Count >= 16)
+                {
+                    if (data.DetalleCompetencia.Count(a => a.OctavosRes != null) >= 2)
+                    {
+                        ViewBag.ListaClasififadosOctavos = PrimeraVezEnfrentar(listaClasificacion(id), "octavos");
+                        if (data.DetalleCompetencia.Count(a => a.CuartosRes != null) >= 2)
+                        {
+                            ViewBag.ListaClasificadosCuartos = SiguienteRonda(PrimeraVezEnfrentar(listaClasificacion(id), "octavos"), "cuartos");
+                            if (data.DetalleCompetencia.Count(a => a.SemiRes != null) >= 2)
+                            {
+                                ViewBag.ListaClasificadosSemi = SiguienteRonda(SiguienteRonda(PrimeraVezEnfrentar(listaClasificacion(id), "octavos"), "cuartos"), "semi");
+                                if (data.DetalleCompetencia.Count(a => a.FinalRes != null) >= 2)
+                                {
+                                    ViewBag.ListaClasificadosFinal = SiguienteRonda(SiguienteRonda(SiguienteRonda(PrimeraVezEnfrentar(listaClasificacion(id), "octavos"), "cuartos"), "semi"), "final");
+                                }
+                            }
+                        }
+
+                    }
+                }
+
                 if (data.DetalleCompetencia.Count >= 8 && data.DetalleCompetencia.Count < 16)
                 {
                     if (data.DetalleCompetencia.Count(a => a.CuartosRes != null) >= 2)
@@ -282,8 +304,7 @@ namespace ProyectoFDI.v2.Controllers
                             }
                         }
 
-                    }
-                    
+                    }   
                 }
             }
 
