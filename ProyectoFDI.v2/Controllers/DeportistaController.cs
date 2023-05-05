@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.IdentityModel.Tokens;
 using ProyectoFDI.v2.Code;
 using ProyectoFDI.v2.Models;
 using System.Data;
-using System.Runtime.Intrinsics.Arm;
 
 namespace ProyectoFDI.v2.Controllers
 {
@@ -55,7 +52,7 @@ namespace ProyectoFDI.v2.Controllers
         }
 
         private List<Provincium> listaProvincias()
-        { 
+        {
             var provincias = APIConsumer<Provincium>.Select(apiUrl.Replace("Deportista", "Provincia"));
             var lista = provincias.Select(f => new Provincium
             {
@@ -279,7 +276,7 @@ namespace ProyectoFDI.v2.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
                 return View(deportista);
@@ -313,7 +310,7 @@ namespace ProyectoFDI.v2.Controllers
                 APIConsumer<Deportistum>.Update(apiUrl + id.ToString(), deportista);
                 return RedirectToAction(nameof(Index));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
                 return View(deportista);
@@ -341,8 +338,8 @@ namespace ProyectoFDI.v2.Controllers
                 usuario.ActivoUsu = false;
                 data.ActivoDep = false;
                 APIConsumer<Deportistum>.Update(apiUrl + id.ToString(), data);
-                APIConsumer<Usuario>.Update(apiUrl.Replace("Deportista", "Usuario") + usuario.IdUsu.ToString(), usuario);   
-                
+                APIConsumer<Usuario>.Update(apiUrl.Replace("Deportista", "Usuario") + usuario.IdUsu.ToString(), usuario);
+
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -350,6 +347,6 @@ namespace ProyectoFDI.v2.Controllers
                 return View(deportista);
             }
         }
-    
+
     }
 }

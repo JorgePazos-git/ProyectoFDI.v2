@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProyectoFDI.v2.Code;
 using ProyectoFDI.v2.Models;
-using System.Data;
 
 namespace ProyectoFDI.v2.Controllers
 {
@@ -99,7 +97,7 @@ namespace ProyectoFDI.v2.Controllers
                 APIConsumer<Usuario>.Update(apiUrl + id.ToString(), usuario);
                 return RedirectToAction(nameof(Index));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
                 return View(usuario);

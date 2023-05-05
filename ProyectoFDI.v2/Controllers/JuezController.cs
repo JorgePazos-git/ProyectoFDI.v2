@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProyectoFDI.v2.Code;
@@ -149,7 +148,7 @@ namespace ProyectoFDI.v2.Controllers
                 return View(juez);
             }
         }
-        
+
         [Authorize(Roles = "Administrador")]
         // GET: JuezController/Delete/5
         public ActionResult Delete(int id)

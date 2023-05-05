@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProyectoFDI.v2.Code;
 using ProyectoFDI.v2.Models;
-using System.Data;
 
 namespace ProyectoFDI.v2.Controllers
 {
@@ -50,7 +48,7 @@ namespace ProyectoFDI.v2.Controllers
                 APIConsumer<Club>.Insert(apiUrl, club);
                 return RedirectToAction(nameof(Index));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
                 return View(club);
@@ -76,7 +74,7 @@ namespace ProyectoFDI.v2.Controllers
                 APIConsumer<Club>.Update(apiUrl + id.ToString(), club);
                 return RedirectToAction(nameof(Index));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
                 return View(club);

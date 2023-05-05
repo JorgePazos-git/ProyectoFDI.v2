@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ProyectoFDI.v2.Extension;
 using ProyectoFDI.v2.Models;
-using System.Data;
 using System.Diagnostics;
 
 namespace ProyectoFDI.v2.Controllers

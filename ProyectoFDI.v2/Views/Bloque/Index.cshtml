@@ -4,6 +4,7 @@
 }
 
 <h1>Bloque</h1>
+<h1>@ViewBag.idcompetencia</h1>
 
 <form method="post">
     <div class="form-group">
@@ -43,5 +44,56 @@
     </div>
 
 </form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">ID de Deportista</th>
+            <th scope="col">Zona</th>
+            <th scope="col">Intentos en Zona</th>
+            <th scope="col">Tops</th>
+            <th scope="col">Intentos en Tops</th>
+            <th scope="col">Puesto</th>
+            <th scope="col">Clasificación de Bloque</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var competenciaBloque in ViewBag.ListadoDeportistaCompetencia)
+        {
+            <tr>
+                <td>
+
+                    @{
+                        var deportista = ViewBag.ListadoDeportista.Find(d => d.IdDep == competenciaBloque.IdDep);
+                        if (deportista != null)
+                        {
+                            @deportista.NombresDep
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning">Deportista no encontrado</span>
+                        }
+                    }
+                </td>
+                <td>@competenciaBloque.ZonaCla</td>
+                <td>@competenciaBloque.ZonaIntentosCla</td>
+                <td>@competenciaBloque.TopCla</td>
+                <td>@competenciaBloque.TopIntentosCla</td>
+                <td>@competenciaBloque.Puesto</td>
+                <td>
+                    @if (competenciaBloque.ClasiBloque)
+                {
+                    <span class="badge bg-success">Sí</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger">No</span>
+                }
+            </td> 
+            </tr>
+        }
+    </tbody>
+</table>
 
 

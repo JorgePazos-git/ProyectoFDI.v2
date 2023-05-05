@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using ProyectoFDI.v2.Models;
 using ProyectoFDI.v2.Extension;
+using ProyectoFDI.v2.Models;
 using System.Security.Claims;
 
 namespace ProyectoFDI.v2.Controllers

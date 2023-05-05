@@ -1,7 +1,4 @@
-﻿using System;
-using System.Security.Policy;
-
-namespace ProyectoFDI.v2.Code
+﻿namespace ProyectoFDI.v2.Code
 {
     public class APIConsumer<T>
     {

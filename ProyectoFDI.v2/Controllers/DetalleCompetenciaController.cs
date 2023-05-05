@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProyectoFDI.v2.Code;
 using ProyectoFDI.v2.Models;
 using System.Data;
-using System.Runtime.Intrinsics.Arm;
 
 namespace ProyectoFDI.v2.Controllers
 {
@@ -132,8 +130,8 @@ namespace ProyectoFDI.v2.Controllers
                     return RedirectToAction(nameof(Index));
                 }
                 else
-                {   
-                    return RedirectToAction("Edit", "Competencia", new { id = detalle.IdCom });           
+                {
+                    return RedirectToAction("Edit", "Competencia", new { id = detalle.IdCom });
                 }
             }
             catch (Exception ex)

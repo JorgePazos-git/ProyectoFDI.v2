@@ -1,18 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using ClosedXML.Excel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Newtonsoft.Json;
 using ProyectoFDI.v2.Code;
 using ProyectoFDI.v2.Models;
 using System.Data;
+using System.Data.SqlClient;
 using System.Globalization;
 using System.Text;
-using System.Text.Json;
-using System.Data.SqlClient;
-using ClosedXML.Excel;
 using JsonSerializer = System.Text.Json.JsonSerializer;
-using Microsoft.JSInterop;
 
 namespace ProyectoFDI.v2.Controllers
 {
@@ -258,14 +254,19 @@ namespace ProyectoFDI.v2.Controllers
         public ActionResult AgregarResultados(int id)
         {
             var data = APIConsumer<Competencium>.SelectOne(apiUrl + id.ToString());
+            if (data.IdMod == 2)
+            {
+
+                return RedirectToAction("Index", "Bloque", new { competencia = data.IdCom });
+            }
             ViewBag.ListaCategorias = listaCategorias();
             ViewBag.ListaGeneros = listaGeneros();
             ViewBag.ListaModalidades = listaModalidades();
             ViewBag.ListaJueces = listaJueces();
             ViewBag.ListaSedes = listaSedes();
             ViewBag.ListadoEstados = listaEstados();
-            
-            if(data.DetalleCompetencia.All(a => a.ClasRes != null))
+
+            if (data.DetalleCompetencia.All(a => a.ClasRes != null))
             {
                 ViewBag.ListaClasificados = listaClasificacion(id);
 
@@ -304,11 +305,11 @@ namespace ProyectoFDI.v2.Controllers
                             }
                         }
 
-                    }   
+                    }
                 }
             }
 
-            
+
             return View(data);
         }
 
@@ -407,16 +408,16 @@ namespace ProyectoFDI.v2.Controllers
             CultureInfo culture = CultureInfo.InvariantCulture;
             foreach (DetalleCompetencium resultado in listaDetalles)
             {
-                if(resultado.ClasRes != null)
+                if (resultado.ClasRes != null)
                 {
-                    
-                    double tiempo = double.Parse(resultado.ClasRes,culture);
+
+                    double tiempo = double.Parse(resultado.ClasRes, culture);
                     tiempos.Add(tiempo);
                 }
                 else
                 {
                     falsos++;
-                }               
+                }
             }
 
             int cantidad = listaDetalles.Count - falsos;
@@ -452,7 +453,7 @@ namespace ProyectoFDI.v2.Controllers
             // Ordenamos la lista de los 16 mejores resultados de menor a mayor tiempo
             resultadosOrdenados = resultadosOrdenados.OrderBy(r => Double.Parse(r.ClasRes, culture)).ToList();
 
-            for(int i = 0; i < resultadosOrdenados.Count; i++)
+            for (int i = 0; i < resultadosOrdenados.Count; i++)
             {
                 resultadosOrdenados[i].Puesto = puesto;
                 APIConsumer<DetalleCompetencium>.Update(apiUrl.Replace("Competencia", "DetalleCompetencia") +
@@ -472,7 +473,7 @@ namespace ProyectoFDI.v2.Controllers
         public List<DetalleCompetencium> PrimeraVezEnfrentar(List<DetalleCompetencium> clasificados, string fase)
         {
             List<DetalleCompetencium> siguienteRonda = new List<DetalleCompetencium>();
-            
+
             // Ordena la lista de deportistas por clasificación
             //if (fase == "octavos")
             //{
@@ -482,7 +483,7 @@ namespace ProyectoFDI.v2.Controllers
             //if (fase == "cuartos")
             //{
             //    clasificados = clasificados.OrderBy(d => d.CuartosRes).ToList();
-                
+
             //}
 
             //if (fase == "semi")
@@ -497,7 +498,7 @@ namespace ProyectoFDI.v2.Controllers
                 siguienteRonda.Add(mejorDeportista);
             }
 
-            if(fase == "octavos")
+            if (fase == "octavos")
             {
                 ViewBag.ListaCuartos = siguienteRonda;
                 ViewBag.ListaCuartosJSON = JsonSerializer.Serialize(siguienteRonda);
@@ -541,7 +542,7 @@ namespace ProyectoFDI.v2.Controllers
                 ViewBag.ListaFinalJSON = JsonSerializer.Serialize(siguienteRonda);
             }
 
-            if(fase == "final")
+            if (fase == "final")
             {
                 ViewBag.Ganador = siguienteRonda;
                 ViewBag.GanadorJSON = JsonSerializer.Serialize(siguienteRonda);
@@ -556,7 +557,7 @@ namespace ProyectoFDI.v2.Controllers
             // y devuelve al mejor de ellos
             CultureInfo culture = CultureInfo.InvariantCulture;
 
-            if(fase == "octavos")
+            if (fase == "octavos")
             {
                 if (Double.Parse(deportista1.OctavosRes, culture) > Double.Parse(deportista2.OctavosRes, culture))
                 {
@@ -582,7 +583,7 @@ namespace ProyectoFDI.v2.Controllers
                 }
                 else
                 {
-                    if(fase == "semi")
+                    if (fase == "semi")
                     {
                         if (Double.Parse(deportista1.SemiRes, culture) > Double.Parse(deportista2.SemiRes, culture))
                         {
@@ -640,7 +641,7 @@ namespace ProyectoFDI.v2.Controllers
             //Segundo Lugar
             DetalleCompetencium segundo = new DetalleCompetencium();
 
-            for(int i = 0; i < final.Count; i++)
+            for (int i = 0; i < final.Count; i++)
             {
                 if (final[i].IdDetalle != ganador[0].IdDetalle)
                 {
@@ -753,28 +754,28 @@ namespace ProyectoFDI.v2.Controllers
 
         public void AgregarResult(int id, string result, string fase)
         {
-                DetalleCompetencium detalle = APIConsumer<DetalleCompetencium>.SelectOne(
-                    apiUrl.Replace("Competencia", "DetalleCompetencia") + id.ToString());
+            DetalleCompetencium detalle = APIConsumer<DetalleCompetencium>.SelectOne(
+                apiUrl.Replace("Competencia", "DetalleCompetencia") + id.ToString());
 
-                if(fase == "octavos")
-                {
-                    detalle.OctavosRes = result;
-                }
-                if (fase == "cuartos")
-                {
-                    detalle.CuartosRes = result;
-                }
-                if (fase == "semi")
-                {
-                    detalle.SemiRes = result;
-                }
-                if (fase == "final")
-                {
-                    detalle.FinalRes = result;
-                }
+            if (fase == "octavos")
+            {
+                detalle.OctavosRes = result;
+            }
+            if (fase == "cuartos")
+            {
+                detalle.CuartosRes = result;
+            }
+            if (fase == "semi")
+            {
+                detalle.SemiRes = result;
+            }
+            if (fase == "final")
+            {
+                detalle.FinalRes = result;
+            }
 
-                APIConsumer<DetalleCompetencium>.Update(apiUrl.Replace("Competencia", "DetalleCompetencia")
-                    + id.ToString(), detalle);
+            APIConsumer<DetalleCompetencium>.Update(apiUrl.Replace("Competencia", "DetalleCompetencia")
+                + id.ToString(), detalle);
         }
     }
 }
