@@ -25,7 +25,7 @@ namespace ProyectoFDI.v2.Controllers
             this.idCompetencia = competencia;
             ViewBag.idcompetenciav = competencia;
             ViewBag.ListadoDeportistas = listadoDeportista();
-            ViewBag.ListadoDeportistaCompetencia = ListadoDeportistaCompetencia();
+            ViewBag.ListadoDeportistaCompetencia = ListadoDeportistaCompetencia(competencia);
             Console.WriteLine(idCompetencia);
             return View();
         }
@@ -51,14 +51,16 @@ namespace ProyectoFDI.v2.Controllers
         }
         public void PuestoDeportista(CompetenciaBloqueClasifica depor_comparacion)
         {
-            List<CompetenciaBloqueClasifica> list = ListadoDeportistaCompetencia();
-            Console.WriteLine(list.Count);
-            if (ListadoDeportistaCompetencia().Count == 0)
+            List<CompetenciaBloqueClasifica> list = ListadoDeportistaCompetencia((int)depor_comparacion.IdCom);
+            Console.WriteLine(list.Count+" id:"+idCompetencia);
+            if (list.Count == 0)
             {
                 depor_comparacion.Puesto = 1;
+                Console.WriteLine("Entra");
             }
             else
             {
+                bool aux = true; ;
                 bool comprobracion = true;
                 foreach(CompetenciaBloqueClasifica depo in list)
                 {
@@ -75,7 +77,7 @@ namespace ProyectoFDI.v2.Controllers
                         {
                             if (depor_comparacion.TopCla > depo.TopCla)
                             {
-                                depor_comparacion.Puesto = depo.TopCla;
+                                depor_comparacion.Puesto = depo.Puesto;
                                 comprobracion = false;
                             }
                             else
@@ -84,7 +86,7 @@ namespace ProyectoFDI.v2.Controllers
                                 {
                                     if (depor_comparacion.ZonaCla > depo.ZonaCla)
                                     {
-                                        depor_comparacion.Puesto = depo.TopCla;
+                                        depor_comparacion.Puesto = depo.Puesto;
                                         comprobracion = false;
                                     }
                                     else
@@ -94,7 +96,7 @@ namespace ProyectoFDI.v2.Controllers
                                             //
                                             if (depor_comparacion.TopIntentosCla > depo.TopIntentosCla)
                                             {
-                                                depor_comparacion.Puesto = depo.TopCla;
+                                                depor_comparacion.Puesto = depo.Puesto;
                                                 comprobracion = false;
                                             }
                                             else
@@ -103,7 +105,7 @@ namespace ProyectoFDI.v2.Controllers
                                                 {
                                                     if (depor_comparacion.ZonaIntentosCla > depo.ZonaIntentosCla)
                                                     {
-                                                        depor_comparacion.Puesto = depo.TopCla;
+                                                        depor_comparacion.Puesto = depo.Puesto;
                                                         comprobracion = false;
                                                     }
                                                 }
@@ -119,11 +121,20 @@ namespace ProyectoFDI.v2.Controllers
                     }
                     else
                     {
-
+                        depo.Puesto = +1;
+                        APIConsumer<CompetenciaBloqueClasifica>.Update(apiUrl, depo);
+                        aux = false;
                     }
-                    
+
                     //
-                    
+
+                }
+                if (aux)
+                {
+                    Console.WriteLine("Ultimo elemento");
+                    depor_comparacion.Puesto = (ListadoDeportistaCompetencia((int)depor_comparacion.IdCom).Count);
+
+
                 }
             }
         
@@ -134,6 +145,7 @@ namespace ProyectoFDI.v2.Controllers
             try
             {
                 PuestoDeportista(competenciablo);
+                Console.WriteLine("Pasapuestos");
                 APIConsumer<CompetenciaBloqueClasifica>.Insert(apiUrl, competenciablo);
                 return RedirectToAction("Index", new { competencia = competenciablo.IdCom });
 
@@ -141,6 +153,7 @@ namespace ProyectoFDI.v2.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine("ERROR");
                 ModelState.AddModelError("", ex.Message);
                 return View(competenciablo);
             }
@@ -164,9 +177,9 @@ namespace ProyectoFDI.v2.Controllers
             return RedirectToAction("Index");
         }
 
-        private List<CompetenciaBloqueClasifica> ListadoDeportistaCompetencia()
+        private List<CompetenciaBloqueClasifica> ListadoDeportistaCompetencia(int id )
         {
-            var competenciaBloque = APIConsumer<CompetenciaBloqueClasifica>.Select(apiUrl.Replace("CompetenciaBloqueClasificas", "CompetenciaBloqueClasificas"));
+            var competenciaBloque = APIConsumer<CompetenciaBloqueClasifica>.Select(apiUrl + "/compebloque/" + id);
             var lista = competenciaBloque.Select(f => new CompetenciaBloqueClasifica
             {
                 ZonaCla = f.ZonaCla,
