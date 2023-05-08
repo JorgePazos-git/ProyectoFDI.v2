@@ -59,17 +59,71 @@ namespace ProyectoFDI.v2.Controllers
             }
             else
             {
+                bool comprobracion = true;
                 foreach(CompetenciaBloqueClasifica depo in list)
                 {
-                    if (depor_comparacion.TopCla > depo.TopCla)
+                    if (comprobracion)
                     {
-                        depor_comparacion.Puesto = depo.TopCla;
+
+
+                        if (depor_comparacion.TopCla == depo.TopCla && depor_comparacion.ZonaCla == depo.ZonaCla && depor_comparacion.TopIntentosCla == depo.TopIntentosCla && depor_comparacion.ZonaIntentosCla == depo.ZonaIntentosCla)
+                        {
+                            depor_comparacion.Puesto = depo.TopCla;
+                            comprobracion = false;
+                        }
+                        else
+                        {
+                            if (depor_comparacion.TopCla > depo.TopCla)
+                            {
+                                depor_comparacion.Puesto = depo.TopCla;
+                                comprobracion = false;
+                            }
+                            else
+                            {
+                                if(depor_comparacion.TopCla == depo.TopCla)
+                                {
+                                    if (depor_comparacion.ZonaCla > depo.ZonaCla)
+                                    {
+                                        depor_comparacion.Puesto = depo.TopCla;
+                                        comprobracion = false;
+                                    }
+                                    else
+                                    {
+                                        if (depor_comparacion.ZonaCla == depo.ZonaCla)
+                                        {
+                                            //
+                                            if (depor_comparacion.TopIntentosCla > depo.TopIntentosCla)
+                                            {
+                                                depor_comparacion.Puesto = depo.TopCla;
+                                                comprobracion = false;
+                                            }
+                                            else
+                                            {
+                                                if (depor_comparacion.TopIntentosCla == depo.TopIntentosCla)
+                                                {
+                                                    if (depor_comparacion.ZonaIntentosCla > depo.ZonaIntentosCla)
+                                                    {
+                                                        depor_comparacion.Puesto = depo.TopCla;
+                                                        comprobracion = false;
+                                                    }
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
 
                     }
                     else
                     {
-                        
+
                     }
+                    
+                    //
+                    
                 }
             }
         
