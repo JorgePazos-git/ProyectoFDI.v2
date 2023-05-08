@@ -4,7 +4,8 @@
 }
 
 <h1>Bloque</h1>
-
+<h1>@ViewBag.idcompetenciav</h1>
+@*
 <form method="post">
     <div class="form-group">
         <label for="deportista">Seleccionar deportista:</label>
@@ -42,6 +43,100 @@
         </div>
     </div>
 
-</form>
+</form>*@
 
+
+    <form asp-action="Create">
+    
+    <div class="form-group">
+        <label for="deportista">Seleccionar deportista:</label>
+        <select class="form-control" id="IdDep" name="IdDep">
+            <option value="">Seleccione un deportista</option>
+            @foreach (var deportista in ViewBag.ListadoDeportistas)
+            {
+                <option value="@deportista.IdDep">@deportista.NombresDep</option>
+            }
+        </select>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3 my-5">
+                <input class="form-control" type="hidden" id="IdCom" name="IdCom" value=@ViewBag.idcompetenciav />
+                <div class="form-group">
+                    <label for="numeroTops">Número de Tops</label>
+                    <input type="number" class="form-control" id="TopCla" name="TopCla" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="numeroZonas">Número de Zonas</label>
+                    <input type="number" class="form-control" id="ZonaCla" name="ZonaCla" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="intentosTops">Intentos de Tops</label>
+                    <input type="number" class="form-control" id="TopIntentosCla" name="TopIntentosCla" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="intentosZonas">Intentos de Zonas</label>
+                    <input type="number" class="form-control" id="ZonaIntentosCla" name="ZonaIntentosCla" min="0" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Enviar</button>
+            </div>
+        </div>
+    </div>
+    </form>
+   
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">ID de Deportista</th>
+            <th scope="col">Zona</th>
+            <th scope="col">Intentos en Zona</th>
+            <th scope="col">Tops</th>
+            <th scope="col">Intentos en Tops</th>
+            <th scope="col">Puesto</th>
+            <th scope="col">Clasificación de Bloque</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        
+        @foreach (var competenciaBloque in ViewBag.ListadoDeportistaCompetencia)
+        {
+            <tr>
+                <td>
+
+                    @{
+                        //var deportista = ViewBag.ListadoDeportista.Find(da => da.IdDep == competenciaBloque.IdDep);
+                        List<Deportistum> a = ViewBag.ListadoDeportistas;
+                        
+                        Deportistum deportista =(a.Find(da => da.IdDep == competenciaBloque.IdDep));
+                        if (deportista != null)
+                        {
+                            @deportista.NombresDep
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning">Deportista no encontrado</span>
+                        }
+                    }
+                </td>
+                <td>@competenciaBloque.ZonaCla</td>
+                <td>@competenciaBloque.ZonaIntentosCla</td>
+                <td>@competenciaBloque.TopCla</td>
+                <td>@competenciaBloque.TopIntentosCla</td>
+                <td>@competenciaBloque.Puesto</td>
+                <td>
+                    @if (competenciaBloque.ClasiBloque == null|| competenciaBloque.ClasiBloque)
+                    {
+                        <span class="badge bg-success">Sí</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">No</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 

@@ -258,6 +258,10 @@ namespace ProyectoFDI.v2.Controllers
         public ActionResult AgregarResultados(int id)
         {
             var data = APIConsumer<Competencium>.SelectOne(apiUrl + id.ToString());
+            if (data.IdMod == 2)
+            {
+                return RedirectToAction("Index", "Bloque", new { competencia = data.IdCom });
+            }
             ViewBag.ListaCategorias = listaCategorias();
             ViewBag.ListaGeneros = listaGeneros();
             ViewBag.ListaModalidades = listaModalidades();
