@@ -56,12 +56,14 @@ namespace ProyectoFDI.v2.Controllers
             if (list.Count == 0)
             {
                 depor_comparacion.Puesto = 1;
+                depor_comparacion.ClasiBloque = true;
                 Console.WriteLine("Entra");
             }
             else
             {
                 bool aux = true; ;
                 bool comprobracion = true;
+                int puesto;
                 foreach(CompetenciaBloqueClasifica depo in list)
                 {
                     if (comprobracion)
@@ -70,8 +72,21 @@ namespace ProyectoFDI.v2.Controllers
 
                         if (depor_comparacion.TopCla == depo.TopCla && depor_comparacion.ZonaCla == depo.ZonaCla && depor_comparacion.TopIntentosCla == depo.TopIntentosCla && depor_comparacion.ZonaIntentosCla == depo.ZonaIntentosCla)
                         {
-                            depor_comparacion.Puesto = depo.TopCla;
+                            depor_comparacion.Puesto = depo.Puesto;
                             comprobracion = false;
+                            puesto = (int)(depo.Puesto + 1);
+                            depo.Puesto = puesto;
+                            if (puesto <= 6)
+                            {
+                                depo.ClasiBloque = true;
+                            }
+                            else
+                            {
+                                depo.ClasiBloque = false;
+                            }
+                            Console.WriteLine(apiUrl + depo.IdCompeBloqueCla);
+                            APIConsumer<CompetenciaBloqueClasifica>.Update(apiUrl + depo.IdCompeBloqueCla, depo);
+                            aux = false;
                         }
                         else
                         {
@@ -79,6 +94,19 @@ namespace ProyectoFDI.v2.Controllers
                             {
                                 depor_comparacion.Puesto = depo.Puesto;
                                 comprobracion = false;
+                                puesto = (int)(depo.Puesto + 1);
+                                depo.Puesto = puesto;
+                                if (puesto <= 6)
+                                {
+                                    depo.ClasiBloque = true;
+                                }
+                                else
+                                {
+                                    depo.ClasiBloque = false;
+                                }
+                                Console.WriteLine(apiUrl + depo.IdCompeBloqueCla);
+                                APIConsumer<CompetenciaBloqueClasifica>.Update(apiUrl + depo.IdCompeBloqueCla, depo);
+                                aux = false;
                             }
                             else
                             {
@@ -88,25 +116,64 @@ namespace ProyectoFDI.v2.Controllers
                                     {
                                         depor_comparacion.Puesto = depo.Puesto;
                                         comprobracion = false;
+                                        puesto = (int)(depo.Puesto + 1);
+                                        depo.Puesto = puesto;
+                                        if (puesto <= 6)
+                                        {
+                                            depo.ClasiBloque = true;
+                                        }
+                                        else
+                                        {
+                                            depo.ClasiBloque = false;
+                                        }
+                                        Console.WriteLine(apiUrl + depo.IdCompeBloqueCla);
+                                        APIConsumer<CompetenciaBloqueClasifica>.Update(apiUrl + depo.IdCompeBloqueCla, depo);
+                                        aux = false;
                                     }
                                     else
                                     {
                                         if (depor_comparacion.ZonaCla == depo.ZonaCla)
                                         {
                                             //
-                                            if (depor_comparacion.TopIntentosCla > depo.TopIntentosCla)
+                                            if (depor_comparacion.TopIntentosCla < depo.TopIntentosCla)
                                             {
                                                 depor_comparacion.Puesto = depo.Puesto;
                                                 comprobracion = false;
+                                                puesto = (int)(depo.Puesto + 1);
+                                                depo.Puesto = puesto;
+                                                if (puesto <= 6)
+                                                {
+                                                    depo.ClasiBloque = true;
+                                                }
+                                                else
+                                                {
+                                                    depo.ClasiBloque = false;
+                                                }
+                                                Console.WriteLine(apiUrl + depo.IdCompeBloqueCla);
+                                                APIConsumer<CompetenciaBloqueClasifica>.Update(apiUrl + depo.IdCompeBloqueCla, depo);
+                                                aux = false;
                                             }
                                             else
                                             {
                                                 if (depor_comparacion.TopIntentosCla == depo.TopIntentosCla)
                                                 {
-                                                    if (depor_comparacion.ZonaIntentosCla > depo.ZonaIntentosCla)
+                                                    if (depor_comparacion.ZonaIntentosCla < depo.ZonaIntentosCla)
                                                     {
                                                         depor_comparacion.Puesto = depo.Puesto;
                                                         comprobracion = false;
+                                                        puesto = (int)(depo.Puesto + 1);
+                                                        depo.Puesto = puesto;
+                                                        if (puesto <= 6)
+                                                        {
+                                                            depo.ClasiBloque = true;
+                                                        }
+                                                        else
+                                                        {
+                                                            depo.ClasiBloque = false;
+                                                        }
+                                                        Console.WriteLine(apiUrl + depo.IdCompeBloqueCla);
+                                                        APIConsumer<CompetenciaBloqueClasifica>.Update(apiUrl + depo.IdCompeBloqueCla, depo);
+                                                        aux = false;
                                                     }
                                                 }
                                             }
@@ -121,8 +188,9 @@ namespace ProyectoFDI.v2.Controllers
                     }
                     else
                     {
-                        depo.Puesto = +1;
-                        APIConsumer<CompetenciaBloqueClasifica>.Update(apiUrl, depo);
+                        depo.Puesto = depo.Puesto+1;
+                        Console.WriteLine(apiUrl + depo.IdCompeBloqueCla);
+                        APIConsumer<CompetenciaBloqueClasifica>.Update(apiUrl + depo.IdCompeBloqueCla, depo);
                         aux = false;
                     }
 
@@ -132,12 +200,19 @@ namespace ProyectoFDI.v2.Controllers
                 if (aux)
                 {
                     Console.WriteLine("Ultimo elemento");
-                    depor_comparacion.Puesto = (ListadoDeportistaCompetencia((int)depor_comparacion.IdCom).Count);
-
+                    depor_comparacion.Puesto = (ListadoDeportistaCompetencia((int)depor_comparacion.IdCom).Count)+1;
+                    if (depor_comparacion.Puesto <= 6)
+                    {
+                        depor_comparacion.ClasiBloque = true;
+                    }
+                    else
+                    {
+                        depor_comparacion.ClasiBloque = false;
+                    }
 
                 }
             }
-        
+            Console.WriteLine("Acaba organizar puesto");
         }
         public ActionResult Create(CompetenciaBloqueClasifica competenciablo)
         {
@@ -153,7 +228,7 @@ namespace ProyectoFDI.v2.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("ERROR");
+                Console.WriteLine("ERROR: " + ex.Message);
                 ModelState.AddModelError("", ex.Message);
                 return View(competenciablo);
             }
@@ -190,6 +265,7 @@ namespace ProyectoFDI.v2.Controllers
                 ClasiBloque = f.ClasiBloque,
                 IdDep = f.IdDep,
                 IdCom = f.IdCom,
+                IdCompeBloqueCla = f.IdCompeBloqueCla
             }).ToList();
 
            lista.Sort((c1, c2) => Comparer<int>.Default.Compare((int)c1.Puesto, (int)c2.Puesto));
