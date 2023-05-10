@@ -5,47 +5,12 @@
 
 <h1>Bloque</h1>
 <h1>@ViewBag.idcompetenciav</h1>
-@*
-<form method="post">
-    <div class="form-group">
-        <label for="deportista">Seleccionar deportista:</label>
-        <select class="form-control" id="deportista" name="deportista">
-            <option value="">Seleccione un deportista</option>
-            @foreach (var deportista in ViewBag.ListadoDeportistas)
-            {
-                <option value="@deportista.IdDep">@deportista.NombresDep</option>
-            }
-        </select>
-    </div>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 offset-md-3 my-5">
-                <form method="post">
-                    <div class="form-group">
-                        <label for="numeroTops">Número de Tops</label>
-                        <input type="number" class="form-control" id="numeroTops" name="numeroTops" min="0" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="numeroZonas">Número de Zonas</label>
-                        <input type="number" class="form-control" id="numeroZonas" name="numeroZonas" min="0" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="intentosTops">Intentos de Tops</label>
-                        <input type="number" class="form-control" id="intentosTops" name="intentosTops" min="0" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="intentosZonas">Intentos de Zonas</label>
-                        <input type="number" class="form-control" id="intentosZonas" name="intentosZonas" min="0" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Enviar</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-</form>*@
 
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
     <form asp-action="Create">
     
     <div class="form-group">
@@ -58,6 +23,7 @@
             }
         </select>
     </div>
+   
     <div class="container">
         <div class="row">
             <div class="col-md-6 offset-md-3 my-5">
@@ -139,4 +105,8 @@
         }
     </tbody>
 </table>
+
+
+
+
 
