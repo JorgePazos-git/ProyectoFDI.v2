@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Wordprocessing;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProyectoFDI.v2.Code;
 using ProyectoFDI.v2.Models;
@@ -20,7 +21,8 @@ namespace ProyectoFDI.v2.Controllers
         //    ViewBag.ListadoDeportistaCompetencia = listadoDeportistaCompetencia();
         //    return View();
         //}
-    
+
+        [Authorize(Roles = "Administrador,Juez")]
         public IActionResult Index(int competencia)
         {
             this.idCompetencia = competencia;
@@ -189,6 +191,7 @@ namespace ProyectoFDI.v2.Controllers
             Console.Write("Pasa metodo");
         }
 
+        [Authorize(Roles = "Administrador,Juez")]
         public ActionResult Create(CompetenciaBloqueClasifica competenciablo)
         {
            
@@ -215,6 +218,23 @@ namespace ProyectoFDI.v2.Controllers
                     competenciablo.ClasiBloque = false;
                 }
                 APIConsumer<CompetenciaBloqueClasifica>.Insert(apiUrl, competenciablo);
+                
+
+                if (list.Count >= 7)
+                {
+                    list = ListadoDeportistaCompetencia((int)competenciablo.IdCom);
+                    CompetenciaBloqueClasifica com6 = list[5];
+                    CompetenciaBloqueClasifica com7 = list[6];
+
+                    if (com6.TopCla == com7.TopCla && com6.ZonaCla == com7.ZonaCla && com6.TopIntentosCla == com7.TopIntentosCla && com6.ZonaIntentosCla == com7.ZonaIntentosCla)
+                    {
+                        com7.ClasiBloque = true;
+                        APIConsumer<CompetenciaBloqueClasifica>.Update(apiUrl + com7.IdCompeBloqueCla, com7);
+
+                    }
+
+                }
+
                 TempData["ErrorMessage"] = null;
 
                 return RedirectToAction("Index", new { competencia = competenciablo.IdCom });
@@ -248,6 +268,7 @@ namespace ProyectoFDI.v2.Controllers
 
             return lista;
         }
+        [Authorize(Roles = "Administrador,Juez")]
         [HttpPost]
         public IActionResult SeleccionarDeportista(int deportistaSeleccionado)
         {
