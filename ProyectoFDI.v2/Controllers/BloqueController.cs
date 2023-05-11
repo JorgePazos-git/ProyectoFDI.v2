@@ -130,7 +130,17 @@ namespace ProyectoFDI.v2.Controllers
                     }
                     else
                     {
-                        AsignacionPuesto(depor_comparacion, depo);
+                        int puesto = (int)(depo.Puesto + 1);
+                        depo.Puesto = puesto;
+                        if (puesto <= 6)
+                        {
+                            depo.ClasiBloque = true;
+                        }
+                        else
+                        {
+                            depo.ClasiBloque = false;
+                        }
+                        APIConsumer<CompetenciaBloqueClasifica>.Update(apiUrl + depo.IdCompeBloqueCla, depo);
                         aux = false;
                     }
 
@@ -162,6 +172,8 @@ namespace ProyectoFDI.v2.Controllers
 
         public void AsignacionPuesto(CompetenciaBloqueClasifica depor_comparacion, CompetenciaBloqueClasifica depo)
         {
+            Console.Write("Entra metodo");
+
             depor_comparacion.Puesto = depo.Puesto;
             int puesto = (int)(depo.Puesto + 1);
             depo.Puesto = puesto;
@@ -173,7 +185,8 @@ namespace ProyectoFDI.v2.Controllers
             {
                 depo.ClasiBloque = false;
             }
-            APIConsumer<CompetenciaBloqueClasifica>.Update(apiUrl +depor_comparacion.IdCompeBloqueCla, depo);
+            APIConsumer<CompetenciaBloqueClasifica>.Update(apiUrl + depo.IdCompeBloqueCla, depo);
+            Console.Write("Pasa metodo");
         }
 
         public ActionResult Create(CompetenciaBloqueClasifica competenciablo)
