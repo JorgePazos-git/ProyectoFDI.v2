@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Source\Scripts_BDD\" />
     <Folder Include="wwwroot\resources\" />
   </ItemGroup>
 
