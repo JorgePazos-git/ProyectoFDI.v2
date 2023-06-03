@@ -1,7 +1,9 @@
 ﻿using DocumentFormat.OpenXml.Wordprocessing;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProyectoFDI.v2.Code;
 using ProyectoFDI.v2.Models;
+using System.Runtime.Intrinsics.X86;
 
 namespace ProyectoFDI.v2.Controllers
 {
@@ -19,7 +21,8 @@ namespace ProyectoFDI.v2.Controllers
         //    ViewBag.ListadoDeportistaCompetencia = listadoDeportistaCompetencia();
         //    return View();
         //}
-    
+
+        [Authorize(Roles = "Administrador,Juez")]
         public IActionResult Index(int competencia)
         {
             this.idCompetencia = competencia;
@@ -60,9 +63,10 @@ namespace ProyectoFDI.v2.Controllers
             }
             else
             {
+
                 bool aux = true; ;
                 bool comprobracion = true;
-                int puesto;
+               
                 foreach(CompetenciaBloqueClasifica depo in list)
                 {
                     if (comprobracion)
@@ -71,40 +75,17 @@ namespace ProyectoFDI.v2.Controllers
 
                         if (depor_comparacion.TopCla == depo.TopCla && depor_comparacion.ZonaCla == depo.ZonaCla && depor_comparacion.TopIntentosCla == depo.TopIntentosCla && depor_comparacion.ZonaIntentosCla == depo.ZonaIntentosCla)
                         {
-                            depor_comparacion.Puesto = depo.Puesto;
+                            AsignacionPuesto(depor_comparacion, depo);
                             comprobracion = false;
-                            puesto = (int)(depo.Puesto + 1);
-                            depo.Puesto = puesto;
-                            if (puesto <= 6)
-                            {
-                                depo.ClasiBloque = true;
-                            }
-                            else
-                            {
-                                depo.ClasiBloque = false;
-                            }
-                            Console.WriteLine(apiUrl + depo.IdCompeBloqueCla);
-                            APIConsumer<CompetenciaBloqueClasifica>.Update(apiUrl + depo.IdCompeBloqueCla, depo);
                             aux = false;
+                           
                         }
                         else
                         {
                             if (depor_comparacion.TopCla > depo.TopCla)
                             {
-                                depor_comparacion.Puesto = depo.Puesto;
+                                AsignacionPuesto(depor_comparacion, depo);
                                 comprobracion = false;
-                                puesto = (int)(depo.Puesto + 1);
-                                depo.Puesto = puesto;
-                                if (puesto <= 6)
-                                {
-                                    depo.ClasiBloque = true;
-                                }
-                                else
-                                {
-                                    depo.ClasiBloque = false;
-                                }
-                                Console.WriteLine(apiUrl + depo.IdCompeBloqueCla);
-                                APIConsumer<CompetenciaBloqueClasifica>.Update(apiUrl + depo.IdCompeBloqueCla, depo);
                                 aux = false;
                             }
                             else
@@ -113,20 +94,8 @@ namespace ProyectoFDI.v2.Controllers
                                 {
                                     if (depor_comparacion.ZonaCla > depo.ZonaCla)
                                     {
-                                        depor_comparacion.Puesto = depo.Puesto;
+                                        AsignacionPuesto(depor_comparacion, depo);
                                         comprobracion = false;
-                                        puesto = (int)(depo.Puesto + 1);
-                                        depo.Puesto = puesto;
-                                        if (puesto <= 6)
-                                        {
-                                            depo.ClasiBloque = true;
-                                        }
-                                        else
-                                        {
-                                            depo.ClasiBloque = false;
-                                        }
-                                        Console.WriteLine(apiUrl + depo.IdCompeBloqueCla);
-                                        APIConsumer<CompetenciaBloqueClasifica>.Update(apiUrl + depo.IdCompeBloqueCla, depo);
                                         aux = false;
                                     }
                                     else
@@ -136,20 +105,8 @@ namespace ProyectoFDI.v2.Controllers
                                             //
                                             if (depor_comparacion.TopIntentosCla < depo.TopIntentosCla)
                                             {
-                                                depor_comparacion.Puesto = depo.Puesto;
+                                                AsignacionPuesto(depor_comparacion, depo);
                                                 comprobracion = false;
-                                                puesto = (int)(depo.Puesto + 1);
-                                                depo.Puesto = puesto;
-                                                if (puesto <= 6)
-                                                {
-                                                    depo.ClasiBloque = true;
-                                                }
-                                                else
-                                                {
-                                                    depo.ClasiBloque = false;
-                                                }
-                                                Console.WriteLine(apiUrl + depo.IdCompeBloqueCla);
-                                                APIConsumer<CompetenciaBloqueClasifica>.Update(apiUrl + depo.IdCompeBloqueCla, depo);
                                                 aux = false;
                                             }
                                             else
@@ -158,20 +115,8 @@ namespace ProyectoFDI.v2.Controllers
                                                 {
                                                     if (depor_comparacion.ZonaIntentosCla < depo.ZonaIntentosCla)
                                                     {
-                                                        depor_comparacion.Puesto = depo.Puesto;
+                                                        AsignacionPuesto(depor_comparacion, depo);
                                                         comprobracion = false;
-                                                        puesto = (int)(depo.Puesto + 1);
-                                                        depo.Puesto = puesto;
-                                                        if (puesto <= 6)
-                                                        {
-                                                            depo.ClasiBloque = true;
-                                                        }
-                                                        else
-                                                        {
-                                                            depo.ClasiBloque = false;
-                                                        }
-                                                        Console.WriteLine(apiUrl + depo.IdCompeBloqueCla);
-                                                        APIConsumer<CompetenciaBloqueClasifica>.Update(apiUrl + depo.IdCompeBloqueCla, depo);
                                                         aux = false;
                                                     }
                                                 }
@@ -187,8 +132,7 @@ namespace ProyectoFDI.v2.Controllers
                     }
                     else
                     {
-                    
-                       puesto = (int)(depo.Puesto + 1);
+                        int puesto = (int)(depo.Puesto + 1);
                         depo.Puesto = puesto;
                         if (puesto <= 6)
                         {
@@ -198,7 +142,6 @@ namespace ProyectoFDI.v2.Controllers
                         {
                             depo.ClasiBloque = false;
                         }
-                        Console.WriteLine(apiUrl + depo.IdCompeBloqueCla);
                         APIConsumer<CompetenciaBloqueClasifica>.Update(apiUrl + depo.IdCompeBloqueCla, depo);
                         aux = false;
                     }
@@ -208,8 +151,7 @@ namespace ProyectoFDI.v2.Controllers
                 }
                 if (aux)
                 {
-                    Console.WriteLine("Ultimo elemento");
-                    depor_comparacion.Puesto = (ListadoDeportistaCompetencia((int)depor_comparacion.IdCom).Count)+1;
+                    depor_comparacion.Puesto = (list.Count)+1;
                     if (depor_comparacion.Puesto <= 6)
                     {
                         depor_comparacion.ClasiBloque = true;
@@ -220,23 +162,36 @@ namespace ProyectoFDI.v2.Controllers
                     }
 
                 }
+
+
             }
-            if(list.Count >= 7)
-            {
-                CompetenciaBloqueClasifica elemento6 = list[5];
-                CompetenciaBloqueClasifica elemento7 = list[6];
-                if (elemento6.TopCla == elemento7.TopCla && elemento6.ZonaCla == elemento7.ZonaCla && elemento6.TopIntentosCla == elemento7.TopIntentosCla && elemento6.ZonaIntentosCla == elemento7.ZonaIntentosCla)
-                {
-                    elemento7.ClasiBloque = true;
-                    APIConsumer<CompetenciaBloqueClasifica>.Update(apiUrl + elemento7.IdCompeBloqueCla, elemento7);
-                    return;
-                }
-            }
+
 
 
 
             Console.WriteLine("Acaba organizar puesto");
         }
+
+        public void AsignacionPuesto(CompetenciaBloqueClasifica depor_comparacion, CompetenciaBloqueClasifica depo)
+        {
+            Console.Write("Entra metodo");
+
+            depor_comparacion.Puesto = depo.Puesto;
+            int puesto = (int)(depo.Puesto + 1);
+            depo.Puesto = puesto;
+            if (puesto <= 6)
+            {
+                depo.ClasiBloque = true;
+            }
+            else
+            {
+                depo.ClasiBloque = false;
+            }
+            APIConsumer<CompetenciaBloqueClasifica>.Update(apiUrl + depo.IdCompeBloqueCla, depo);
+            Console.Write("Pasa metodo");
+        }
+
+        [Authorize(Roles = "Administrador,Juez")]
         public ActionResult Create(CompetenciaBloqueClasifica competenciablo)
         {
            
@@ -249,11 +204,37 @@ namespace ProyectoFDI.v2.Controllers
                     return RedirectToAction("Index", new { competencia = competenciablo.IdCom });
                 }
 
+                
+
 
                 PuestoDeportista(competenciablo, list);
                 Console.WriteLine("Pasapuestos");
-
+                if (competenciablo.Puesto <= 6)
+                {
+                    competenciablo.ClasiBloque = true;
+                }
+                else
+                {
+                    competenciablo.ClasiBloque = false;
+                }
                 APIConsumer<CompetenciaBloqueClasifica>.Insert(apiUrl, competenciablo);
+                
+
+                if (list.Count >= 7)
+                {
+                    list = ListadoDeportistaCompetencia((int)competenciablo.IdCom);
+                    CompetenciaBloqueClasifica com6 = list[5];
+                    CompetenciaBloqueClasifica com7 = list[6];
+
+                    if (com6.TopCla == com7.TopCla && com6.ZonaCla == com7.ZonaCla && com6.TopIntentosCla == com7.TopIntentosCla && com6.ZonaIntentosCla == com7.ZonaIntentosCla)
+                    {
+                        com7.ClasiBloque = true;
+                        APIConsumer<CompetenciaBloqueClasifica>.Update(apiUrl + com7.IdCompeBloqueCla, com7);
+
+                    }
+
+                }
+
                 TempData["ErrorMessage"] = null;
 
                 return RedirectToAction("Index", new { competencia = competenciablo.IdCom });
@@ -281,11 +262,13 @@ namespace ProyectoFDI.v2.Controllers
             var lista = deportista.Select(f => new Deportistum
             {
                 IdDep = f.IdDep,
-                NombresDep = f.NombresDep
+                NombresDep = f.NombresDep,
+                ApellidosDep = f.ApellidosDep
             }).ToList();
 
             return lista;
         }
+        [Authorize(Roles = "Administrador,Juez")]
         [HttpPost]
         public IActionResult SeleccionarDeportista(int deportistaSeleccionado)
         {
