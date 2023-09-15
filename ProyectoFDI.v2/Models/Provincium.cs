@@ -7,7 +7,7 @@ public partial class Provincium
 {
     public int IdPro { get; set; }
 
-    public string? NombrePro { get; set; }
+    public string NombrePro { get; set; }
 
     public virtual ICollection<Deportistum> Deportista { get; } = new List<Deportistum>();
 

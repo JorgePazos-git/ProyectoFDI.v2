@@ -19,11 +19,17 @@ public partial class ProyectoFdiV2Context : DbContext
 
     public virtual DbSet<Club> Clubs { get; set; }
 
+    public virtual DbSet<CompetenciaBloqueClasifica> CompetenciaBloqueClasificas { get; set; }
+
+    public virtual DbSet<CompetenciaBloqueFinal> CompetenciaBloqueFinals { get; set; }
+
     public virtual DbSet<Competencium> Competencia { get; set; }
 
     public virtual DbSet<DeportistaModalidad> DeportistaModalidads { get; set; }
 
     public virtual DbSet<Deportistum> Deportista { get; set; }
+
+    public virtual DbSet<DetalleCompetenciaDificultad> DetalleCompetenciaDificultads { get; set; }
 
     public virtual DbSet<DetalleCompetencium> DetalleCompetencia { get; set; }
 
@@ -49,7 +55,7 @@ public partial class ProyectoFdiV2Context : DbContext
     {
         modelBuilder.Entity<Categorium>(entity =>
         {
-            entity.HasKey(e => e.IdCat).HasName("PK__categori__D54686DE82B4A573");
+            entity.HasKey(e => e.IdCat).HasName("PK__categori__D54686DE494DEF25");
 
             entity.ToTable("categoria");
 
@@ -62,7 +68,7 @@ public partial class ProyectoFdiV2Context : DbContext
 
         modelBuilder.Entity<Club>(entity =>
         {
-            entity.HasKey(e => e.IdClub).HasName("PK__club__6FA6EEEFF31FBD65");
+            entity.HasKey(e => e.IdClub).HasName("PK__club__6FA6EEEFF7500A2D");
 
             entity.ToTable("club");
 
@@ -73,13 +79,58 @@ public partial class ProyectoFdiV2Context : DbContext
                 .HasColumnName("nombre_club");
         });
 
+        modelBuilder.Entity<CompetenciaBloqueClasifica>(entity =>
+        {
+            entity.HasKey(e => e.IdCompeBloqueCla).HasName("PK__competen__12B9B98C7FD9C068");
+
+            entity.ToTable("competencia_bloque_clasifica");
+
+            entity.Property(e => e.IdCompeBloqueCla).HasColumnName("id_compe_bloque_cla");
+            entity.Property(e => e.ClasiBloque).HasColumnName("clasi_bloque");
+            entity.Property(e => e.IdCom).HasColumnName("id_com");
+            entity.Property(e => e.IdDep).HasColumnName("id_dep");
+            entity.Property(e => e.Puesto).HasColumnName("puesto");
+            entity.Property(e => e.TopCla).HasColumnName("top_cla");
+            entity.Property(e => e.TopIntentosCla).HasColumnName("top_intentos_cla");
+            entity.Property(e => e.ZonaCla).HasColumnName("zona_cla");
+            entity.Property(e => e.ZonaIntentosCla).HasColumnName("zona_intentos_cla");
+
+            entity.HasOne(d => d.IdComNavigation).WithMany(p => p.CompetenciaBloqueClasificas)
+                .HasForeignKey(d => d.IdCom)
+                .HasConstraintName("FK__competenc__id_co__17036CC0");
+
+            entity.HasOne(d => d.IdDepNavigation).WithMany(p => p.CompetenciaBloqueClasificas)
+                .HasForeignKey(d => d.IdDep)
+                .HasConstraintName("FK__competenc__id_de__160F4887");
+        });
+
+        modelBuilder.Entity<CompetenciaBloqueFinal>(entity =>
+        {
+            entity.HasKey(e => e.IdCompeBloqueFinal).HasName("PK__competen__7EAF60A57C6ED112");
+
+            entity.ToTable("competencia_bloque_final");
+
+            entity.Property(e => e.IdCompeBloqueFinal).HasColumnName("id_compe_bloque_final");
+            entity.Property(e => e.IdCompeBloqueCla).HasColumnName("id_compe_bloque_cla");
+            entity.Property(e => e.Puesto).HasColumnName("puesto");
+            entity.Property(e => e.TopCla).HasColumnName("top_cla");
+            entity.Property(e => e.TopIntentosCla).HasColumnName("top_intentos_cla");
+            entity.Property(e => e.ZonaCla).HasColumnName("zona_cla");
+            entity.Property(e => e.ZonaIntentosCla).HasColumnName("zona_intentos_cla");
+
+            entity.HasOne(d => d.IdCompeBloqueClaNavigation).WithMany(p => p.CompetenciaBloqueFinals)
+                .HasForeignKey(d => d.IdCompeBloqueCla)
+                .HasConstraintName("FK__competenc__id_co__1CBC4616");
+        });
+
         modelBuilder.Entity<Competencium>(entity =>
         {
-            entity.HasKey(e => e.IdCom).HasName("PK__competen__D6967171FBDC9F5F");
+            entity.HasKey(e => e.IdCom).HasName("PK__competen__D6967171FCA22FB8");
 
             entity.ToTable("competencia");
 
             entity.Property(e => e.IdCom).HasColumnName("id_com");
+            entity.Property(e => e.ActivoCom).HasColumnName("activo_com");
             entity.Property(e => e.FechaFinCom)
                 .HasColumnType("date")
                 .HasColumnName("fechaFin_com");
@@ -91,7 +142,6 @@ public partial class ProyectoFdiV2Context : DbContext
             entity.Property(e => e.IdJuez).HasColumnName("id_juez");
             entity.Property(e => e.IdMod).HasColumnName("id_mod");
             entity.Property(e => e.IdSede).HasColumnName("id_sede");
-            entity.Property(e => e.ActivoCom).HasColumnName("activo_com");
             entity.Property(e => e.NombreCom)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -99,28 +149,28 @@ public partial class ProyectoFdiV2Context : DbContext
 
             entity.HasOne(d => d.IdCatNavigation).WithMany(p => p.Competencia)
                 .HasForeignKey(d => d.IdCat)
-                .HasConstraintName("FK__competenc__id_ca__45F365D3");
+                .HasConstraintName("FK__competenc__id_ca__7F2BE32F");
 
             entity.HasOne(d => d.IdGenNavigation).WithMany(p => p.Competencia)
                 .HasForeignKey(d => d.IdGen)
-                .HasConstraintName("FK__competenc__id_ge__440B1D61");
+                .HasConstraintName("FK__competenc__id_ge__7D439ABD");
 
             entity.HasOne(d => d.IdJuezNavigation).WithMany(p => p.Competencia)
                 .HasForeignKey(d => d.IdJuez)
-                .HasConstraintName("FK__competenc__id_ju__44FF419A");
+                .HasConstraintName("FK__competenc__id_ju__7E37BEF6");
 
             entity.HasOne(d => d.IdModNavigation).WithMany(p => p.Competencia)
                 .HasForeignKey(d => d.IdMod)
-                .HasConstraintName("FK__competenc__id_mo__47DBAE45");
+                .HasConstraintName("FK__competenc__id_mo__01142BA1");
 
             entity.HasOne(d => d.IdSedeNavigation).WithMany(p => p.Competencia)
                 .HasForeignKey(d => d.IdSede)
-                .HasConstraintName("FK__competenc__id_se__46E78A0C");
+                .HasConstraintName("FK__competenc__id_se__00200768");
         });
 
         modelBuilder.Entity<DeportistaModalidad>(entity =>
         {
-            entity.HasKey(e => e.IdDepmod).HasName("PK__deportis__1CF328D093563263");
+            entity.HasKey(e => e.IdDepmod).HasName("PK__deportis__1CF328D067FE08EE");
 
             entity.ToTable("deportista_modalidad");
 
@@ -130,20 +180,21 @@ public partial class ProyectoFdiV2Context : DbContext
 
             entity.HasOne(d => d.IdDepNavigation).WithMany(p => p.DeportistaModalidads)
                 .HasForeignKey(d => d.IdDep)
-                .HasConstraintName("FK__deportist__id_de__5DCAEF64");
+                .HasConstraintName("FK__deportist__id_de__7A672E12");
 
             entity.HasOne(d => d.IdModNavigation).WithMany(p => p.DeportistaModalidads)
                 .HasForeignKey(d => d.IdMod)
-                .HasConstraintName("FK__deportist__id_mo__5CD6CB2B");
+                .HasConstraintName("FK__deportist__id_mo__797309D9");
         });
 
         modelBuilder.Entity<Deportistum>(entity =>
         {
-            entity.HasKey(e => e.IdDep).HasName("PK__deportis__D5EA635C9B3D2523");
+            entity.HasKey(e => e.IdDep).HasName("PK__deportis__D5EA635C6A1D0BA3");
 
             entity.ToTable("deportista");
 
             entity.Property(e => e.IdDep).HasColumnName("id_dep");
+            entity.Property(e => e.ActivoDep).HasColumnName("activo_dep");
             entity.Property(e => e.ApellidosDep)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -158,7 +209,6 @@ public partial class ProyectoFdiV2Context : DbContext
             entity.Property(e => e.IdGen).HasColumnName("id_gen");
             entity.Property(e => e.IdPro).HasColumnName("id_pro");
             entity.Property(e => e.IdUsu).HasColumnName("id_usu");
-            entity.Property(e => e.ActivoDep).HasColumnName("activo_dep");
             entity.Property(e => e.NombresDep)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -166,32 +216,65 @@ public partial class ProyectoFdiV2Context : DbContext
 
             entity.HasOne(d => d.IdCatNavigation).WithMany(p => p.Deportista)
                 .HasForeignKey(d => d.IdCat)
-                .HasConstraintName("FK__deportist__id_ca__3B75D760");
+                .HasConstraintName("FK__deportist__id_ca__73BA3083");
 
             entity.HasOne(d => d.IdClubNavigation).WithMany(p => p.Deportista)
                 .HasForeignKey(d => d.IdClub)
-                .HasConstraintName("FK__deportist__id_cl__3D5E1FD2");
+                .HasConstraintName("FK__deportist__id_cl__75A278F5");
 
             entity.HasOne(d => d.IdEntNavigation).WithMany(p => p.Deportista)
                 .HasForeignKey(d => d.IdEnt)
-                .HasConstraintName("FK__deportist__id_en__3E52440B");
+                .HasConstraintName("FK__deportist__id_en__76969D2E");
 
             entity.HasOne(d => d.IdGenNavigation).WithMany(p => p.Deportista)
                 .HasForeignKey(d => d.IdGen)
-                .HasConstraintName("FK__deportist__id_ge__3C69FB99");
+                .HasConstraintName("FK__deportist__id_ge__74AE54BC");
 
             entity.HasOne(d => d.IdProNavigation).WithMany(p => p.Deportista)
                 .HasForeignKey(d => d.IdPro)
-                .HasConstraintName("FK__deportist__id_pr__3A81B327");
+                .HasConstraintName("FK__deportist__id_pr__72C60C4A");
 
             entity.HasOne(d => d.IdUsuNavigation).WithMany(p => p.Deportista)
                 .HasForeignKey(d => d.IdUsu)
-                .HasConstraintName("FK__deportist__id_us__398D8EEE");
+                .HasConstraintName("FK__deportist__id_us__71D1E811");
+        });
+
+        modelBuilder.Entity<DetalleCompetenciaDificultad>(entity =>
+        {
+            entity.HasKey(e => e.IdDetalleDificultad).HasName("PK__detalle___433E45E6AB3BBF49");
+
+            entity.ToTable("detalle_competencia_dificultad");
+
+            entity.Property(e => e.IdDetalleDificultad).HasColumnName("id_detalle_dificultad");
+            entity.Property(e => e.Clas1Res)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("clas1_res");
+            entity.Property(e => e.Clas2Res)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("clas2_res");
+            entity.Property(e => e.FinalRes)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("final_res");
+            entity.Property(e => e.IdCom).HasColumnName("id_com");
+            entity.Property(e => e.IdDep).HasColumnName("id_dep");
+            entity.Property(e => e.Puesto).HasColumnName("puesto");
+            entity.Property(e => e.PuestoInicialRes).HasColumnName("puesto_inicial_res");
+
+            entity.HasOne(d => d.IdComNavigation).WithMany(p => p.DetalleCompetenciaDificultads)
+                .HasForeignKey(d => d.IdCom)
+                .HasConstraintName("FK__detalle_c__id_co__634EBE90");
+
+            entity.HasOne(d => d.IdDepNavigation).WithMany(p => p.DetalleCompetenciaDificultads)
+                .HasForeignKey(d => d.IdDep)
+                .HasConstraintName("FK__detalle_c__id_de__625A9A57");
         });
 
         modelBuilder.Entity<DetalleCompetencium>(entity =>
         {
-            entity.HasKey(e => e.IdDetalle).HasName("PK__detalle___4F1332DE2B69EBEA");
+            entity.HasKey(e => e.IdDetalle).HasName("PK__detalle___4F1332DEBB81259D");
 
             entity.ToTable("detalle_competencia");
 
@@ -200,42 +283,43 @@ public partial class ProyectoFdiV2Context : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("clas_res");
-            entity.Property(e => e.OctavosRes)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("octavos_res");
             entity.Property(e => e.CuartosRes)
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("cuartos_res");
-            entity.Property(e => e.SemiRes)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("semi_res");
             entity.Property(e => e.FinalRes)
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("final_res");
             entity.Property(e => e.IdCom).HasColumnName("id_com");
             entity.Property(e => e.IdDep).HasColumnName("id_dep");
+            entity.Property(e => e.OctavosRes)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("octavos_res");
             entity.Property(e => e.Puesto).HasColumnName("puesto");
+            entity.Property(e => e.SemiRes)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("semi_res");
 
             entity.HasOne(d => d.IdComNavigation).WithMany(p => p.DetalleCompetencia)
                 .HasForeignKey(d => d.IdCom)
-                .HasConstraintName("FK__detalle_c__id_co__619B8048");
+                .HasConstraintName("FK__detalle_c__id_co__04E4BC85");
 
             entity.HasOne(d => d.IdDepNavigation).WithMany(p => p.DetalleCompetencia)
                 .HasForeignKey(d => d.IdDep)
-                .HasConstraintName("FK__detalle_c__id_de__60A75C0F");
+                .HasConstraintName("FK__detalle_c__id_de__03F0984C");
         });
 
         modelBuilder.Entity<Entrenador>(entity =>
         {
-            entity.HasKey(e => e.IdEnt).HasName("PK__entrenad__D52ABC751B02354A");
+            entity.HasKey(e => e.IdEnt).HasName("PK__entrenad__D52ABC75C7982C56");
 
             entity.ToTable("entrenador");
 
             entity.Property(e => e.IdEnt).HasColumnName("id_ent");
+            entity.Property(e => e.ActivoEnt).HasColumnName("activo_ent");
             entity.Property(e => e.ApellidosEnt)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -246,7 +330,6 @@ public partial class ProyectoFdiV2Context : DbContext
                 .HasColumnName("cedula_ent");
             entity.Property(e => e.IdPro).HasColumnName("id_pro");
             entity.Property(e => e.IdUsu).HasColumnName("id_usu");
-            entity.Property(e => e.ActivoEnt).HasColumnName("activo_ent");
             entity.Property(e => e.NombresEnt)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -254,16 +337,16 @@ public partial class ProyectoFdiV2Context : DbContext
 
             entity.HasOne(d => d.IdProNavigation).WithMany(p => p.Entrenadors)
                 .HasForeignKey(d => d.IdPro)
-                .HasConstraintName("FK__entrenado__id_pr__32E0915F");
+                .HasConstraintName("FK__entrenado__id_pr__6B24EA82");
 
             entity.HasOne(d => d.IdUsuNavigation).WithMany(p => p.Entrenadors)
                 .HasForeignKey(d => d.IdUsu)
-                .HasConstraintName("FK__entrenado__id_us__31EC6D26");
+                .HasConstraintName("FK__entrenado__id_us__6A30C649");
         });
 
         modelBuilder.Entity<Genero>(entity =>
         {
-            entity.HasKey(e => e.IdGen).HasName("PK__genero__D7967175217FA7CB");
+            entity.HasKey(e => e.IdGen).HasName("PK__genero__D79671759B1036DC");
 
             entity.ToTable("genero");
 
@@ -276,11 +359,12 @@ public partial class ProyectoFdiV2Context : DbContext
 
         modelBuilder.Entity<Juez>(entity =>
         {
-            entity.HasKey(e => e.IdJuez).HasName("PK__juez__0FA80749D2956F4B");
+            entity.HasKey(e => e.IdJuez).HasName("PK__juez__0FA80749CA28D854");
 
             entity.ToTable("juez");
 
             entity.Property(e => e.IdJuez).HasColumnName("id_juez");
+            entity.Property(e => e.ActivoJuez).HasColumnName("activo_juez");
             entity.Property(e => e.ApellidosJuez)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -291,7 +375,6 @@ public partial class ProyectoFdiV2Context : DbContext
                 .HasColumnName("cedula_juez");
             entity.Property(e => e.IdPro).HasColumnName("id_pro");
             entity.Property(e => e.IdUsu).HasColumnName("id_usu");
-            entity.Property(e => e.ActivoJuez).HasColumnName("activo_juez");
             entity.Property(e => e.NombresJuez)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -300,16 +383,16 @@ public partial class ProyectoFdiV2Context : DbContext
 
             entity.HasOne(d => d.IdProNavigation).WithMany(p => p.Juezs)
                 .HasForeignKey(d => d.IdPro)
-                .HasConstraintName("FK__juez__id_pro__36B12243");
+                .HasConstraintName("FK__juez__id_pro__6EF57B66");
 
             entity.HasOne(d => d.IdUsuNavigation).WithMany(p => p.Juezs)
                 .HasForeignKey(d => d.IdUsu)
-                .HasConstraintName("FK__juez__id_usu__35BCFE0A");
+                .HasConstraintName("FK__juez__id_usu__6E01572D");
         });
 
         modelBuilder.Entity<Modalidad>(entity =>
         {
-            entity.HasKey(e => e.IdMod).HasName("PK__modalida__6C8843AAE0B7C907");
+            entity.HasKey(e => e.IdMod).HasName("PK__modalida__6C8843AA80073099");
 
             entity.ToTable("modalidad");
 
@@ -322,7 +405,7 @@ public partial class ProyectoFdiV2Context : DbContext
 
         modelBuilder.Entity<Provincium>(entity =>
         {
-            entity.HasKey(e => e.IdPro).HasName("PK__provinci__6FC9A86C64F1CFB5");
+            entity.HasKey(e => e.IdPro).HasName("PK__provinci__6FC9A86C1889B546");
 
             entity.ToTable("provincia");
 
@@ -335,7 +418,7 @@ public partial class ProyectoFdiV2Context : DbContext
 
         modelBuilder.Entity<Sede>(entity =>
         {
-            entity.HasKey(e => e.IdSede).HasName("PK__sede__D693504B931EB44F");
+            entity.HasKey(e => e.IdSede).HasName("PK__sede__D693504B17045EBE");
 
             entity.ToTable("sede");
 
@@ -348,7 +431,7 @@ public partial class ProyectoFdiV2Context : DbContext
 
         modelBuilder.Entity<Usuario>(entity =>
         {
-            entity.HasKey(e => e.IdUsu).HasName("PK__usuario__6AE80FBB57EF0A22");
+            entity.HasKey(e => e.IdUsu).HasName("PK__usuario__6AE80FBB4C621344");
 
             entity.ToTable("usuario");
 

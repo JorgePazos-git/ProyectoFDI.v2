@@ -7,11 +7,12 @@ public partial class Entrenador
 {
     public int IdEnt { get; set; }
 
-    public string? NombresEnt { get; set; }
+    public string NombresEnt { get; set; }
 
-    public string? ApellidosEnt { get; set; }
+    public string ApellidosEnt { get; set; }
 
-    public string? CedulaEnt { get; set; }
+    public string CedulaEnt { get; set; }
+
     public bool? ActivoEnt { get; set; }
 
     public int? IdPro { get; set; }
@@ -20,7 +21,7 @@ public partial class Entrenador
 
     public virtual ICollection<Deportistum> Deportista { get; } = new List<Deportistum>();
 
-    public virtual Provincium? IdProNavigation { get; set; }
+    public virtual Provincium IdProNavigation { get; set; }
 
-    public virtual Usuario? IdUsuNavigation { get; set; }
+    public virtual Usuario IdUsuNavigation { get; set; }
 }

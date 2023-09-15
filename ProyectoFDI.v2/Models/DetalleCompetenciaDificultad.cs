@@ -3,19 +3,17 @@ using System.Collections.Generic;
 
 namespace ProyectoFDI.v2.Models;
 
-public partial class DetalleCompetencium
+public partial class DetalleCompetenciaDificultad
 {
-    public int IdDetalle { get; set; }
+    public int IdDetalleDificultad { get; set; }
 
     public int? Puesto { get; set; }
 
-    public string ClasRes { get; set; }
+    public string Clas1Res { get; set; }
 
-    public string OctavosRes { get; set; }
+    public string Clas2Res { get; set; }
 
-    public string CuartosRes { get; set; }
-
-    public string SemiRes { get; set; }
+    public int? PuestoInicialRes { get; set; }
 
     public string FinalRes { get; set; }
 

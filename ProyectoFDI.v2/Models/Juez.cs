@@ -7,13 +7,14 @@ public partial class Juez
 {
     public int IdJuez { get; set; }
 
-    public string? NombresJuez { get; set; }
+    public string NombresJuez { get; set; }
 
-    public string? ApellidosJuez { get; set; }
+    public string ApellidosJuez { get; set; }
 
-    public string? CedulaJuez { get; set; }
+    public string CedulaJuez { get; set; }
 
     public bool? PrincipalJuez { get; set; }
+
     public bool? ActivoJuez { get; set; }
 
     public int? IdPro { get; set; }
@@ -22,7 +23,7 @@ public partial class Juez
 
     public virtual ICollection<Competencium> Competencia { get; } = new List<Competencium>();
 
-    public virtual Provincium? IdProNavigation { get; set; }
+    public virtual Provincium IdProNavigation { get; set; }
 
-    public virtual Usuario? IdUsuNavigation { get; set; }
+    public virtual Usuario IdUsuNavigation { get; set; }
 }
