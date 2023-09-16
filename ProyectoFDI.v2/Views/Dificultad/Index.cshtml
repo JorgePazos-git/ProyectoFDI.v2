@@ -1,0 +1,146 @@
+﻿@model IEnumerable<ProyectoFDI.v2.Models.DetalleCompetenciaDificultad>
+
+@{
+    ViewData["Title"] = "Index";
+
+
+    Dictionary<int, string> generos = new Dictionary<int, string>
+                {
+                    {1, "Masculino"},
+                    {2, "Femenino"},
+                    {3, "Otro"}
+                };
+
+    int id = ViewBag.competencia.IdGen;
+    string genero = generos.ContainsKey(id) ? generos[id] : "Desconocido";
+
+    Dictionary<int, string> categorias = new Dictionary<int, string>
+                {
+                    {1, "Infantil"},
+                    {2, "Under16"},
+                    {3, "Under18"},
+                    {4, "Under20"},
+                    {5, "Over20"}
+                };
+
+    id = ViewBag.competencia.IdCat;
+    string categoria = categorias.ContainsKey(id) ? categorias[id] : "Desconocido";
+
+    Dictionary<int, string> modalidades = new Dictionary<int, string>
+                {
+                    {1, "Velocidad"},
+                    {2, "Bloque"},
+                    {3, "Dificultad"}
+                };
+
+    id = ViewBag.competencia.IdMod;
+    string modalidad = modalidades.ContainsKey(id) ? modalidades[id] : "Desconocido";
+
+    Dictionary<bool, string> estados = new Dictionary<bool, string>
+                {
+                    {true, "Activo"},
+                    {false, "Inactivo"}
+                };
+
+    bool est = ViewBag.competencia.ActivoCom;
+    string estado = estados.ContainsKey(est) ? estados[est] : "Desconocido";
+}
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<h1>RESULTADOS DIFICULTAD</h1>
+
+<h4>Agregar Resultados</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+            <div class="form-group">
+                <label class="control-label">Nombre</label>
+                <input disabled="disabled" value="@ViewBag.competencia.NombreCom" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Fecha Inicio</label>
+                <input disabled="disabled" value="@ViewBag.competencia.FechaInicioCom" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Fecha de Finalización</label>
+                <input disabled="disabled" value="@ViewBag.competencia.FechaFinCom" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Género</label>
+                <input disabled="disabled" value="@genero" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Juez</label>
+                <input disabled="disabled" value="@ViewBag.competencia.IdJuez" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Categoría</label>
+                <input disabled="disabled" value="@categoria" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Sede</label>
+                <input disabled="disabled" value="@ViewBag.competencia.IdSede" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Modalidad</label>
+                <input disabled="disabled" value="@modalidad" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Estado</label>
+                <input disabled="disabled" value="@estado" class="form-control" />
+            </div>
+    </div>
+</div>
+
+<br />
+<h4>DETALLE</h4>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Deportista
+            </th>
+            <th>
+                Resultado Clasificacion 1
+            </th>
+            <th>
+                Resultado Clasificacion 2
+            </th>
+            <th>
+                Opciones
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            @foreach (var item in Model.Where(m => m.IdCom == ViewBag.idcompetencia))
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdDepNavigation.NombresDep) @Html.DisplayFor(modelItem => item.IdDepNavigation.ApellidosDep)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Clas1Res)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Clas2Res)
+                    </td>
+                    <td>
+                        <input type="button" class="agregar btn-danger" value="Agregar Clasificaciones" />
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+
+
+

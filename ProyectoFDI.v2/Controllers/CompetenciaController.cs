@@ -262,6 +262,11 @@ namespace ProyectoFDI.v2.Controllers
             {
                 return RedirectToAction("Index", "Bloque", new { competencia = data.IdCom });
             }
+
+            if(data.IdMod == 3)
+            {
+                return RedirectToAction("Index", "Dificultad", new {competencia = data.IdCom});
+            }
             ViewBag.ListaCategorias = listaCategorias();
             ViewBag.ListaGeneros = listaGeneros();
             ViewBag.ListaModalidades = listaModalidades();

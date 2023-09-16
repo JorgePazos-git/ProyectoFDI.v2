@@ -1,0 +1,66 @@
+﻿@model IEnumerable<ProyectoFDI.v2.Models.DetalleCompetenciaDificultad>
+
+@{
+    ViewData["Title"] = "lista";
+}
+
+<h1>View</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                pues
+            </th>
+            <th>
+                clas1
+            </th>
+            <th>
+                clas2
+            </th>
+            <th>
+                puestoini
+            </th>
+            <th>
+                finalres
+            </th>
+            <th>
+                com
+            </th>
+            <th>
+                dep
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Puesto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Clas1Res)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Clas2Res)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PuestoInicialRes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FinalRes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdCom)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdDep)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

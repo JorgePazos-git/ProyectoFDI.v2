@@ -81,8 +81,17 @@
 
 @if (Model.ActivoCom == true)
 {
-    <button type="button" class="btn btn-outline-success">@Html.ActionLink("Agregar Deportista","Create", "DetalleCompetencia", new {returnTo="edit"})</button>
+    @if (Model.IdMod == 3)
+    {
+        <button type="button" class="btn btn-outline-success">@Html.ActionLink("Agregar Deportista","Create", "Dificultad",  new { idCom = Model.IdCom })</button>
+    }
+    if(Model.IdMod == 1){
+        <button type="button" class="btn btn-outline-success">@Html.ActionLink("Agregar Deportista","Create", "DetalleCompetencia", new {returnTo="edit"})</button>
+    }
+    
 }
+
+
 
 
 <table class="table">
@@ -95,23 +104,41 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.DetalleCompetencia)
-        {
-            <tr>
-                <td>
-                    <p>
-                        @Html.DisplayFor(modelItem => item.IdDepNavigation.NombresDep) @Html.DisplayFor(modelItem => item.IdDepNavigation.ApellidosDep)
-                    </p>
-                </td>
-                
-                @if (Model.ActivoCom == true){
+        @if(Model.IdMod == 1){
+            foreach (var item in Model.DetalleCompetencia)
+            {
+                <tr>
                     <td>
-                        <button type="button" class="btn btn-outline-danger">@Html.ActionLink("Eliminar","Delete", "DetalleCompetencia", new {id=item.IdDetalle, returnTo= "edit" })</button>
+                        <p>
+                            @Html.DisplayFor(modelItem => item.IdDepNavigation.NombresDep) @Html.DisplayFor(modelItem => item.IdDepNavigation.ApellidosDep)
+                        </p>
                     </td>
-                    
-                }              
-            </tr>
+
+                    @if (Model.ActivoCom == true)
+                    {
+                        <td>
+                            <button type="button" class="btn btn-outline-danger">@Html.ActionLink("Eliminar","Delete", "DetalleCompetencia", new {id=item.IdDetalle, returnTo= "edit" })</button>
+                        </td>
+
+                    }
+                </tr>
+            }
         }
+
+        @if (Model.IdMod == 3)
+        {
+            foreach (var item in Model.DetalleCompetenciaDificultads)
+            {
+                <tr>
+                    <td>
+                        <p>
+                            @Html.DisplayFor(modelItem => item.IdDepNavigation.NombresDep) @Html.DisplayFor(modelItem => item.IdDepNavigation.ApellidosDep)
+                        </p>
+                    </td>
+                </tr>
+            }
+        }
+        
     </tbody>
 </table>
 

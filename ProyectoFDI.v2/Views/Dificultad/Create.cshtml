@@ -1,0 +1,90 @@
+﻿@model List<ProyectoFDI.v2.Models.DetalleCompetenciaDificultad>
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<h1>CREAR</h1>
+
+<h4>Detalle de la Competencia</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Create">
+            <button type="button" id="addRow" class="btn btn-success">Agregar Fila</button>
+            <table class="table" id="detalleTable">
+                <thead>
+                    <tr>
+                        <th asp-for="IdDep">Deportista</th>
+                        <th asp-for="IdCom">Competencia</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                <div class="form-group">
+                                    @Html.DropDownListFor(model => model[i].IdDep, (IEnumerable<SelectListItem>)ViewBag.listaDeportistas, "--Elija un Deportista--", new { @class = "form-select" })
+                                </div>
+                            </td>
+                            <td>
+                                <input type="text" asp-for="@Model[i].IdCom" value="@ViewBag.compe" readonly />
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger deleteRow">Eliminar</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+            <div class="form-group">
+                <input type="submit" value="Crear" class="btn btn-outline-primary" />
+                <button type="button" class="btn btn-outline-danger"><a class="boton" asp-controller="Competencia" asp-action="Index">Regresar</a></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#addRow").click(function () {
+                var index = $("#detalleTable tbody tr").length;
+                console.log("Botón 'Agregar Fila' clickeado. Index: " + index);
+
+                var newRow = $("<tr>");
+                var firstRow = $("#detalleTable tbody tr:first");
+
+                if (firstRow.length > 0) {
+                    newRow.html(firstRow.html().replace(/\[0\]/g, '[' + index + ']'));
+                    console.log("Nueva fila HTML: " + newRow.html());
+                    newRow.find("input[type='hidden']").val('');
+                    newRow.find("select").val('');
+                    newRow.appendTo($("#detalleTable tbody"));
+                } else {
+                    console.error("No se encontró ninguna fila existente.");
+                }
+            });
+
+            $("#detalleTable").on("click", ".deleteRow", function () {
+                $(this).closest("tr").remove();
+            });
+        });
+
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+}
+
+
