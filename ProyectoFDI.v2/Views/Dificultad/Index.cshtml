@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 
 
     Dictionary<int, string> generos = new Dictionary<int, string>
@@ -133,13 +134,84 @@
                         @Html.DisplayFor(modelItem => item.Clas2Res)
                     </td>
                     <td>
-                        <input type="button" class="agregar btn-danger" value="Agregar Clasificaciones" />
+                        <input type="button" class="agregar btn btn-info" data-id="@item.IdDetalleDificultad" value="Agregar Clasificaciones" />
                     </td>
                 </tr>
             }
         }
     </tbody>
 </table>
+
+<script>
+    $(document).ready(function () {
+        // Manejar el clic en el botón "Agregar Clasificaciones"
+        $(".agregar").click(function () {
+
+            var botonAgregar = $(this);
+            // Obtener el nombre del deportista de la fila actual
+            var deportistaNombre = $(this).closest("tr").find("td:first").text();
+
+            // Crear un formulario de entrada de datos para clasificaciones
+            Swal.fire({
+                title: 'Agregar Clasificaciones',
+                html:
+                    `<input id="clasificacion1" class="swal2-input" placeholder="Clasificación 1">
+                         <input id="clasificacion2" class="swal2-input" placeholder="Clasificación 2">`,
+                showCancelButton: true,
+                confirmButtonText: 'Guardar',
+                cancelButtonText: 'Cancelar',
+                focusConfirm: false,
+                preConfirm: () => {
+                    // Obtener los valores ingresados
+                    var clasificacion1 = document.getElementById('clasificacion1').value;
+                    var clasificacion2 = document.getElementById('clasificacion2').value;
+                    var idDetalle = botonAgregar.data("id");
+
+                    // Realizar una solicitud AJAX para enviar los valores al controlador
+                    $.ajax({
+                        type: 'POST',
+                        url: '/Dificultad/AgregarClasificaciones', // Reemplaza 'TuControlador' con el nombre de tu controlador
+                        data: {
+                            idDetalle: idDetalle,
+                            deportistaNombre: deportistaNombre,
+                            clasificacion1: clasificacion1,
+                            clasificacion2: clasificacion2
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                
+
+                                Swal.fire({
+                                    title: 'Clasificaciones Guardadas',
+                                    text: 'Los valores se han guardado correctamente en la base de datos.',
+                                    icon: 'success'
+                                });
+
+                                var fila = botonAgregar.closest("tr");
+                                fila.find("td:eq(1)").text(clasificacion1);
+                                fila.find("td:eq(2)").text(clasificacion2);
+
+                            } else {
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: 'Hubo un error al guardar los valores.',
+                                    icon: 'error'
+                                });
+                            }
+                        },
+                        error: function () {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Hubo un error en la solicitud al servidor.',
+                                icon: 'error'
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
 
 
 

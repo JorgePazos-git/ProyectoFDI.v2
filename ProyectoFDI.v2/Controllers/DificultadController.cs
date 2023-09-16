@@ -107,6 +107,36 @@ namespace ProyectoFDI.v2.Controllers
             }
         }
 
+        [HttpPost]
+        public ActionResult AgregarClasificaciones(int idDetalle, string deportistaNombre, string clasificacion1, string clasificacion2)
+        {
+            try
+            {
+                DetalleCompetenciaDificultad detalleOld = APIConsumer<DetalleCompetenciaDificultad>.SelectOne(apiUrl + idDetalle.ToString());
+                DetalleCompetenciaDificultad detallenew = detalleOld;
+
+                detallenew.Clas1Res = clasificacion1;
+                detallenew.Clas2Res = clasificacion2;
+
+                try
+                {
+                    APIConsumer<DetalleCompetenciaDificultad>.Update(apiUrl + idDetalle.ToString(), detallenew);
+                    return Json(new { success = true });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, error = ex.Message });
+                }
+
+                
+            }
+            catch (Exception ex)
+            {
+                // Si ocurre un error, puedes devolver una respuesta de error.
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
         // GET: HomeController1/Edit/5
         public ActionResult Edit(int id)
         {
