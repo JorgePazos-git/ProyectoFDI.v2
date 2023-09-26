@@ -3,49 +3,8 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
-
-    Dictionary<int, string> generos = new Dictionary<int, string>
-                {
-                    {1, "Masculino"},
-                    {2, "Femenino"},
-                    {3, "Otro"}
-                };
-
-    int id = ViewBag.competencia.IdGen;
-    string genero = generos.ContainsKey(id) ? generos[id] : "Desconocido";
-
-    Dictionary<int, string> categorias = new Dictionary<int, string>
-                {
-                    {1, "Infantil"},
-                    {2, "Under16"},
-                    {3, "Under18"},
-                    {4, "Under20"},
-                    {5, "Over20"}
-                };
-
-    id = ViewBag.competencia.IdCat;
-    string categoria = categorias.ContainsKey(id) ? categorias[id] : "Desconocido";
-
-    Dictionary<int, string> modalidades = new Dictionary<int, string>
-                {
-                    {1, "Velocidad"},
-                    {2, "Bloque"},
-                    {3, "Dificultad"}
-                };
-
-    id = ViewBag.competencia.IdMod;
-    string modalidad = modalidades.ContainsKey(id) ? modalidades[id] : "Desconocido";
-
-    Dictionary<bool, string> estados = new Dictionary<bool, string>
-                {
-                    {true, "Activo"},
-                    {false, "Inactivo"}
-                };
-
-    bool est = ViewBag.competencia.ActivoCom;
-    string estado = estados.ContainsKey(est) ? estados[est] : "Desconocido";
 }
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -59,42 +18,7 @@
 
 <div class="row">
     <div class="col-md-4">
-            <div class="form-group">
-                <label class="control-label">Nombre</label>
-                <input disabled="disabled" value="@ViewBag.competencia.NombreCom" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label class="control-label">Fecha Inicio</label>
-                <input disabled="disabled" value="@ViewBag.competencia.FechaInicioCom" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label class="control-label">Fecha de Finalización</label>
-                <input disabled="disabled" value="@ViewBag.competencia.FechaFinCom" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label class="control-label">Género</label>
-                <input disabled="disabled" value="@genero" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label class="control-label">Juez</label>
-                <input disabled="disabled" value="@ViewBag.competencia.IdJuez" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label class="control-label">Categoría</label>
-                <input disabled="disabled" value="@categoria" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label class="control-label">Sede</label>
-                <input disabled="disabled" value="@ViewBag.competencia.IdSede" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label class="control-label">Modalidad</label>
-                <input disabled="disabled" value="@modalidad" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label class="control-label">Estado</label>
-                <input disabled="disabled" value="@estado" class="form-control" />
-            </div>
+        @Html.Partial("_CompetenciaInfo")
     </div>
 </div>
 
@@ -156,6 +80,9 @@
             </thead>
             <tbody></tbody>
         </table>
+
+        <button id="redirigirBtn" class="btn btn-primary" style="display: none;">Ir a Finales</button>
+
     </div>
 </div>
 
@@ -324,6 +251,55 @@
         });
     });
 </script>
+
+<script>
+    $(document).ready(function () {
+        // Función para verificar si todos los campos de la tabla están llenos
+        function verificarTablaLlena() {
+            var tablaLlena = true;
+            $("#tablaDeportistas tbody tr").each(function () {
+                var puesto = $(this).find("td:eq(1)").text();
+                if (!puesto || puesto.trim() === "") {
+                    tablaLlena = false;
+                    return false; // Rompe el bucle si encuentra una fila sin puesto
+                }
+            });
+            return tablaLlena;
+        }
+
+        // Función para redirigir a la página de finales
+        function redirigirAFinales() {
+            // Reemplaza 'urlDeFinales' con la URL de tu página de finales
+            var urlDeFinales = '/Dificultad/Finales?competencia=' + @ViewBag.idcompetencia;
+
+            // Redirigir a la página de finales
+            window.location.href = urlDeFinales;
+        }
+
+        // Llama a la función al cargar la página para verificar el estado inicial
+        if (verificarTablaLlena()) {
+            $("#guardarBtn").show();
+            $("#redirigirBtn").show();
+        }
+
+        // Agrega un manejador de eventos para verificar cada vez que se cambia un valor en la tabla
+        $("#tablaDeportistas input").on("change", function () {
+            if (verificarTablaLlena()) {
+                $("#guardarBtn").show();
+                $("#redirigirBtn").show();
+            } else {
+                $("#guardarBtn").hide();
+                $("#redirigirBtn").hide();
+            }
+        });
+
+        // Agrega un manejador de eventos para el botón de redirigir a finales
+        $("#redirigirBtn").click(function () {
+            redirigirAFinales();
+        });
+    });
+</script>
+
 
 
 

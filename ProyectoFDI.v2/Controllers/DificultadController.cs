@@ -1,9 +1,15 @@
-﻿using DocumentFormat.OpenXml.Office2013.Excel;
+﻿using ClosedXML.Excel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProyectoFDI.v2.Code;
 using ProyectoFDI.v2.Models;
+using System.Data;
+using System.Text;
+using System.Data.SqlClient;
+using JsonSerializer = System.Text.Json.JsonSerializer;
+using Microsoft.JSInterop;
+using System.Globalization;
 
 namespace ProyectoFDI.v2.Controllers
 {
@@ -51,9 +57,57 @@ namespace ProyectoFDI.v2.Controllers
             return View(APIConsumer<DetalleCompetenciaDificultad>.Select(apiUrl));
         }
 
-        public ActionResult lista()
+        public ActionResult Finales(int competencia)
         {
-            return View(APIConsumer<DetalleCompetenciaDificultad>.Select(apiUrl));
+            this.idCom = competencia;
+            ViewBag.idcompetencia = competencia;
+            GetCompetencia(idCom);
+            List<DetalleCompetenciaDificultad> deportistasOrdenados = listaDetallesFinales();
+
+            return View(deportistasOrdenados);
+        }
+
+        private List<DetalleCompetenciaDificultad> listaDetallesFinales()
+        {
+            var detalles = APIConsumer<DetalleCompetenciaDificultad>.Select(apiUrl);
+            var lista = detalles.Select(f => new DetalleCompetenciaDificultad
+            {
+                IdDetalleDificultad = f.IdDetalleDificultad,
+                IdCom = f.IdCom,
+                IdDep = f.IdDep,
+                Clas1Res = f.Clas1Res,
+                Clas2Res = f.Clas2Res,
+                FinalRes = f.FinalRes,
+                Puesto = f.Puesto,
+                PuestoInicialRes = f.PuestoInicialRes,
+                IdComNavigation = f.IdComNavigation,
+                IdDepNavigation = f.IdDepNavigation
+            }).OrderBy(f => f.PuestoInicialRes).Take(8).ToList();
+
+            return lista;
+        }
+
+        private List<DetalleCompetenciaDificultad> listaDetalles()
+        {
+            var detalles = APIConsumer<DetalleCompetenciaDificultad>.Select(apiUrl);
+            var lista = detalles.Select(f => new DetalleCompetenciaDificultad
+            {
+                IdDetalleDificultad = f.IdDetalleDificultad,
+                IdCom = f.IdCom,
+                IdDep = f.IdDep,
+                Clas1Res = f.Clas1Res,
+                Clas2Res = f.Clas2Res,
+                FinalRes = f.FinalRes,
+                Puesto = f.Puesto,
+                PuestoInicialRes = f.PuestoInicialRes,
+                IdComNavigation = f.IdComNavigation,
+                IdDepNavigation = f.IdDepNavigation
+            }).OrderBy(f => f.Puesto.HasValue ? 0 : 1)
+              .ThenBy(f => f.Puesto)
+              .ThenBy(f => f.PuestoInicialRes)
+              .ToList();
+
+            return lista;
         }
 
         private void GetCompetencia(int idCom)
@@ -138,6 +192,35 @@ namespace ProyectoFDI.v2.Controllers
         }
 
         [HttpPost]
+        public ActionResult AgregarFinal(int idDetalle, string deportistaNombre, string final)
+        {
+            try
+            {
+                DetalleCompetenciaDificultad detalleOld = APIConsumer<DetalleCompetenciaDificultad>.SelectOne(apiUrl + idDetalle.ToString());
+                DetalleCompetenciaDificultad detallenew = detalleOld;
+
+                detallenew.FinalRes = final;
+
+                try
+                {
+                    APIConsumer<DetalleCompetenciaDificultad>.Update(apiUrl + idDetalle.ToString(), detallenew);
+                    return Json(new { success = true });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, error = ex.Message });
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                // Si ocurre un error, puedes devolver una respuesta de error.
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
+        [HttpPost]
         public IActionResult AsignarPuestos(int idCompetencia)
         {
             try
@@ -183,6 +266,54 @@ namespace ProyectoFDI.v2.Controllers
                         IdDepNavigation = f.IdDepNavigation,
                         PuestoInicialRes = f.PuestoInicialRes
                     }).ToList();
+
+                return Json(new { success = true, deportistas = deportistasOrdenados });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AsignarPuestosFinal(int idCompetencia)
+        {
+            try
+            {
+                // Obtener detalles y calcular puestos de ambas clasificaciones
+                var detalles = APIConsumer<DetalleCompetenciaDificultad>.Select(apiUrl).Where(f => f.IdCom == idCompetencia).ToList();
+                List<Tuple<int, int>> puestosFinal= CalcularPuestosClasificacion(detalles, 3);
+
+                
+                // Asignar puestos a los detalles
+                for (int i = 0; i < puestosFinal.Count; i++)
+                {
+                    int deportistaId = puestosFinal[i].Item1;
+                    DetalleCompetenciaDificultad detalle = detalles.FirstOrDefault(d => d.IdDep == deportistaId);
+
+                    if (detalle != null)
+                    {
+                        detalle.Puesto = puestosFinal[i].Item2; // +1 porque los puestos comienzan en 1
+                        APIConsumer<DetalleCompetenciaDificultad>.Update(apiUrl + detalle.IdDetalleDificultad.ToString(), detalle);
+                    }
+                }
+
+                // Obtener deportistas ordenados
+                var deportistasOrdenados = detalles
+                    .OrderBy(d => d.Puesto)
+                    .Select(f => new DetalleCompetenciaDificultad
+                    {
+                        IdDetalleDificultad = f.IdDetalleDificultad,
+                        Puesto = f.Puesto,
+                        Clas1Res = f.Clas1Res,
+                        Clas2Res = f.Clas2Res,
+                        FinalRes = f.FinalRes,
+                        IdCom = f.IdCom,
+                        IdDep = f.IdDep,
+                        IdComNavigation = f.IdComNavigation,
+                        IdDepNavigation = f.IdDepNavigation,
+                        PuestoInicialRes = f.PuestoInicialRes
+                    }).Take(1).ToList();
 
                 return Json(new { success = true, deportistas = deportistasOrdenados });
             }
@@ -265,6 +396,39 @@ namespace ProyectoFDI.v2.Controllers
                         resultadoAnterior = detalle.Clas2Res;
                     }
                 }
+                if(tipo == 3)
+                {
+                    var detallesOrdenados = detalles.OrderByDescending(d => d.FinalRes).ToList();
+
+
+                    int puesto = 1;
+                    int empate = 1;
+
+                    string resultadoAnterior = detallesOrdenados[0].FinalRes;
+
+                    foreach (var detalle in detallesOrdenados)
+                    {
+                        if (detalle.FinalRes == "top")
+                        {
+                            // Si es "top", asignar el puesto y continuar
+                            puestos.Add(new Tuple<int, int>(detalle.IdDep.Value, puesto));
+                        }
+                        if (detalle.FinalRes.EndsWith("+"))
+                        {
+                            // Si termina con "+", es un número sumado 0.5
+                            double numero = double.Parse(detalle.FinalRes.TrimEnd('+'));
+                            puestos.Add(new Tuple<int, int>(detalle.IdDep.Value, puesto));
+                        }
+                        if (detalle.FinalRes.All(char.IsDigit))
+                        {
+
+
+                            puestos.Add(new Tuple<int, int>(detalle.IdDep.Value, puesto));
+                        }
+                        puesto += empate;
+                        resultadoAnterior = detalle.FinalRes;
+                    }
+                }
             }
 
             return puestos;
@@ -309,6 +473,50 @@ namespace ProyectoFDI.v2.Controllers
             catch
             {
                 return View();
+            }
+        }
+
+        public FileResult ExportarExcel(int id)
+        {
+            List<DetalleCompetenciaDificultad> lista = listaDetalles(); 
+
+            DataTable dt = new DataTable();
+            using (SqlConnection cn = new SqlConnection("Data Source=proyectofdi.database.windows.net;Initial Catalog=ProyectoFDI.v2;User ID=proyectofdi;Password=Allistar123.;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"))
+            {
+                StringBuilder sb = new StringBuilder();
+
+                sb.AppendLine("select dt.puesto as PUESTO_FINAL, dt.puesto_inicial_res as PUESTO_CLASIFICACION," +
+                    "CONCAT(dp.nombres_dep,' ',dp.apellidos_dep) as DEPORTISTA," +
+                    "dt.clas1_res as CLASIFICACION_1, dt.clas2_res as CLASIFICACION_2, dt.final_res as FINAL " +
+                    "from detalle_competencia_dificultad dt INNER JOIN deportista dp on dt.id_dep=dp.id_dep " +
+                    "where id_com = " + id + "GROUP BY dt.puesto, dt.puesto_inicial_res, dp.nombres_dep, dp.apellidos_dep," +
+                    "dt.clas1_res, dt.clas2_res, dt.final_res ORDER BY dt.puesto");
+
+
+                SqlCommand cmd = new SqlCommand(sb.ToString(), cn);
+                cmd.CommandType = CommandType.Text;
+
+                cn.Open();
+
+                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                {
+                    da.Fill(dt);
+                }
+            }
+
+            dt.TableName = "Reporte Competencia";
+
+            using (XLWorkbook libro = new XLWorkbook())
+            {
+                var hoja = libro.Worksheets.Add(dt);
+
+                hoja.ColumnsUsed().AdjustToContents();
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    libro.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Reporte Competencia" + ".xlsx");
+                }
             }
         }
     }
