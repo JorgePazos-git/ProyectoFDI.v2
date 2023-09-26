@@ -141,6 +141,24 @@
         }
     </tbody>
 </table>
+<br />
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Deportistas Clasificados</h5>
+        <button id="guardarBtn" class="btn btn-primary" style="display: none;">Mostrar</button>
+
+        <table id="tablaDeportistas" class="table" style="display: none;">
+            <thead>
+                <tr>
+                    <th>Deportista</th>
+                    <th>Puesto</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
 
 <script>
     $(document).ready(function () {
@@ -209,6 +227,100 @@
                     });
                 }
             });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        // Función para verificar si todos los campos de clasificación están llenos
+        function verificarResultadosLlenos() {
+            var todosLlenos = true;
+            $("table tbody tr").each(function () {
+                var clasificacion1 = $(this).find("td:eq(1) input").val();
+                var clasificacion2 = $(this).find("td:eq(2) input").val();
+                if (clasificacion1 === "" || clasificacion2 === "") {
+                    todosLlenos = false;
+                    return false; // Rompe el bucle si encuentra una fila incompleta
+                }
+            });
+
+            // Muestra u oculta el botón en función de si todos los campos están llenos
+            if (todosLlenos) {
+                $("#guardarBtn").show();
+            } else {
+                $("#guardarBtn").hide();
+            }
+        }
+
+        // Llama a la función al cargar la página para verificar el estado inicial
+        verificarResultadosLlenos();
+
+        // Agrega un manejador de eventos para verificar cada vez que se cambia un valor en la tabla
+        $("table input").on("change", function () {
+            verificarResultadosLlenos();
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        // Función para asignar puestos y mostrar la tabla de deportistas ordenados
+        function asignarPuestos() {
+            $.ajax({
+                type: 'POST',
+                url: '/Dificultad/AsignarPuestos', // Reemplaza 'TuControlador' con el nombre de tu controlador
+                data: {
+                    // Puedes enviar cualquier información adicional que necesites aquí
+                    idCompetencia : @ViewBag.idcompetencia
+                },
+                success: function (response) {
+                    if (response.success) {
+                        // Mostrar la tabla de deportistas ordenados
+                        var tabla = $("#tablaDeportistas");
+                        tabla.show();
+
+                        // Limpiar la tabla (excepto la cabecera)
+                        tabla.find("tbody tr").remove();
+
+                        console.log(response.deportistas);
+
+                        // Agregar los deportistas ordenados a la tabla
+                        $.each(response.deportistas, function (index, deportista) {
+                            var fila = `<tr><td>${deportista.idDepNavigation.nombresDep} ${deportista.idDepNavigation.apellidosDep}</td><td>${deportista.puestoInicialRes}</td></tr>`;
+                            tabla.find("tbody").append(fila);
+                        });
+
+                        Swal.fire({
+                            title: 'Clasificaciones Guardadas',
+                            text: 'Los valores se han guardado correctamente en la base de datos.',
+                            icon: 'success',
+                            html: 'Puestos calculados: ' 
+                        });
+
+                        // Ocultar el botón después de asignar los puestos
+                        $("#guardarBtn").hide();
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Hubo un error al asignar los puestos.',
+                            icon: 'error'
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Hubo un error en la solicitud al servidor.',
+                        icon: 'error'
+                    });
+                }
+            });
+        }
+
+        // Manejar el clic en el botón "Guardar Resultados"
+        $("#guardarBtn").click(function () {
+            asignarPuestos();
         });
     });
 </script>

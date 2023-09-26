@@ -137,6 +137,139 @@ namespace ProyectoFDI.v2.Controllers
             }
         }
 
+        [HttpPost]
+        public IActionResult AsignarPuestos(int idCompetencia)
+        {
+            try
+            {
+                // Obtener detalles y calcular puestos de ambas clasificaciones
+                var detalles = APIConsumer<DetalleCompetenciaDificultad>.Select(apiUrl).Where(f => f.IdCom == idCompetencia).ToList();
+                List<Tuple<int, int>> puestosClas1 = CalcularPuestosClasificacion(detalles, 1);
+                List<Tuple<int, int>> puestosClas2 = CalcularPuestosClasificacion(detalles, 2);
+
+                // Calcular puestos basados en ambos resultados
+                var puestosCalculo = puestosClas1
+                    .Join(puestosClas2, t1 => t1.Item1, t2 => t2.Item1, (t1, t2) => new { DeportistaId = t1.Item1, PuestoClas1 = t1.Item2, PuestoClas2 = t2.Item2 })
+                    .Select(x => new { x.DeportistaId, Resultado = Math.Sqrt(x.PuestoClas1 * x.PuestoClas2) })
+                    .OrderBy(x => x.Resultado)
+                    .ToList();
+
+                // Asignar puestos a los detalles
+                for (int i = 0; i < puestosCalculo.Count; i++)
+                {
+                    int deportistaId = puestosCalculo[i].DeportistaId;
+                    DetalleCompetenciaDificultad detalle = detalles.FirstOrDefault(d => d.IdDep == deportistaId);
+
+                    if (detalle != null)
+                    {
+                        detalle.PuestoInicialRes = i + 1; // +1 porque los puestos comienzan en 1
+                        APIConsumer<DetalleCompetenciaDificultad>.Update(apiUrl + detalle.IdDetalleDificultad.ToString(), detalle);
+                    }
+                }
+
+                // Obtener deportistas ordenados
+                var deportistasOrdenados = detalles
+                    .OrderBy(d => d.PuestoInicialRes)
+                    .Select(f => new DetalleCompetenciaDificultad
+                    {
+                        IdDetalleDificultad = f.IdDetalleDificultad,
+                        Puesto = f.Puesto,
+                        Clas1Res = f.Clas1Res,
+                        Clas2Res = f.Clas2Res,
+                        FinalRes = f.FinalRes,
+                        IdCom = f.IdCom,
+                        IdDep = f.IdDep,
+                        IdComNavigation = f.IdComNavigation,
+                        IdDepNavigation = f.IdDepNavigation,
+                        PuestoInicialRes = f.PuestoInicialRes
+                    }).ToList();
+
+                return Json(new { success = true, deportistas = deportistasOrdenados });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
+        private List<Tuple<int, int>> CalcularPuestosClasificacion(List<DetalleCompetenciaDificultad> detalles, int tipo)
+        {
+            List<Tuple<int, int>> puestos = new List<Tuple<int, int>>();
+
+            if (detalles != null && detalles.Any())
+            {
+                if(tipo == 1)
+                {
+                    var detallesOrdenados = detalles.OrderByDescending(d => d.Clas1Res).ToList();
+
+
+                    int puesto = 1;
+                    int empate = 1;
+
+                    string resultadoAnterior = detallesOrdenados[0].Clas1Res;
+
+                    foreach (var detalle in detallesOrdenados)
+                    {
+                        if (detalle.Clas1Res == "top")
+                        {
+                            // Si es "top", asignar el puesto y continuar
+                            puestos.Add(new Tuple<int, int>(detalle.IdDep.Value, puesto));
+                        }
+                        if (detalle.Clas1Res.EndsWith("+"))
+                        {
+                            // Si termina con "+", es un número sumado 0.5
+                            double numero = double.Parse(detalle.Clas1Res.TrimEnd('+'));
+                            puestos.Add(new Tuple<int, int>(detalle.IdDep.Value, puesto));
+                        }
+                        if (detalle.Clas1Res.All(char.IsDigit))
+                        {
+                            
+
+                            puestos.Add(new Tuple<int, int>(detalle.IdDep.Value, puesto));
+                        }
+                        puesto += empate;
+                        resultadoAnterior = detalle.Clas1Res;
+                    }
+                }
+
+                if (tipo == 2)
+                {
+                    var detallesOrdenados = detalles.OrderByDescending(d => d.Clas2Res).ToList();
+
+
+                    int puesto = 1;
+                    int empate = 1;
+
+                    string resultadoAnterior = detallesOrdenados[0].Clas2Res;
+
+                    foreach (var detalle in detallesOrdenados)
+                    {
+                        if (detalle.Clas2Res == "top")
+                        {
+                            // Si es "top", asignar el puesto y continuar
+                            puestos.Add(new Tuple<int, int>(detalle.IdDep.Value, puesto));
+                        }
+                        if (detalle.Clas2Res.EndsWith("+"))
+                        {
+                            // Si termina con "+", es un número sumado 0.5
+                            double numero = double.Parse(detalle.Clas2Res.TrimEnd('+'));
+                            puestos.Add(new Tuple<int, int>(detalle.IdDep.Value, puesto));
+                        }
+                        if (detalle.Clas2Res.All(char.IsDigit))
+                        {
+
+
+                            puestos.Add(new Tuple<int, int>(detalle.IdDep.Value, puesto));
+                        }
+                        puesto += empate;
+                        resultadoAnterior = detalle.Clas2Res;
+                    }
+                }
+            }
+
+            return puestos;
+        }
+
         // GET: HomeController1/Edit/5
         public ActionResult Edit(int id)
         {
