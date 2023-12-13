@@ -253,6 +253,13 @@ namespace ProyectoFDI.v2.Controllers
 
             return View(data);
         }
+        [Authorize(Roles = "Administrador,Juez")]
+        public ActionResult AgregarDeportistasBloque(int id)
+        {
+            var data = APIConsumer<Competencium>.SelectOne(apiUrl + id.ToString());
+            return RedirectToAction("agregardeportista", "Bloque", new { competencia = data.IdCom });
+
+        }
 
         [Authorize(Roles = "Administrador,Juez")]
         public ActionResult AgregarResultados(int id)

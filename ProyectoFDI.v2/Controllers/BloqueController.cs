@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProyectoFDI.v2.Code;
@@ -32,6 +33,23 @@ namespace ProyectoFDI.v2.Controllers
             Console.WriteLine(idCompetencia);
             return View();
         }
+
+        [Authorize(Roles = "Administrador,Juez")]
+        public IActionResult agregardeportista(int competencia)
+        {
+            Competencium data = APIConsumer<Competencium>.SelectOne(apiUrl + competencia.ToString());
+            
+            ViewBag.idcompetenciav = competencia;
+            ViewBag.ListadoDeportistas = listadoDeportista();
+            ViewBag.ListadoDeportistaCompetencia = ListadoDeportistaCompetencia(competencia);
+            Console.WriteLine(idCompetencia);
+            return View();
+        }
+
+
+       
+
+
 
         public ActionResult AgregarResultadoDeportistaClasificacion(Competencium competencia)
         {
