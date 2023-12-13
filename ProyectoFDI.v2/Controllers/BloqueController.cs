@@ -2,6 +2,7 @@
 using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using ProyectoFDI.v2.Code;
 using ProyectoFDI.v2.Models;
 using System.Runtime.Intrinsics.X86;
@@ -28,7 +29,7 @@ namespace ProyectoFDI.v2.Controllers
         {
             this.idCompetencia = competencia;
             ViewBag.idcompetenciav = competencia;
-            ViewBag.ListadoDeportistas = listadoDeportista();
+            ViewBag.ListadoDeportistas = listadoDeportista(competencia);
             ViewBag.ListadoDeportistaCompetencia = ListadoDeportistaCompetencia(competencia);
             Console.WriteLine(idCompetencia);
             return View();
@@ -37,17 +38,19 @@ namespace ProyectoFDI.v2.Controllers
         [Authorize(Roles = "Administrador,Juez")]
         public IActionResult agregardeportista(int competencia)
         {
-            Competencium data = APIConsumer<Competencium>.SelectOne(apiUrl + competencia.ToString());
-            
+            Console.Write("Valor: " + competencia);
             ViewBag.idcompetenciav = competencia;
-            ViewBag.ListadoDeportistas = listadoDeportista();
-            ViewBag.ListadoDeportistaCompetencia = ListadoDeportistaCompetencia(competencia);
+
+            Competencium data = APIConsumer<Competencium>.SelectOne(apiUrl.Replace("CompetenciaBloqueClasificas", "competencia") + competencia.ToString());
+            ViewBag.idcompetenciav = competencia;
+            ViewBag.ListadoDeportistas = listadoDeportistas((int)data.IdGen, (int)data.IdCat);
+            ViewBag.ListadoDeportistaCompetencia = ListadoDeportistaCompetenciaAsignacion(competencia);
             Console.WriteLine(idCompetencia);
             return View();
         }
 
 
-       
+
 
 
 
@@ -55,14 +58,14 @@ namespace ProyectoFDI.v2.Controllers
         {
             try
             {
-                
+
                 APIConsumer<Competencium>.Insert(apiUrl, competencia);
 
                 return RedirectToAction("Index", new { competencia = competencia.IdCom });
 
                 //return RedirectToAction(nameof(Index), new RouteValueDictionary { { "competencia", idCompetencia } });
 
-               // return RedirectToAction(nameof(Index));
+                // return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
@@ -82,148 +85,84 @@ namespace ProyectoFDI.v2.Controllers
             else
             {
 
-                bool aux = true; ;
-                bool comprobracion = true;
-               
-                foreach(CompetenciaBloqueClasifica depo in list)
+                foreach (CompetenciaBloqueClasifica depo in list)
                 {
-                    if (comprobracion)
+                    if (depor_comparacion.TopCla == depo.TopCla &&
+                        depor_comparacion.ZonaCla == depo.ZonaCla &&
+                        depor_comparacion.TopIntentosCla == depo.TopIntentosCla &&
+                        depor_comparacion.ZonaIntentosCla == depo.ZonaIntentosCla)
                     {
-
-
-                        if (depor_comparacion.TopCla == depo.TopCla && depor_comparacion.ZonaCla == depo.ZonaCla && depor_comparacion.TopIntentosCla == depo.TopIntentosCla && depor_comparacion.ZonaIntentosCla == depo.ZonaIntentosCla)
-                        {
-                            AsignacionPuesto(depor_comparacion, depo);
-                            comprobracion = false;
-                            aux = false;
-                           
-                        }
-                        else
-                        {
-                            if (depor_comparacion.TopCla > depo.TopCla)
-                            {
-                                AsignacionPuesto(depor_comparacion, depo);
-                                comprobracion = false;
-                                aux = false;
-                            }
-                            else
-                            {
-                                if(depor_comparacion.TopCla == depo.TopCla)
-                                {
-                                    if (depor_comparacion.ZonaCla > depo.ZonaCla)
-                                    {
-                                        AsignacionPuesto(depor_comparacion, depo);
-                                        comprobracion = false;
-                                        aux = false;
-                                    }
-                                    else
-                                    {
-                                        if (depor_comparacion.ZonaCla == depo.ZonaCla)
-                                        {
-                                            //
-                                            if (depor_comparacion.TopIntentosCla < depo.TopIntentosCla)
-                                            {
-                                                AsignacionPuesto(depor_comparacion, depo);
-                                                comprobracion = false;
-                                                aux = false;
-                                            }
-                                            else
-                                            {
-                                                if (depor_comparacion.TopIntentosCla == depo.TopIntentosCla)
-                                                {
-                                                    if (depor_comparacion.ZonaIntentosCla < depo.ZonaIntentosCla)
-                                                    {
-                                                        AsignacionPuesto(depor_comparacion, depo);
-                                                        comprobracion = false;
-                                                        aux = false;
-                                                    }
-                                                }
-                                            }
-
-                                        }
-                                    }
-                                }
-                            }
-
-                        }
-
-                    }
-                    else
-                    {
-                        int puesto = (int)(depo.Puesto + 1);
-                        depo.Puesto = puesto;
-                        if (puesto <= 6)
-                        {
-                            depo.ClasiBloque = true;
-                        }
-                        else
-                        {
-                            depo.ClasiBloque = false;
-                        }
-                        APIConsumer<CompetenciaBloqueClasifica>.Update(apiUrl + depo.IdCompeBloqueCla, depo);
-                        aux = false;
+                        depor_comparacion.Puesto = depo.Puesto;
+                        return;
                     }
 
-                    //
+                    if (depor_comparacion.TopCla > depo.TopCla ||
+                        (depor_comparacion.TopCla == depo.TopCla && depor_comparacion.ZonaCla > depo.ZonaCla) ||
+                        (depor_comparacion.TopCla == depo.TopCla && depor_comparacion.ZonaCla == depo.ZonaCla && depor_comparacion.TopIntentosCla < depo.TopIntentosCla) ||
+                        (depor_comparacion.TopCla == depo.TopCla && depor_comparacion.ZonaCla == depo.ZonaCla && depor_comparacion.TopIntentosCla == depo.TopIntentosCla && depor_comparacion.ZonaIntentosCla < depo.ZonaIntentosCla))
+                    {
+                        depor_comparacion.Puesto = depo.Puesto;
 
+                        return;
+                    }
                 }
-                if (aux)
-                {
-                    depor_comparacion.Puesto = (list.Count)+1;
-                    if (depor_comparacion.Puesto <= 6)
-                    {
-                        depor_comparacion.ClasiBloque = true;
-                    }
-                    else
-                    {
-                        depor_comparacion.ClasiBloque = false;
-                    }
-
-                }
-
 
             }
 
-
-
-
-            Console.WriteLine("Acaba organizar puesto");
+            depor_comparacion.Puesto = (list.Count) + 1;
+         
         }
 
-        public void AsignacionPuesto(CompetenciaBloqueClasifica depor_comparacion, CompetenciaBloqueClasifica depo)
+
+    
+
+       
+        [Authorize(Roles = "Administrador,Juez")]
+        public ActionResult AgregarDepo(CompetenciaBloqueClasifica competenciablo)
         {
-            Console.Write("Entra metodo");
+            List<CompetenciaBloqueClasifica> list = ListadoDeportistaCompetenciaAsignacion((int)competenciablo.IdCom);
+            if (comprobarDeportistaAgregado(competenciablo, list))
+            {
+                TempData["ErrorMessage"] = "Este deportista ya ha sido agregado a la competencia.";
+                return RedirectToAction("agregardeportista", new { competencia = competenciablo.IdCom });
+            }
+            APIConsumer<CompetenciaBloqueClasifica>.Insert(apiUrl, competenciablo);
+            TempData["ErrorMessage"] = null;
 
-            depor_comparacion.Puesto = depo.Puesto;
-            int puesto = (int)(depo.Puesto + 1);
-            depo.Puesto = puesto;
-            if (puesto <= 6)
-            {
-                depo.ClasiBloque = true;
-            }
-            else
-            {
-                depo.ClasiBloque = false;
-            }
-            APIConsumer<CompetenciaBloqueClasifica>.Update(apiUrl + depo.IdCompeBloqueCla, depo);
-            Console.Write("Pasa metodo");
+            return RedirectToAction("agregardeportista", new { competencia = competenciablo.IdCom });
+
+
         }
-
         [Authorize(Roles = "Administrador,Juez")]
         public ActionResult Create(CompetenciaBloqueClasifica competenciablo)
         {
-           
+            Console.WriteLine("Entra al metodo");
             try
             {
+                
+
                 List<CompetenciaBloqueClasifica> list = ListadoDeportistaCompetencia((int)competenciablo.IdCom);
+                ;
+         
+                List<CompetenciaBloqueClasifica> listNull = ListadoDeportistaCompetenciaNulos((int)competenciablo.IdCom);
+
                 if (comprobarDeportistaAgregado(competenciablo, list))
                 {
                     TempData["ErrorMessage"] = "Este deportista ya ha sido agregado a la competencia.";
                     return RedirectToAction("Index", new { competencia = competenciablo.IdCom });
                 }
+                int idasignacion =0;
+                foreach(CompetenciaBloqueClasifica depor in listNull)
+                {
+                    Console.WriteLine(competenciablo.IdDep + "-" + depor.IdDep);
+                    if (competenciablo.IdDep == depor.IdDep)
+                    {
+                        Console.WriteLine("Entra al IF: "+depor.IdCompeBloqueCla);
+                        idasignacion = depor.IdCompeBloqueCla;
+                    }
+                }
 
-                
-
+                Console.WriteLine("Mitad del metodo");
 
                 PuestoDeportista(competenciablo, list);
                 Console.WriteLine("Pasapuestos");
@@ -235,23 +174,24 @@ namespace ProyectoFDI.v2.Controllers
                 {
                     competenciablo.ClasiBloque = false;
                 }
-                APIConsumer<CompetenciaBloqueClasifica>.Insert(apiUrl, competenciablo);
-                
 
-                if (list.Count >= 7)
-                {
-                    list = ListadoDeportistaCompetencia((int)competenciablo.IdCom);
-                    CompetenciaBloqueClasifica com6 = list[5];
-                    CompetenciaBloqueClasifica com7 = list[6];
+                Console.WriteLine("Casi al metodo: "+idasignacion);
+                competenciablo.IdCompeBloqueCla = idasignacion;
 
-                    if (com6.TopCla == com7.TopCla && com6.ZonaCla == com7.ZonaCla && com6.TopIntentosCla == com7.TopIntentosCla && com6.ZonaIntentosCla == com7.ZonaIntentosCla)
-                    {
-                        com7.ClasiBloque = true;
-                        APIConsumer<CompetenciaBloqueClasifica>.Update(apiUrl + com7.IdCompeBloqueCla, com7);
+                CompetenciaBloqueClasifica competenciabloConsult = APIConsumer<CompetenciaBloqueClasifica>.SelectOne(apiUrl + competenciablo.IdCompeBloqueCla);
+                CompetenciaBloqueClasifica competenciabloEnviar = competenciabloConsult;
 
-                    }
+                competenciabloEnviar.TopCla = competenciablo.TopCla;
+                competenciabloEnviar.ZonaCla = competenciablo.ZonaCla;
+                competenciabloEnviar.TopIntentosCla = competenciablo.TopIntentosCla;
+                competenciabloEnviar.ZonaIntentosCla = competenciablo.ZonaIntentosCla;
+                competenciabloEnviar.ClasiBloque = competenciablo.ClasiBloque;
+                competenciabloEnviar.Puesto = competenciablo.Puesto;
 
-                }
+
+                APIConsumer<CompetenciaBloqueClasifica>.Update(apiUrl+ competenciablo.IdCompeBloqueCla.ToString(), competenciabloEnviar);
+                Console.WriteLine("Pasa al metodo");
+
 
                 TempData["ErrorMessage"] = null;
 
@@ -286,6 +226,33 @@ namespace ProyectoFDI.v2.Controllers
 
             return lista;
         }
+        private List<Deportistum> listadoDeportista(int compe)
+        {
+            var deportista = APIConsumer<Deportistum>.Select(apiUrl.Replace("CompetenciaBloqueClasificas", "Deportista")+"competencia/"+compe);
+            var lista = deportista.Select(f => new Deportistum
+            {
+                IdDep = f.IdDep,
+                NombresDep = f.NombresDep,
+                ApellidosDep = f.ApellidosDep
+            }).ToList();
+
+            return lista;
+        }
+
+        private List<Deportistum> listadoDeportistas(int genero, int compe )
+        {
+            Console.WriteLine(apiUrl.Replace("CompetenciaBloqueClasificas", "Deportista") + genero + "-" + compe);
+            var deportista = APIConsumer<Deportistum>.Select(apiUrl.Replace("CompetenciaBloqueClasificas", "Deportista")+ genero + "-"+ compe);
+            var lista = deportista.Select(f => new Deportistum
+            {
+                IdDep = f.IdDep,
+                NombresDep = f.NombresDep,
+                ApellidosDep = f.ApellidosDep
+            }).ToList();
+
+            return lista;
+        }
+
         [Authorize(Roles = "Administrador,Juez")]
         [HttpPost]
         public IActionResult SeleccionarDeportista(int deportistaSeleccionado)
@@ -308,12 +275,51 @@ namespace ProyectoFDI.v2.Controllers
                 IdDep = f.IdDep,
                 IdCom = f.IdCom,
                 IdCompeBloqueCla = f.IdCompeBloqueCla
-            }).ToList();
-
-           lista.Sort((c1, c2) => Comparer<int>.Default.Compare((int)c1.Puesto, (int)c2.Puesto));
+                
+            }).Where(f => f.Puesto != null)  // Filtra los elementos donde Puesto no es nulo
+                .ToList();
+            if (!lista.IsNullOrEmpty())
+            {
+                lista.Sort((c1, c2) => Comparer<int>.Default.Compare((int)c1.Puesto, (int)c2.Puesto));
+            }
+          
             return lista;
         }
 
+        private List<CompetenciaBloqueClasifica> ListadoDeportistaCompetenciaNulos(int id)
+        {
+            var competenciaBloque = APIConsumer<CompetenciaBloqueClasifica>.Select(apiUrl + "/compebloque/" + id);
+            var lista = competenciaBloque.Select(f => new CompetenciaBloqueClasifica
+            {
+                ZonaCla = f.ZonaCla,
+                ZonaIntentosCla = f.ZonaIntentosCla,
+                TopCla = f.TopCla,
+                TopIntentosCla = f.TopIntentosCla,
+                Puesto = f.Puesto,
+                ClasiBloque = f.ClasiBloque,
+                IdDep = f.IdDep,
+                IdCom = f.IdCom,
+                IdCompeBloqueCla = f.IdCompeBloqueCla
+
+            }) // Filtra los elementos donde Puesto no es nulo
+                .ToList();
+
+            return lista;
+        }
+
+        private List<CompetenciaBloqueClasifica> ListadoDeportistaCompetenciaAsignacion(int id)
+        {
+            var competenciaBloque = APIConsumer<CompetenciaBloqueClasifica>.Select(apiUrl + "/compebloque/" + id);
+            var lista = competenciaBloque.Select(f => new CompetenciaBloqueClasifica
+            {
+                
+                IdDep = f.IdDep,
+                IdCom = f.IdCom,
+            }).ToList();
+
+
+            return lista;
+        }
 
     }
 

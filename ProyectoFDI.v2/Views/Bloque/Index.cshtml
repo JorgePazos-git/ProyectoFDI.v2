@@ -12,7 +12,7 @@
     <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
 }
 
-<form asp-action="Create">
+<form asp-action="Create" onsubmit="return confirmacion()">
     <div class="form-group">
         <label for="deportista">Seleccionar deportista:</label>
         <select class="form-control" id="IdDep" name="IdDep">
@@ -48,6 +48,7 @@
             </div>
         </div>
         <input type="hidden" id="IdCom" name="IdCom" value=@ViewBag.idcompetenciav />
+
         <button type="submit" class="btn btn-outline-primary float-right">Enviar</button>
 
     </div>
@@ -105,6 +106,32 @@
         </tbody>
     </table>
 </div>
+
+
+<script>
+    function confirmacion() {
+        var numTops = document.getElementById("TopCla").value;
+        var intentosTops = document.getElementById("TopIntentosCla").value;
+        var numZonas = document.getElementById("ZonaCla").value;
+        var intentosZonas = document.getElementById("ZonaIntentosCla").value;
+
+        var mensaje = "¿Estás seguro de que quieres enviar el formulario con los siguientes datos?\n\n" +
+                      "Número de Tops: " + numTops + "\n" +
+                      "Intentos de Tops: " + intentosTops + "\n" +
+                      "Número de Zonas: " + numZonas + "\n" +
+                      "Intentos de Zonas: " + intentosZonas;
+
+        var respuesta = confirm(mensaje);
+        return respuesta; // Devuelve true si el usuario hace clic en Aceptar, y false si hace clic en Cancelar
+    }
+</script>
+
+
+
+
+
+
+
 
 
 
