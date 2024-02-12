@@ -7,7 +7,7 @@ public partial class Competencium
 {
     public int IdCom { get; set; }
 
-    public string NombreCom { get; set; }
+    public string? NombreCom { get; set; }
 
     public DateTime? FechaInicioCom { get; set; }
 
@@ -25,19 +25,21 @@ public partial class Competencium
 
     public int? IdMod { get; set; }
 
-    public virtual ICollection<CompetenciaBloqueClasifica> CompetenciaBloqueClasificas { get; } = new List<CompetenciaBloqueClasifica>();
-
     public virtual ICollection<DetalleCompetencium> DetalleCompetencia { get; } = new List<DetalleCompetencium>();
 
     public virtual ICollection<DetalleCompetenciaDificultad> DetalleCompetenciaDificultads { get; } = new List<DetalleCompetenciaDificultad>();
 
-    public virtual Categorium IdCatNavigation { get; set; }
+    public virtual Categorium? IdCatNavigation { get; set; }
 
-    public virtual Genero IdGenNavigation { get; set; }
+    public virtual Genero? IdGenNavigation { get; set; }
 
-    public virtual Juez IdJuezNavigation { get; set; }
+    public virtual Juez? IdJuezNavigation { get; set; }
 
-    public virtual Modalidad IdModNavigation { get; set; }
+    public virtual Modalidad? IdModNavigation { get; set; }
 
-    public virtual Sede IdSedeNavigation { get; set; }
+    public virtual Sede? IdSedeNavigation { get; set; }
+
+    public virtual ICollection<PuntajeBloque> PuntajeBloques { get; } = new List<PuntajeBloque>();
+
+    public virtual ICollection<ResultadoBloque> ResultadoBloques { get; } = new List<ResultadoBloque>();
 }

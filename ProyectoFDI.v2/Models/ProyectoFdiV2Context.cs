@@ -19,10 +19,6 @@ public partial class ProyectoFdiV2Context : DbContext
 
     public virtual DbSet<Club> Clubs { get; set; }
 
-    public virtual DbSet<CompetenciaBloqueClasifica> CompetenciaBloqueClasificas { get; set; }
-
-    public virtual DbSet<CompetenciaBloqueFinal> CompetenciaBloqueFinals { get; set; }
-
     public virtual DbSet<Competencium> Competencia { get; set; }
 
     public virtual DbSet<DeportistaModalidad> DeportistaModalidads { get; set; }
@@ -42,6 +38,10 @@ public partial class ProyectoFdiV2Context : DbContext
     public virtual DbSet<Modalidad> Modalidads { get; set; }
 
     public virtual DbSet<Provincium> Provincia { get; set; }
+
+    public virtual DbSet<PuntajeBloque> PuntajeBloques { get; set; }
+
+    public virtual DbSet<ResultadoBloque> ResultadoBloques { get; set; }
 
     public virtual DbSet<Sede> Sedes { get; set; }
 
@@ -77,50 +77,6 @@ public partial class ProyectoFdiV2Context : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("nombre_club");
-        });
-
-        modelBuilder.Entity<CompetenciaBloqueClasifica>(entity =>
-        {
-            entity.HasKey(e => e.IdCompeBloqueCla).HasName("PK__competen__12B9B98C7FD9C068");
-
-            entity.ToTable("competencia_bloque_clasifica");
-
-            entity.Property(e => e.IdCompeBloqueCla).HasColumnName("id_compe_bloque_cla");
-            entity.Property(e => e.ClasiBloque).HasColumnName("clasi_bloque");
-            entity.Property(e => e.IdCom).HasColumnName("id_com");
-            entity.Property(e => e.IdDep).HasColumnName("id_dep");
-            entity.Property(e => e.Puesto).HasColumnName("puesto");
-            entity.Property(e => e.TopCla).HasColumnName("top_cla");
-            entity.Property(e => e.TopIntentosCla).HasColumnName("top_intentos_cla");
-            entity.Property(e => e.ZonaCla).HasColumnName("zona_cla");
-            entity.Property(e => e.ZonaIntentosCla).HasColumnName("zona_intentos_cla");
-
-            entity.HasOne(d => d.IdComNavigation).WithMany(p => p.CompetenciaBloqueClasificas)
-                .HasForeignKey(d => d.IdCom)
-                .HasConstraintName("FK__competenc__id_co__17036CC0");
-
-            entity.HasOne(d => d.IdDepNavigation).WithMany(p => p.CompetenciaBloqueClasificas)
-                .HasForeignKey(d => d.IdDep)
-                .HasConstraintName("FK__competenc__id_de__160F4887");
-        });
-
-        modelBuilder.Entity<CompetenciaBloqueFinal>(entity =>
-        {
-            entity.HasKey(e => e.IdCompeBloqueFinal).HasName("PK__competen__7EAF60A57C6ED112");
-
-            entity.ToTable("competencia_bloque_final");
-
-            entity.Property(e => e.IdCompeBloqueFinal).HasColumnName("id_compe_bloque_final");
-            entity.Property(e => e.IdCompeBloqueCla).HasColumnName("id_compe_bloque_cla");
-            entity.Property(e => e.Puesto).HasColumnName("puesto");
-            entity.Property(e => e.TopCla).HasColumnName("top_cla");
-            entity.Property(e => e.TopIntentosCla).HasColumnName("top_intentos_cla");
-            entity.Property(e => e.ZonaCla).HasColumnName("zona_cla");
-            entity.Property(e => e.ZonaIntentosCla).HasColumnName("zona_intentos_cla");
-
-            entity.HasOne(d => d.IdCompeBloqueClaNavigation).WithMany(p => p.CompetenciaBloqueFinals)
-                .HasForeignKey(d => d.IdCompeBloqueCla)
-                .HasConstraintName("FK__competenc__id_co__1CBC4616");
         });
 
         modelBuilder.Entity<Competencium>(entity =>
@@ -414,6 +370,56 @@ public partial class ProyectoFdiV2Context : DbContext
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("nombre_pro");
+        });
+
+        modelBuilder.Entity<PuntajeBloque>(entity =>
+        {
+            entity.HasKey(e => e.IdBloPts).HasName("PK__puntaje___B78A6B496770F08D");
+
+            entity.ToTable("puntaje_bloque");
+
+            entity.Property(e => e.IdBloPts).HasColumnName("id_blo_pts");
+            entity.Property(e => e.Etapa)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("etapa");
+            entity.Property(e => e.IdCom).HasColumnName("id_com");
+            entity.Property(e => e.IdDep).HasColumnName("id_dep");
+            entity.Property(e => e.IntentosTops).HasColumnName("intentos_tops");
+            entity.Property(e => e.IntentosZonas).HasColumnName("intentos_zonas");
+            entity.Property(e => e.NumeroBloque).HasColumnName("numero_bloque");
+
+            entity.HasOne(d => d.IdComNavigation).WithMany(p => p.PuntajeBloques)
+                .HasForeignKey(d => d.IdCom)
+                .HasConstraintName("FK__puntaje_b__id_co__1B9317B3");
+
+            entity.HasOne(d => d.IdDepNavigation).WithMany(p => p.PuntajeBloques)
+                .HasForeignKey(d => d.IdDep)
+                .HasConstraintName("FK__puntaje_b__id_de__1C873BEC");
+        });
+
+        modelBuilder.Entity<ResultadoBloque>(entity =>
+        {
+            entity.HasKey(e => e.IdResBloque).HasName("PK__resultad__35024A27D835018F");
+
+            entity.ToTable("resultado_bloque");
+
+            entity.Property(e => e.IdResBloque).HasColumnName("id_res_bloque");
+            entity.Property(e => e.Etapa)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("etapa");
+            entity.Property(e => e.IdCom).HasColumnName("id_com");
+            entity.Property(e => e.IdDep).HasColumnName("id_dep");
+            entity.Property(e => e.Puesto).HasColumnName("puesto");
+
+            entity.HasOne(d => d.IdComNavigation).WithMany(p => p.ResultadoBloques)
+                .HasForeignKey(d => d.IdCom)
+                .HasConstraintName("FK__resultado__id_co__1F63A897");
+
+            entity.HasOne(d => d.IdDepNavigation).WithMany(p => p.ResultadoBloques)
+                .HasForeignKey(d => d.IdDep)
+                .HasConstraintName("FK__resultado__id_de__2057CCD0");
         });
 
         modelBuilder.Entity<Sede>(entity =>

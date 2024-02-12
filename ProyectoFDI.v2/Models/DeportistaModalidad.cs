@@ -11,7 +11,7 @@ public partial class DeportistaModalidad
 
     public int? IdDep { get; set; }
 
-    public virtual Deportistum IdDepNavigation { get; set; }
+    public virtual Deportistum? IdDepNavigation { get; set; }
 
-    public virtual Modalidad IdModNavigation { get; set; }
+    public virtual Modalidad? IdModNavigation { get; set; }
 }
