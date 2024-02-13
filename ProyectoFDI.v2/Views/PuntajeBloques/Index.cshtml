@@ -1,0 +1,65 @@
+﻿@model IEnumerable<ProyectoFDI.v2.Models.PuntajeBloque>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.NumeroBloque)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IntentosTops)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IntentosZonas)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Etapa)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdComNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdDepNavigation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumeroBloque)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IntentosTops)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IntentosZonas)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Etapa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdComNavigation.IdCom)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdDepNavigation.IdDep)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdBloPts">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.IdBloPts">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.IdBloPts">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

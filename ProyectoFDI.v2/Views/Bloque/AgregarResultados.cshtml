@@ -1,0 +1,58 @@
+﻿<div class="d-flex justify-content-center mt-4">
+    <div class="btn-group" role="group" aria-label="Navegación">
+        <button type="button" class="btn btn-outline-primary active">Agregar Resultado</button>
+        <a type="button" class="btn btn-outline-primary" asp-action="TablaResultados" asp-route-idcompetenciav="@ViewBag.idcompetenciav">Tabla Resultados</a>
+
+    </div>
+</div>
+
+<div class="d-flex justify-content-center">
+    <form asp-action="AgregarDepo" class="mt-4" style="max-width: 600px;">
+        <div class="form-group text-center">
+            <label for="deportista">Seleccionar deportista:</label>
+            <select class="form-control" id="IdDep" name="IdDep">
+                @foreach (var deportista in ViewBag.listadoDeportistaCompetencia)
+                {
+                    <option value="@deportista.IdDep">@deportista.NombresDep @deportista.ApellidosDep</option>
+                }
+            </select>
+        </div>
+        <input type="hidden" id="IdCom" name="IdCom" value="@ViewBag.idcompetenciav" />
+
+        <div class="table-responsive mt-4">
+            <table class="table table-bordered table-hover text-center">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Categoría</th>
+                        <th scope="col">Bloque 1</th>
+                        <th scope="col">Bloque 2</th>
+                        <th scope="col">Bloque 3</th>
+                        <th scope="col">Bloque 4</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="font-weight-bold">Top</td>
+                        <td><input type="text" class="form-control" readonly></td>
+                        <td><input type="text" class="form-control" readonly></td>
+                        <td><input type="text" class="form-control" readonly></td>
+                        <td><input type="text" class="form-control" readonly></td>
+                    </tr>
+                    <tr>
+                        <td class="font-weight-bold">Zona</td>
+                        <td><input type="text" class="form-control" readonly></td>
+                        <td><input type="text" class="form-control" readonly></td>
+                        <td><input type="text" class="form-control" readonly></td>
+                        <td><input type="text" class="form-control" readonly></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+    </form>
+</div>
+
+

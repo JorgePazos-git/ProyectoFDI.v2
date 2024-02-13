@@ -267,6 +267,7 @@ namespace ProyectoFDI.v2.Controllers
             var data = APIConsumer<Competencium>.SelectOne(apiUrl + id.ToString());
             if (data.IdMod == 2)
             {
+                Console.WriteLine("Entra metodo");
                 return RedirectToAction("Index", "Bloque", new { competencia = data.IdCom });
             }
 

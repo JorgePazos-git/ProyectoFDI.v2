@@ -1,0 +1,72 @@
+﻿@{
+    var listadoPuntajeBloque = ViewBag.listadoPuntajeBloque as List<PuntajeBloque>;
+    var listadoDeportistaCompetencia = ViewBag.listadoDeportistaCompetencia as List<Deportistum>;
+}
+<div class="d-flex justify-content-center mt-4">
+    <div class="btn-group" role="group" aria-label="Navegación">
+        <a type="button" class="btn btn-outline-primary" asp-action="AgregarResultados" asp-route-id="@ViewBag.idcompetenciav">Agregar Resultados</a>
+        <button type="button" class="btn btn-outline-primary active">Tabla Resultado</button>
+
+    </div>
+</div>
+
+
+<h1>Tabla de Puntajes</h1>
+
+<table class="table table-bordered table-hover text-center">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Deportista</th>
+            <th scope="col">Numero de Bloque</th>
+            <th scope="col">Intentos Top</th>
+            <th scope="col">Intentos Zona</th>
+            <!-- Agrega más columnas según sea necesario -->
+        </tr>
+    </thead>
+    <tbody>
+        @if (listadoPuntajeBloque != null && listadoPuntajeBloque.Any())
+        {
+            int? lastDep = null;
+            foreach (var puntaje in listadoPuntajeBloque)
+            {
+                var deportista = listadoDeportistaCompetencia.FirstOrDefault(d => d.IdDep == puntaje.IdDep);
+                if (deportista != null && puntaje.IdDep != lastDep)
+                {
+                    <tr>
+                        <td rowspan="@listadoPuntajeBloque.Count(x => x.IdDep == puntaje.IdDep)">
+                            @deportista.NombresDep
+                            @deportista.ApellidosDep
+                        </td>
+                        <td>@puntaje.NumeroBloque</td>
+                        <td>@puntaje.IntentosTops</td>
+                        <td>@puntaje.IntentosZonas</td>
+                    </tr>
+                    lastDep = puntaje.IdDep;
+                }
+                else if (deportista == null)
+                {
+                    <tr>
+                        <td>Deportista no encontrado</td>
+                        <td>@puntaje.NumeroBloque</td>
+                        <td>@puntaje.IntentosTops</td>
+                        <td>@puntaje.IntentosZonas</td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td>@puntaje.NumeroBloque</td>
+                        <td>@puntaje.IntentosTops</td>
+                        <td>@puntaje.IntentosZonas</td>
+                    </tr>
+                }
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5">No se encontraron puntajes</td>
+            </tr>
+        }
+    </tbody>
+</table>
