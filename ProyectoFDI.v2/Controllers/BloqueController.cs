@@ -84,7 +84,7 @@ namespace ProyectoFDI.v2.Controllers
 
             public ActionResult AgregarResultados(int id)
         {
-            if (listadoDeportistaCompetencia(id, "Clasificatoria").Count ==0)
+            if (listadoDeportistaCompetencia(id, "Final").Count ==0)
             {
                 ViewBag.habilitado = true;
             }
@@ -384,7 +384,7 @@ namespace ProyectoFDI.v2.Controllers
             List<Deportistum> deportista = listadoDeportistaCompetencia(id, "Final");
             if(deportista.Count == 0)
             {
-                AgregarDeportistasFinales(ListadoPosicionesClasificatoria(id,"Final"));
+                AgregarDeportistasFinales(ListadoPosicionesClasificatoria(id,"Clasificatoria"));
                 deportista = listadoDeportistaCompetencia(id, "Final");
             }
             ViewBag.listadoDeportistaCompetencia = deportista;
