@@ -22,7 +22,6 @@
 <button type="button" class="btn btn-warning mt-2">
     <a class="text-white" asp-action="AgregarResultados" asp-route-id="@ViewBag.idcompetenciav">Agregar Resultados</a>
 </button>
-
 <div class="table-responsive mt-4">
     <table class="table table-striped">
         <thead>
@@ -32,13 +31,15 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var depo in ViewBag.listadoDeportistaCompetencia)
-            {
-                <tr>
-                    <td>@depo.ApellidosDep</td>
-                    <td>@depo.NombresDep</td>
-                </tr>
-            }
+           
+                @foreach (var depo in ViewBag.listadoDeportistaCompetencia)
+                {
+                    <tr>
+                        <td>@depo.ApellidosDep</td>
+                        <td>@depo.NombresDep</td>
+                    </tr>
+                }
+            
         </tbody>
     </table>
 </div>

@@ -1,16 +1,25 @@
-﻿<div class="d-flex justify-content-center mt-4">
+﻿@{
+    bool habilitado = ViewBag.habilitado;
+    
+
+}
+<div id="etiquetaContainer">
+    <a  asp-action="TablaResultados" asp-route-idcompetenciav="@ViewBag.idcompetenciav" class="bg-primary px-3 py-2 rounded-pill text-white" style="font-size: 16px; font-weight: bold;">Fase Clasificatoria</a>
+</div>
+
+<div class="d-flex justify-content-center mt-4">
     <div class="btn-group" role="group" aria-label="Navegación">
         <button type="button" class="btn btn-outline-primary active">Agregar Resultado</button>
         <a type="button" class="btn btn-outline-primary" asp-action="TablaResultados" asp-route-idcompetenciav="@ViewBag.idcompetenciav">Tabla Resultados</a>
-
+        <a type="button" class="btn btn-outline-primary" asp-action="TablaPosicionesClasificatoria" asp-route-id="@ViewBag.idcompetenciav">Tabla Posiciones</a>
     </div>
 </div>
 
 <div class="d-flex justify-content-center">
-    <form asp-action="AgregarDepo" class="mt-4" style="max-width: 600px;">
+    <form asp-action="AgregarDepoDatos" class="mt-4" style="max-width: 600px;">
         <div class="form-group text-center">
             <label for="deportista">Seleccionar deportista:</label>
-            <select class="form-control" id="IdDep" name="IdDep">
+            <select class="form-control" id="IdDep" name="IdDep" @(habilitado ? "" : "disabled")>
                 @foreach (var deportista in ViewBag.listadoDeportistaCompetencia)
                 {
                     <option value="@deportista.IdDep">@deportista.NombresDep @deportista.ApellidosDep</option>
@@ -18,6 +27,7 @@
             </select>
         </div>
         <input type="hidden" id="IdCom" name="IdCom" value="@ViewBag.idcompetenciav" />
+        <input type="hidden" id="etapa" name="etapa" value="Clasificatoria" />
 
         <div class="table-responsive mt-4">
             <table class="table table-bordered table-hover text-center">
@@ -33,26 +43,37 @@
                 <tbody>
                     <tr>
                         <td class="font-weight-bold">Top</td>
-                        <td><input type="text" class="form-control" readonly></td>
-                        <td><input type="text" class="form-control" readonly></td>
-                        <td><input type="text" class="form-control" readonly></td>
-                        <td><input type="text" class="form-control" readonly></td>
+                        <td><input type="number" class="form-control" id="Top1" name="Top1" @(habilitado ? "" : "disabled")></td>
+                        <td><input type="number" class="form-control" id="Top2" name="Top2" @(habilitado ? "" : "disabled")></td>
+                        <td><input type="number" class="form-control" id="Top3" name="Top3" @(habilitado ? "" : "disabled")></td>
+                        <td><input type="number" class="form-control" id="Top4" name="Top4" @(habilitado ? "" : "disabled")></td>
                     </tr>
                     <tr>
                         <td class="font-weight-bold">Zona</td>
-                        <td><input type="text" class="form-control" readonly></td>
-                        <td><input type="text" class="form-control" readonly></td>
-                        <td><input type="text" class="form-control" readonly></td>
-                        <td><input type="text" class="form-control" readonly></td>
+                        <td><input type="number" class="form-control" id="Zona1" name="Zona1" @(habilitado ? "" : "disabled")></td>
+                        <td><input type="number" class="form-control" id="Zona2" name="Zona2" @(habilitado ? "" : "disabled")></td>
+                        <td><input type="number" class="form-control" id="Zona3" name="Zona3" @(habilitado ? "" : "disabled")></td>
+                        <td><input type="number" class="form-control" id="Zona4" name="Zona4" @(habilitado ? "" : "disabled")></td>
                     </tr>
                 </tbody>
             </table>
         </div>
-
-        <div class="text-center mt-4">
-            <button type="submit" class="btn btn-primary">Guardar</button>
-        </div>
+        @if (habilitado)
+        {
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        }
+        else
+        {
+            <div class="text-center">
+                <div class="rounded-pill bg-danger text-white d-inline-block p-2 mb-3">
+                    <span>La fase de clasificación ha finalizado.</span>
+                </div>
+                <div class="rounded bg-light text-muted d-inline-block p-2">
+                    <span>No se admiten nuevos resultados en esta fase.</span>
+                </div>
+            </div>
+        }
     </form>
 </div>
-
-

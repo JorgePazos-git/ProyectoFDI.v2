@@ -52,6 +52,7 @@ namespace ProyectoFDI.v2.Code
             api.Headers.Add("content-type", "application/json");
             api.Headers.Add("Accept", "application/json");
             var json = Newtonsoft.Json.JsonConvert.SerializeObject(data);
+            Console.WriteLine(json);
             json = api.UploadString(apiUrl, "PUT", json);
         }
 

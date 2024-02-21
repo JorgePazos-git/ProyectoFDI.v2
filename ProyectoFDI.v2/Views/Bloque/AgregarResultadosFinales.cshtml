@@ -1,0 +1,63 @@
+﻿<div id="etiquetaContainer">
+    <span class="bg-danger px-3 py-2 rounded-pill text-white" style="font-size: 16px; font-weight: bold;">Fase Final</span>
+</div>
+<div class="d-flex justify-content-center mt-4">
+    <div class="btn-group" role="group" aria-label="Navegación">
+        <button type="button" class="btn btn-outline-danger active">Agregar Resultado</button>
+        <a type="button" class="btn btn-outline-danger" asp-action="TablaResultadosFinales" asp-route-idcompetenciav="@ViewBag.idcompetenciav">Tabla Resultados</a>
+        <a type="button" class="btn btn-outline-danger" asp-action="TablaPosicionesFinales" asp-route-id="@ViewBag.idcompetenciav">Tabla Posiciones</a>
+
+    </div>
+</div>
+
+<div class="d-flex justify-content-center">
+    <form asp-action="AgregarDepoDatos" class="mt-4" style="max-width: 600px;">
+        <div class="form-group text-center">
+            <label for="deportista">Seleccionar deportista:</label>
+            <select class="form-control" id="IdDep" name="IdDep">
+                @foreach (var deportista in ViewBag.listadoDeportistaCompetencia)
+                {
+                    <option value="@deportista.IdDep">@deportista.NombresDep @deportista.ApellidosDep</option>
+                }
+            </select>
+        </div>
+        <input type="hidden" id="IdCom" name="IdCom" value="@ViewBag.idcompetenciav" />
+        <input type="hidden" id="etapa" name="etapa" value="Final" />
+
+        <div class="table-responsive mt-4">
+            <table class="table table-bordered table-hover text-center">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Categoría</th>
+                        <th scope="col">Bloque 1</th>
+                        <th scope="col">Bloque 2</th>
+                        <th scope="col">Bloque 3</th>
+                        <th scope="col">Bloque 4</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="font-weight-bold">Top</td>
+                        <td><input type="number" class="form-control" id="Top1" name="Top1"></td>
+                        <td><input type="number" class="form-control" id="Top2" name="Top2"></td>
+                        <td><input type="number" class="form-control" id="Top3" name="Top3"></td>
+                        <td><input type="number" class="form-control" id="Top4" name="Top4"></td>
+                    </tr>                                             
+                <tr>                                            
+                        <td class="font-wnumbert-bold">Zona</td>    
+                        <td><input type="number" class="form-control" id="Zona1" name="Zona1"></td>
+                        <td><input type="number" class="form-control" id="Zona2" name="Zona2"></td>
+                        <td><input type="number" class="form-control" id="Zona3" name="Zona3"></td>
+                        <td><input type="number" class="form-control" id="Zona4" name="Zona4"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+    </form>
+</div>
+
+

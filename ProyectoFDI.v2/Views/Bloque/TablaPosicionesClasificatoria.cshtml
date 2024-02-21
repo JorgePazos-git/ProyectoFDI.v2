@@ -1,0 +1,82 @@
+﻿@{
+    var listadoPuntajeBloque = ViewBag.ListadoPosicionesClasificatoria as List<VistaPuntajesDeportista>;
+    int aux = 1;
+
+}
+<div id="etiquetaContainer">
+    <span class="bg-primary px-3 py-2 rounded-pill text-white" style="font-size: 16px; font-weight: bold;">Fase Clasificatoria</span>
+</div>
+<div class="d-flex justify-content-center mt-4">
+    <div class="btn-group" role="group" aria-label="Navegación">
+        <a type="button" class="btn btn-outline-primary" asp-action="AgregarResultados" asp-route-id="@ViewBag.idcompetenciav">Agregar Resultados</a>
+        <a type="button" class="btn btn-outline-primary" asp-action="TablaResultados" asp-route-idcompetenciav="@ViewBag.idcompetenciav">Tabla Resultados</a>
+        <button type="button" class="btn btn-outline-primary active">Tabla Posiciones</button>
+
+
+    </div>
+</div>
+
+<table class="table table-bordered table-hover text-center">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Puesto</th>
+            <th scope="col">Deportista</th>
+            <th scope="col">Tops Realizados</th>
+            <th scope="col">Intentos Top</th>
+            <th scope="col">Zonas Realizadas</th>
+            <th scope="col">Intentos Zona</th>
+            <th scope="col">Clasificado</th> <!-- Nueva columna -->
+            <!-- Agrega más columnas según sea necesario -->
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var registro in listadoPuntajeBloque  ){
+            
+        
+        <tr>
+                <td>
+                    @aux
+                </td>
+                <td>
+                    @registro.NombreDep
+                </td>
+                <td>
+                    @registro.TopsRealizados
+                </td>
+                <td>
+                    @registro.IntentosTops
+                </td>
+                <td>
+                    @registro.ZonasRealizadas
+                </td>
+                <td>
+                    @registro.IntentosZonas
+                </td>
+                <td>
+                    @if (aux < 7)
+                    {
+                        <span class="badge bg-success">Sí</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">No</span>
+                    }
+                </td>
+
+
+
+
+
+
+
+        </tr>
+            aux++;
+
+        }
+            
+    </tbody>
+</table>
+
+<div class="text-center mt-4">
+    <a type="button" class="btn btn-outline-danger" asp-action="AgregarResultadosFinales" asp-route-id="@ViewBag.idcompetenciav">Finalizar Clasificatorias</a>
+</div>
