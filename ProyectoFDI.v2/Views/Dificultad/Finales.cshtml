@@ -217,11 +217,13 @@
                         });
                     }
                 },
-                error: function () {
+                error: function (xhr, status, error) {
+                    console.log(xhr.responseText);
                     Swal.fire({
                         title: 'Error',
                         text: 'Hubo un error en la solicitud al servidor.',
                         icon: 'error'
+
                     });
                 }
             });

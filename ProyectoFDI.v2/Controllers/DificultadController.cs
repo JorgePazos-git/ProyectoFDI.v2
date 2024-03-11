@@ -298,8 +298,19 @@ namespace ProyectoFDI.v2.Controllers
                     }
                 }
 
-                // Obtener deportistas ordenados
+                // Calcular y asignar los puestos iniciales para los participantes que no pasan a la final
+                var puestosIniciales = detalles.Where(d => !puestosFinal.Any(pf => pf.Item1 == d.IdDep)).OrderBy(d => d.PuestoInicialRes).ToList();
+                int puestoInicial = puestosFinal.Count + 1; // El siguiente puesto después de los puestos finales
+
+                foreach (var detalle in puestosIniciales)
+                {
+                    detalle.Puesto = puestoInicial;
+                    APIConsumer<DetalleCompetenciaDificultad>.Update(apiUrl + detalle.IdDetalleDificultad.ToString(), detalle);
+                    puestoInicial++;
+                }
+
                 var deportistasOrdenados = detalles
+                    .Where(d => d.FinalRes != null) // Filtrar los detalles donde IdComNavigation no sea null
                     .OrderBy(d => d.Puesto)
                     .Select(f => new DetalleCompetenciaDificultad
                     {
@@ -398,8 +409,8 @@ namespace ProyectoFDI.v2.Controllers
                 }
                 if(tipo == 3)
                 {
+                    detalles = detalles.Where(d => d.FinalRes != null).ToList();
                     var detallesOrdenados = detalles.OrderByDescending(d => d.FinalRes).ToList();
-
 
                     int puesto = 1;
                     int empate = 1;
@@ -481,7 +492,7 @@ namespace ProyectoFDI.v2.Controllers
             List<DetalleCompetenciaDificultad> lista = listaDetalles(); 
 
             DataTable dt = new DataTable();
-            using (SqlConnection cn = new SqlConnection("Data Source=proyectofdi.database.windows.net;Initial Catalog=ProyectoFDI.v2;User ID=proyectofdi;Password=Allistar123.;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"))
+            using (SqlConnection cn = new SqlConnection("Data Source=MSI;Initial Catalog=ProyectoFDI.v2;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"))
             {
                 StringBuilder sb = new StringBuilder();
 
