@@ -1,5 +1,8 @@
+using DinkToPdf.Contracts;
+using DinkToPdf;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using ProyectoFDI.v2.Extension;
 using ProyectoFDI.v2.Models;
 using System.Configuration;
 
@@ -16,6 +19,10 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         option.ExpireTimeSpan = TimeSpan.FromMinutes(20);
         option.AccessDeniedPath = "/Home/Privacy";
     });
+
+var context = new CustomAssemblyLoadContext();
+context.LoadUnmanagedLibrary(Path.Combine(Directory.GetCurrentDirectory(), "LibreriaPDF/libwkhtmltox.dll"));
+builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 
 var app = builder.Build();
 

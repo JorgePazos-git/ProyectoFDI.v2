@@ -1,0 +1,226 @@
+﻿@{
+    var listadoPuntajeBloqueF = ViewBag.ListadoPosicionesClasificatoriaF as List<VistaPuntajesDeportista>;
+    var listadoPuntajeBloque = ViewBag.ListadoPosicionesClasificatoria as List<VistaPuntajesDeportista>;
+    var competencium = ViewBag.competencium;
+    int aux = 1;
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>VistaPDFListaDeportistas</title>
+    <!-- Enlace al archivo CSS de Bootstrap -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Estilos CSS para tu HTML */
+        table {
+            page-break-inside: avoid;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <div class="container">
+        <div class="container">
+            <div class="row mb-4">
+               
+
+                
+
+                <div class="col-md-12">
+                    <table class="table table-bordered">
+                        <div class="row mt-3">
+                            <div class="col-md-12 text-center">
+                                <h2 class="font-weight-bold text-uppercase">
+                                    <img src="https://www.fedenador.org.ec/wp-content/uploads/2021/05/IMBABURA.png" alt="Logo" style="height: 250px; margin-right: 10px;"> <!-- Aquí se agrega el logo -->
+                                    @competencium.NombreCom
+                                </h2>
+                            </div>
+                        </div>
+                        <tbody>
+                            <tr>
+                                <th class="text-right" style="width: 30%">Fecha de inicio:</th>
+                                <td>@competencium.FechaInicioCom</td>
+                                <th class="text-right" style="width: 30%">Fecha de fin:</th>
+                                <td>@competencium.FechaFinCom</td>
+                            </tr>
+                            <tr>
+                                <th class="text-right">Género:</th>
+                                <td>@competencium.Genero</td>
+                                <th class="text-right">Nombre del juez:</th>
+                                <td>@competencium.NombreDelJuez</td>
+                            </tr>
+                            <tr>
+                                <th class="text-right">Categoría:</th>
+                                <td>@competencium.NombreCategoria</td>
+                                <th class="text-right">Modalidad:</th>
+                                <td>@competencium.DescripcionModalidad</td>
+                            </tr>
+                            <tr>
+                                <th class="text-right">Sede:</th>
+                                <td colspan="3">@competencium.NombreDeSede</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+               
+                <table class="table table-bordered table-hover text-center">
+                    <div class="row mt-3">
+                        <div class="col-md-12 text-center">
+                            <h5 class="font-weight-bold text-uppercase">
+                                Resultados Finales
+                            </h5>
+                        </div>
+                    </div>
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Puesto</th>
+                            <th scope="col">Deportista</th>
+                            <th scope="col">Tops Realizados</th>
+                            <th scope="col">Intentos Top</th>
+                            <th scope="col">Zonas Realizadas</th>
+                            <th scope="col">Intentos Zona</th>
+                            <!-- Agrega más columnas según sea necesario -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var registro in listadoPuntajeBloqueF)
+                        {
+                            <tr class="@((aux == 1) ? "bg-light shadow" : "")">
+                                <td>
+                                    @if (aux == 1)
+                                    {
+                                        <span class="text-success font-weight-bold">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" width="30" height="30">
+                                                <path fill="#FFD43B" d="M400 0H176c-26.5 0-48.1 21.8-47.1 48.2c.2 5.3 .4 10.6 .7 15.8H24C10.7 64 0 74.7 0 88c0 92.6 33.5 157 78.5 200.7c44.3 43.1 98.3 64.8 138.1 75.8c23.4 6.5 39.4 26 39.4 45.6c0 20.9-17 37.9-37.9 37.9H192c-17.7 0-32 14.3-32 32s14.3 32 32 32H384c17.7 0 32-14.3 32-32s-14.3-32-32-32H357.9C337 448 320 431 320 410.1c0-19.6 15.9-39.2 39.4-45.6c39.9-11 93.9-32.7 138.2-75.8C542.5 245 576 180.6 576 88c0-13.3-10.7-24-24-24H446.4c.3-5.2 .5-10.4 .7-15.8C448.1 21.8 426.5 0 400 0zM48.9 112h84.4c9.1 90.1 29.2 150.3 51.9 190.6c-24.9-11-50.8-26.5-73.2-48.3c-32-31.1-58-76-63-142.3zM464.1 254.3c-22.4 21.8-48.3 37.3-73.2 48.3c22.7-40.3 42.8-100.5 51.9-190.6h84.4c-5.1 66.3-31.1 111.2-63 142.3z" />
+                                            </svg>
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="font-weight-bold">@aux</span>
+                                    }
+                                </td>
+                                <td>@registro.NombreDep</td>
+                                <td>@registro.TopsRealizados</td>
+                                <td>@registro.IntentosTops</td>
+                                <td>@registro.ZonasRealizadas</td>
+                                <td>@registro.IntentosZonas</td>
+                                <!-- Agrega más columnas según sea necesario -->
+                            </tr>
+                            aux++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+@*         <div style="page-break-before: always;"></div>
+ *@
+        <div class="row">
+            <div class="col-md-12 mt-4">
+               
+                <table class="table table-bordered table-hover text-center">
+                    <div class="row mt-3">
+                        <div class="col-md-12 text-center">
+                            <h5 class="font-weight-bold text-uppercase">
+                                Resultados Clasificatorias
+                            </h5>
+                        </div>
+                    </div>
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Puesto</th>
+                            <th scope="col">Deportista</th>
+                            <th scope="col">Tops Realizados</th>
+                            <th scope="col">Intentos Top</th>
+                            <th scope="col">Zonas Realizadas</th>
+                            <th scope="col">Intentos Zona</th>
+                            <th scope="col">Clasificado</th> <!-- Nueva columna -->
+                            <!-- Agrega más columnas según sea necesario -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{aux = 1;}
+                        @foreach (var registro in listadoPuntajeBloque)
+                        {
+                            <tr>
+                                <td>
+                                    @aux
+                                </td>
+                                <td>
+                                    @registro.NombreDep
+                                </td>
+                                <td>
+                                    @registro.TopsRealizados
+                                </td>
+                                <td>
+                                    @registro.IntentosTops
+                                </td>
+                                <td>
+                                    @registro.ZonasRealizadas
+                                </td>
+                                <td>
+                                    @registro.IntentosZonas
+                                </td>
+                                <td>
+                                    @if (aux < 7)
+                                    {
+                                        <span class="badge bg-success">Sí</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">No</span>
+                                    }
+                                </td>
+                            </tr>
+                            aux++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="container">
+            <!-- Contenido del encabezado y la tabla aquí -->
+            <!-- Tabla para las firmas -->
+            <div class="row mt-3">
+                <div class="col-md-12 text-center">
+                    <h5 class="font-weight-bold text-uppercase">Firmas</h5>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <table class="table table-borderless">
+                        <tbody>
+                            <tr>
+                                <td class="text-center">
+                                    <!-- Espacio para firmar -->
+                                    <p class="border border-dark p-4">&nbsp;</p>
+                                    <small>Firma del Juez</small>
+                                </td>
+                                <td class="text-center">
+                                    <!-- Espacio para firmar -->
+                                    <p class="border border-dark p-4">&nbsp;</p>
+                                    <small>Firma del Entrenador</small>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+
+    <!-- Enlace al archivo JavaScript de Bootstrap (Opcional, pero necesario para ciertas funcionalidades) -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

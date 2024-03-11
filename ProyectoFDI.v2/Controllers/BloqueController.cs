@@ -11,6 +11,11 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 using Microsoft.JSInterop;
 using System.Globalization;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using DinkToPdf.Contracts;
+using DinkToPdf;
+using Microsoft.AspNetCore.Http.Extensions;
+using Azure;
+using ProyectoFDI.API.v2.Models;
 
 namespace ProyectoFDI.v2.Controllers
 {
@@ -18,10 +23,12 @@ namespace ProyectoFDI.v2.Controllers
     {
         public int idCompetencia;
         private string apiUrl;
+        private readonly IConverter _converter;
 
-        public BloqueController(IConfiguration configuration)
+        public BloqueController(IConfiguration configuration, IConverter converter)
         {
-            apiUrl = configuration["urlBase"].ToString() + "PuntajeBloques/";
+            apiUrl = configuration["urlBase"] + "PuntajeBloques/";
+            _converter = converter;
         }
 
         // GET: BloqueController
@@ -42,6 +49,60 @@ namespace ProyectoFDI.v2.Controllers
 
             return View();
         }
+
+        public IActionResult VistaPDFListaResultados(int competencia)
+        {
+            this.idCompetencia = competencia;
+
+            ViewBag.ListadoPosicionesClasificatoria = ListadoPosicionesClasificatoria(competencia, "Clasificatoria");
+            ViewBag.ListadoPosicionesClasificatoriaF = ListadoPosicionesClasificatoria(competencia, "Final");
+            ViewBag.competencium = APIConsumer<VistaCompetencium>.SelectOne(apiUrl.Replace("PuntajeBloques", "VistaCompetenciums") + competencia);
+            
+            return View();
+        }
+
+     
+        public IActionResult MostrarPDFNuevaPagina(int competencia)
+        {
+
+            string pagina_actual = HttpContext.Request.Path;
+            string url_pagina = HttpContext.Request.GetEncodedUrl();
+            url_pagina = url_pagina.Replace(pagina_actual, "");
+
+            // Eliminar el primer parámetro competencia=11 de la URL
+            int index = url_pagina.IndexOf("?competencia=");
+            if (index != -1)
+            {
+                url_pagina = url_pagina.Remove(index);
+            }
+
+            url_pagina = $"{url_pagina}/Bloque/VistaPDFListaResultados?competencia={competencia}";
+
+
+
+
+            var pdf = new HtmlToPdfDocument()
+            {
+                GlobalSettings = new GlobalSettings()
+                {
+                    PaperSize = PaperKind.A4,
+                    Orientation = Orientation.Portrait
+                },
+                Objects = {
+            new ObjectSettings(){
+                Page = url_pagina
+            }
+        }
+
+            };
+
+            var archivoPDF = _converter.Convert(pdf);
+
+
+            return File(archivoPDF, "application/pdf");
+        }
+
+
         public ActionResult TablaPosicionesClasificatoria(int id)
         {
             ViewBag.idcompetenciav = id;

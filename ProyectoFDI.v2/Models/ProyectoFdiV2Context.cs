@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using ProyectoFDI.API.v2.Models;
 
 namespace ProyectoFDI.v2.Models;
 
@@ -433,6 +434,44 @@ public partial class ProyectoFdiV2Context : DbContext
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("nombre_sede");
+        });
+        modelBuilder.Entity<VistaCompetencium>(entity =>
+        {
+            entity
+                .ToView("VistaCompetencia");
+
+            entity.Property(e => e.ActivoCom).HasColumnName("activo_com");
+            entity.Property(e => e.DescripcionModalidad)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("descripcion_modalidad");
+            entity.Property(e => e.FechaFinCom)
+                .HasColumnType("date")
+                .HasColumnName("fechaFin_com");
+            entity.Property(e => e.FechaInicioCom)
+                .HasColumnType("date")
+                .HasColumnName("fechaInicio_com");
+            entity.Property(e => e.Genero)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("genero");
+            entity.Property(e => e.IdCom).HasColumnName("id_com");
+            entity.Property(e => e.NombreCategoria)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("nombre_categoria");
+            entity.Property(e => e.NombreCom)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("nombre_com");
+            entity.Property(e => e.NombreDeSede)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("nombre_de_sede");
+            entity.Property(e => e.NombreDelJuez)
+                .HasMaxLength(101)
+                .IsUnicode(false)
+                .HasColumnName("nombre_del_juez");
         });
 
         modelBuilder.Entity<Usuario>(entity =>

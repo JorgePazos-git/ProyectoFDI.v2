@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.100.3" />
+    <PackageReference Include="DinkToPdf" Version="1.0.8" />
     <PackageReference Include="EntityFramework" Version="6.4.4" />
     <PackageReference Include="FontAwesome" Version="4.7.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.2" />
@@ -23,6 +24,18 @@
   <ItemGroup>
     <Folder Include="Source\Scripts_BDD\" />
     <Folder Include="wwwroot\resources\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="LibreriaPDF\libwkhtmltox.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="LibreriaPDF\libwkhtmltox.dylib">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="LibreriaPDF\libwkhtmltox.so">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
