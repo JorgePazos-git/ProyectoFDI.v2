@@ -10,6 +10,9 @@ using System.Data.SqlClient;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using Microsoft.JSInterop;
 using System.Globalization;
+using DinkToPdf;
+using Microsoft.AspNetCore.Http.Extensions;
+using DinkToPdf.Contracts;
 
 namespace ProyectoFDI.v2.Controllers
 {
@@ -17,10 +20,12 @@ namespace ProyectoFDI.v2.Controllers
     {
         private string apiUrl;
         private int idCom;
+        private readonly IConverter _converter;
 
-        public DificultadController(IConfiguration configuration)
+        public DificultadController(IConfiguration configuration, IConverter converter)
         {
             apiUrl = configuration["urlBase"].ToString() + "DetalleCompetenciaDificultad/";
+            _converter = converter;
         }
 
         private List<SelectListItem> listaDeportistas()
@@ -529,6 +534,55 @@ namespace ProyectoFDI.v2.Controllers
                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Reporte Competencia" + ".xlsx");
                 }
             }
+        }
+
+        public IActionResult VistaPDFListaResultados(int competencia)
+        {           
+            ViewBag.competencium = APIConsumer<VistaCompetencium>.SelectOne(apiUrl.Replace("DetalleCompetenciaDificultad", "VistaCompetenciums") + competencia);
+            ViewBag.detalleCompetencium = APIConsumer<VistaViasResultado>.Select(apiUrl.Replace("DetalleCompetenciaDificultad", "VistaViasResultadoes") + competencia);
+
+            return View();
+        }
+
+
+        public IActionResult MostrarPDFNuevaPagina(int competencia)
+        {
+
+            string pagina_actual = HttpContext.Request.Path;
+            string url_pagina = HttpContext.Request.GetEncodedUrl();
+            url_pagina = url_pagina.Replace(pagina_actual, "");
+
+            // Eliminar el primer parámetro competencia=11 de la URL
+            int index = url_pagina.IndexOf("?competencia=");
+            if (index != -1)
+            {
+                url_pagina = url_pagina.Remove(index);
+            }
+
+            url_pagina = $"{url_pagina}/Dificultad/VistaPDFListaResultados?competencia={competencia}";
+
+
+
+
+            var pdf = new HtmlToPdfDocument()
+            {
+                GlobalSettings = new GlobalSettings()
+                {
+                    PaperSize = PaperKind.A4,
+                    Orientation = Orientation.Portrait
+                },
+                Objects = {
+                    new ObjectSettings(){
+                        Page = url_pagina
+                    }
+                }
+
+            };
+
+            var archivoPDF = _converter.Convert(pdf);
+
+
+            return File(archivoPDF, "application/pdf");
         }
     }
 }

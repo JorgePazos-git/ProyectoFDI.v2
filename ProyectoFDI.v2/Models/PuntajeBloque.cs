@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace ProyectoFDI.v2.Models;
 
-
 public partial class PuntajeBloque
 {
     public int IdBloPts { get; set; }
@@ -18,9 +17,9 @@ public partial class PuntajeBloque
 
     public int? IntentosZonas { get; set; }
 
-    public string? Etapa { get; set; }
+    public string Etapa { get; set; }
 
-    public virtual Competencium? IdComNavigation { get; set; }
+    public virtual Competencium IdComNavigation { get; set; }
 
-    public virtual Deportistum? IdDepNavigation { get; set; }
+    public virtual Deportistum IdDepNavigation { get; set; }
 }

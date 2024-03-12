@@ -13,9 +13,9 @@ public partial class ResultadoBloque
 
     public int? Puesto { get; set; }
 
-    public string? Etapa { get; set; }
+    public string Etapa { get; set; }
 
-    public virtual Competencium? IdComNavigation { get; set; }
+    public virtual Competencium IdComNavigation { get; set; }
 
-    public virtual Deportistum? IdDepNavigation { get; set; }
+    public virtual Deportistum IdDepNavigation { get; set; }
 }

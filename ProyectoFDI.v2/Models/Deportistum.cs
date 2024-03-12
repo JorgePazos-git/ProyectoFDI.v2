@@ -7,11 +7,11 @@ public partial class Deportistum
 {
     public int IdDep { get; set; }
 
-    public string? NombresDep { get; set; }
+    public string NombresDep { get; set; }
 
-    public string? ApellidosDep { get; set; }
+    public string ApellidosDep { get; set; }
 
-    public string? CedulaDep { get; set; }
+    public string CedulaDep { get; set; }
 
     public bool? ActivoDep { get; set; }
 
@@ -33,17 +33,17 @@ public partial class Deportistum
 
     public virtual ICollection<DetalleCompetenciaDificultad> DetalleCompetenciaDificultads { get; } = new List<DetalleCompetenciaDificultad>();
 
-    public virtual Categorium? IdCatNavigation { get; set; }
+    public virtual Categorium IdCatNavigation { get; set; }
 
-    public virtual Club? IdClubNavigation { get; set; }
+    public virtual Club IdClubNavigation { get; set; }
 
-    public virtual Entrenador? IdEntNavigation { get; set; }
+    public virtual Entrenador IdEntNavigation { get; set; }
 
-    public virtual Genero? IdGenNavigation { get; set; }
+    public virtual Genero IdGenNavigation { get; set; }
 
-    public virtual Provincium? IdProNavigation { get; set; }
+    public virtual Provincium IdProNavigation { get; set; }
 
-    public virtual Usuario? IdUsuNavigation { get; set; }
+    public virtual Usuario IdUsuNavigation { get; set; }
 
     public virtual ICollection<PuntajeBloque> PuntajeBloques { get; } = new List<PuntajeBloque>();
 

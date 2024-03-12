@@ -11,11 +11,11 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 using Microsoft.JSInterop;
 using System.Globalization;
 using DocumentFormat.OpenXml.Office2010.Excel;
-using DinkToPdf.Contracts;
-using DinkToPdf;
 using Microsoft.AspNetCore.Http.Extensions;
 using Azure;
-using ProyectoFDI.API.v2.Models;
+using DinkToPdf.Contracts;
+using DinkToPdf;
+//using ProyectoFDI.API.v2.Models;
 
 namespace ProyectoFDI.v2.Controllers
 {
