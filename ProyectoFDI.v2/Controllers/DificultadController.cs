@@ -538,8 +538,8 @@ namespace ProyectoFDI.v2.Controllers
 
         public IActionResult VistaPDFListaResultados(int competencia)
         {           
-            ViewBag.competencium = APIConsumer<VistaCompetencium>.SelectOne(apiUrl.Replace("DetalleCompetenciaDificultad", "VistaCompetenciums") + competencia);
-            ViewBag.detalleCompetencium = APIConsumer<VistaViasResultado>.Select(apiUrl.Replace("DetalleCompetenciaDificultad", "VistaViasResultadoes") + competencia);
+          //  ViewBag.competencium = APIConsumer<VistaCompetencium>.SelectOne(apiUrl.Replace("DetalleCompetenciaDificultad", "VistaCompetenciums") + competencia);
+          //  ViewBag.detalleCompetencium = APIConsumer<VistaViasResultado>.Select(apiUrl.Replace("DetalleCompetenciaDificultad", "VistaViasResultadoes") + competencia);
 
             return View();
         }
