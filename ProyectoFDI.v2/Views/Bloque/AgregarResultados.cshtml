@@ -77,3 +77,46 @@
         }
     </form>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Ejecutar la solicitud AJAX al cargar la página con el deportista seleccionado actualmente
+        obtenerDatosDeportista();
+
+        // Ejecutar la solicitud AJAX cada vez que cambie la selección del deportista
+        $('#IdDep').change(obtenerDatosDeportista);
+    });
+
+    // Función para obtener los datos del deportista mediante una solicitud AJAX
+    function obtenerDatosDeportista() {
+        var com = '@ViewBag.idcompetenciav';
+        var dep = $('#IdDep').val();
+        var etapa = 'Clasificatoria'; // O ajusta este valor según sea necesario
+        $('[id^=Top], [id^=Zona]').val('');
+
+        $.ajax({
+            url: '@Url.Action("ObtenerDatosDeportista", "Bloque")',
+            type: 'GET',
+            data: { com: com, dep: dep, etapa: etapa },
+            success: function (data) {
+                
+                // Itera sobre los elementos de la lista y asigna los valores a los campos del formulario
+                for (var i = 0; i < data.length; i++) {
+                    var numeroBloque = data[i].numeroBloque;
+                    var intentosTops = data[i].intentosTops;
+                    var intentosZonas = data[i].intentosZonas;
+
+                    $('#Top' + numeroBloque).val(intentosTops);
+                    $('#Zona' + numeroBloque).val(intentosZonas);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+    }
+
+</script>
+
+

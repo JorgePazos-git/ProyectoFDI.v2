@@ -61,7 +61,45 @@ namespace ProyectoFDI.v2.Controllers
             return View();
         }
 
-     
+
+        [HttpGet]
+        public IActionResult ObtenerDatosDeportista(int com, int dep, string etapa)
+        {
+            try
+            {
+                // Llama a la API para obtener los datos del deportista
+                var lista = APIConsumer<PuntajeBloque>.Select(apiUrl + com + "/" + dep + "/" + etapa).ToList();
+
+                // Verifica si la lista de datos no está vacía
+                if (lista != null && lista.Count > 0)
+                {
+                    // Devuelve la lista de deportistas como un objeto JSON
+                    return Json(lista.Select(deportista => new
+                    {
+                        idBloPts = deportista.IdBloPts,
+                        idCom = deportista.IdCom,
+                        idDep = deportista.IdDep,
+                        numeroBloque = deportista.NumeroBloque,
+                        intentosTops = deportista.IntentosTops,
+                        intentosZonas = deportista.IntentosZonas,
+                        etapa = deportista.Etapa
+                    }));
+                }
+                else
+                {
+                    // Devolver un error 404 Not Found si no se encontraron datos del deportista
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Si ocurre alguna excepción, devuelve un código de error interno del servidor
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
+
         public IActionResult MostrarPDFNuevaPagina(int competencia)
         {
 
