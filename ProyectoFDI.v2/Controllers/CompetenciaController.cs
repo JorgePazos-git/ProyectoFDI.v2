@@ -323,6 +323,19 @@ namespace ProyectoFDI.v2.Controllers
 
                     }   
                 }
+
+                if (data.DetalleCompetencia.Count >= 4 && data.DetalleCompetencia.Count < 8)
+                {
+                        if (data.DetalleCompetencia.Count(a => a.SemiRes != null) >= 2)
+                        {
+                            ViewBag.ListaClasififadosSemi = PrimeraVezEnfrentar(listaClasificacion(id), "semi");
+                        
+                            if (data.DetalleCompetencia.Count(a => a.FinalRes != null) >= 2)
+                            {
+                                ViewBag.ListaClasificadosFinal = SiguienteRonda(PrimeraVezEnfrentar(listaClasificacion(id), "semi"), "final");
+                            }
+                        }        
+                }
             }
 
             
