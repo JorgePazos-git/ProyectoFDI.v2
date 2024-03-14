@@ -289,17 +289,33 @@ namespace ProyectoFDI.v2.Controllers
                 var detalles = APIConsumer<DetalleCompetenciaDificultad>.Select(apiUrl).Where(f => f.IdCom == idCompetencia).ToList();
                 List<Tuple<int, int>> puestosFinal= CalcularPuestosClasificacion(detalles, 3);
 
-                
-                // Asignar puestos a los detalles
-                for (int i = 0; i < puestosFinal.Count; i++)
-                {
-                    int deportistaId = puestosFinal[i].Item1;
-                    DetalleCompetenciaDificultad detalle = detalles.FirstOrDefault(d => d.IdDep == deportistaId);
+                // Agrupar los detalles por resultado final para manejar los empates
+                var detallesAgrupados = detalles.GroupBy(d => d.FinalRes).ToList();
 
-                    if (detalle != null)
+                int puesto = 1;
+                foreach (var grupo in detallesAgrupados)
+                {
+                    // Si hay más de un competidor con el mismo resultado final, manejar el empate
+                    if (grupo.Count() > 1)
                     {
-                        detalle.Puesto = puestosFinal[i].Item2; // +1 porque los puestos comienzan en 1
+                        // Ordenar los competidores dentro del empate según los resultados de clasificación
+                        var empateOrdenado = grupo.OrderByDescending(d => d.Clas1Res).ThenByDescending(d => d.Clas2Res).ToList();
+
+                        // Asignar los puestos dentro del empate
+                        foreach (var detalle in empateOrdenado)
+                        {
+                            detalle.Puesto = puesto;
+                            APIConsumer<DetalleCompetenciaDificultad>.Update(apiUrl + detalle.IdDetalleDificultad.ToString(), detalle);
+                            puesto++;
+                        }
+                    }
+                    else
+                    {
+                        // Solo un competidor con este resultado final, asignar el puesto
+                        var detalle = grupo.First();
+                        detalle.Puesto = puesto;
                         APIConsumer<DetalleCompetenciaDificultad>.Update(apiUrl + detalle.IdDetalleDificultad.ToString(), detalle);
+                        puesto++;
                     }
                 }
 
@@ -561,6 +577,56 @@ namespace ProyectoFDI.v2.Controllers
             }
 
             url_pagina = $"{url_pagina}/Dificultad/VistaPDFListaResultados?competencia={competencia}";
+
+
+
+
+            var pdf = new HtmlToPdfDocument()
+            {
+                GlobalSettings = new GlobalSettings()
+                {
+                    PaperSize = PaperKind.A4,
+                    Orientation = Orientation.Portrait
+                },
+                Objects = {
+                    new ObjectSettings(){
+                        Page = url_pagina
+                    }
+                }
+
+            };
+
+            var archivoPDF = _converter.Convert(pdf);
+
+
+            return File(archivoPDF, "application/pdf");
+        }
+
+        public IActionResult VistaPDFListaResultadosClas(int competencia)
+        {
+            ViewBag.competencium = APIConsumer<VistaCompetencium>.SelectOne(apiUrl.Replace("DetalleCompetenciaDificultad", "VistaCompetenciums") + competencia);
+            ViewBag.detalleCompetencium = APIConsumer<VistaViasClasificacion>.Select(apiUrl.Replace("DetalleCompetenciaDificultad", "VistaViasClasificacions") + competencia)
+                .OrderBy(p => p.Puesto);
+
+            return View();
+        }
+
+
+        public IActionResult MostrarPDFNuevaPaginaClas(int competencia)
+        {
+
+            string pagina_actual = HttpContext.Request.Path;
+            string url_pagina = HttpContext.Request.GetEncodedUrl();
+            url_pagina = url_pagina.Replace(pagina_actual, "");
+
+            // Eliminar el primer parámetro competencia=11 de la URL
+            int index = url_pagina.IndexOf("?competencia=");
+            if (index != -1)
+            {
+                url_pagina = url_pagina.Remove(index);
+            }
+
+            url_pagina = $"{url_pagina}/Dificultad/VistaPDFListaResultadosClas?competencia={competencia}";
 
 
 

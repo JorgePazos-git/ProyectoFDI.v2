@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DinkToPdf;
+using DinkToPdf.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProyectoFDI.v2.Code;
@@ -12,11 +15,13 @@ namespace ProyectoFDI.v2.Controllers
     public class DetalleCompetenciaController : Controller
     {
         private string apiUrl;
+        private readonly IConverter _converter;
 
-        public DetalleCompetenciaController(IConfiguration configuration)
+        public DetalleCompetenciaController(IConfiguration configuration, IConverter converter)
         {
             apiUrl = configuration["urlBase"].ToString() + "DetalleCompetencia/";
             ViewBag.ReturnTo = "index";
+            _converter = converter;
         }
 
         [Authorize(Roles = "Administrador,Juez")]
@@ -201,6 +206,186 @@ namespace ProyectoFDI.v2.Controllers
             {
                 return View(detalle);
             }
+        }
+
+        public IActionResult VistaPDFListaResultados(int competencia)
+        {
+            ViewBag.competencium = APIConsumer<VistaCompetencium>.SelectOne(apiUrl.Replace("DetalleCompetencia", "VistaCompetenciums") + competencia);
+            ViewBag.detalleCompetencium = APIConsumer<VistaVeloClasificacion>.Select(apiUrl.Replace("DetalleCompetencia", "VistaVeloClasificacions") + competencia)
+                    .OrderBy(p => p.Puesto == null ? int.MaxValue : p.Puesto)
+                    .ThenBy(p => p.ResultadoClasificacion);
+
+            return View();
+        }
+
+
+        public IActionResult MostrarPDFNuevaPagina(int competencia)
+        {
+
+            string pagina_actual = HttpContext.Request.Path;
+            string url_pagina = HttpContext.Request.GetEncodedUrl();
+            url_pagina = url_pagina.Replace(pagina_actual, "");
+
+            // Eliminar el primer parámetro competencia=11 de la URL
+            int index = url_pagina.IndexOf("?competencia=");
+            if (index != -1)
+            {
+                url_pagina = url_pagina.Remove(index);
+            }
+
+            url_pagina = $"{url_pagina}/DetalleCompetencia/VistaPDFListaResultados?competencia={competencia}";
+
+
+
+
+            var pdf = new HtmlToPdfDocument()
+            {
+                GlobalSettings = new GlobalSettings()
+                {
+                    PaperSize = PaperKind.A4,
+                    Orientation = Orientation.Portrait
+                },
+                Objects = {
+                    new ObjectSettings(){
+                        Page = url_pagina
+                    }
+                }
+
+            };
+
+            var archivoPDF = _converter.Convert(pdf);
+
+
+            return File(archivoPDF, "application/pdf");
+        }
+
+        public IActionResult VistaPDFListaResultadosFinal(int competencia)
+        {
+         
+            ViewBag.competencium = APIConsumer<VistaCompetencium>.SelectOne(apiUrl.Replace("DetalleCompetencia", "VistaCompetenciums") + competencia);
+            var lista = APIConsumer<VistaVeloFinal>.Select(apiUrl.Replace("DetalleCompetencia", "VistaVeloFinals") + competencia);
+
+            // Definir un valor especial para los resultados nulos
+            const double valorNulo = double.MaxValue;
+
+            // Ordenar la lista
+            var listaOrdenada = lista.OrderBy(d =>
+            {
+                // Manejar los casos especiales "fall" y "fs" asignándoles valores que los coloquen al final
+                if (d.ResultadoFinal == "fall")
+                    return double.MaxValue - 2; // Usar el valor máximo de double para ponerlo al final
+                else if (d.ResultadoFinal == "fs")
+                    return double.MaxValue - 1; // Usar un valor cercano al máximo para "fs"
+
+                // Si el resultado no es "fall" ni "fs", convertirlo a double y devolverlo
+                if (string.IsNullOrEmpty(d.ResultadoFinal))
+                    return valorNulo; // Asignar valor especial para los resultados nulos
+                else
+                    return Convert.ToDouble(d.ResultadoFinal); // Convertir el resultado final a double
+            })
+            .ThenBy(d =>
+            {
+                // Manejar los casos especiales "fall" y "fs" asignándoles valores que los coloquen al final
+                if (d.ResultadoSemifinal == "fall")
+                    return double.MaxValue - 2; // Usar el valor máximo de double para ponerlo al final
+                else if (d.ResultadoSemifinal == "fs")
+                    return double.MaxValue - 1; // Usar un valor cercano al máximo para "fs"
+
+                // Si el resultado no es "fall" ni "fs", convertirlo a double y devolverlo
+                if (string.IsNullOrEmpty(d.ResultadoSemifinal))
+                    return valorNulo; // Asignar valor especial para los resultados nulos
+                else
+                    return Convert.ToDouble(d.ResultadoSemifinal); // Convertir el resultado final a double
+            })
+            .ThenBy(d =>
+            {
+                // Manejar los casos especiales "fall" y "fs" asignándoles valores que los coloquen al final
+                if (d.ResultadoCuartos == "fall")
+                    return double.MaxValue - 2; // Usar el valor máximo de double para ponerlo al final
+                else if (d.ResultadoCuartos == "fs")
+                    return double.MaxValue - 1; // Usar un valor cercano al máximo para "fs"
+
+                // Si el resultado no es "fall" ni "fs", convertirlo a double y devolverlo
+                if (string.IsNullOrEmpty(d.ResultadoCuartos))
+                    return valorNulo; // Asignar valor especial para los resultados nulos
+                else
+                    return Convert.ToDouble(d.ResultadoCuartos); // Convertir el resultado final a double
+            })
+            .ThenBy(d =>
+            {
+                // Manejar los casos especiales "fall" y "fs" asignándoles valores que los coloquen al final
+                if (d.ResultadoOctavos == "fall")
+                    return double.MaxValue - 2; // Usar el valor máximo de double para ponerlo al final
+                else if (d.ResultadoOctavos == "fs")
+                    return double.MaxValue - 1; // Usar un valor cercano al máximo para "fs"
+
+                // Si el resultado no es "fall" ni "fs", convertirlo a double y devolverlo
+                if (string.IsNullOrEmpty(d.ResultadoOctavos))
+                    return valorNulo; // Asignar valor especial para los resultados nulos
+                else
+                    return Convert.ToDouble(d.ResultadoOctavos); // Convertir el resultado final a double
+            })
+            .ThenBy(d =>
+            {
+                // Manejar los casos especiales "fall" y "fs" asignándoles valores que los coloquen al final
+                if (d.ResultadoClasificacion == "fall")
+                    return double.MaxValue - 2; // Usar el valor máximo de double para ponerlo al final
+                else if (d.ResultadoClasificacion == "fs")
+                    return double.MaxValue - 1; // Usar un valor cercano al máximo para "fs"
+
+                // Si el resultado no es "fall" ni "fs", convertirlo a double y devolverlo
+                if (string.IsNullOrEmpty(d.ResultadoClasificacion))
+                    return valorNulo; // Asignar valor especial para los resultados nulos
+                else
+                    return Convert.ToDouble(d.ResultadoClasificacion); // Convertir el resultado final a double
+            })
+            .ToList();
+
+            // Asignar la lista ordenada de nuevo a ViewBag.detalleCompetencium
+            ViewBag.detalleCompetencium = listaOrdenada;
+
+            return View();
+        }
+
+
+        public IActionResult MostrarPDFNuevaPaginaFinal(int competencia)
+        {
+
+            string pagina_actual = HttpContext.Request.Path;
+            string url_pagina = HttpContext.Request.GetEncodedUrl();
+            url_pagina = url_pagina.Replace(pagina_actual, "");
+
+            // Eliminar el primer parámetro competencia=11 de la URL
+            int index = url_pagina.IndexOf("?competencia=");
+            if (index != -1)
+            {
+                url_pagina = url_pagina.Remove(index);
+            }
+
+            url_pagina = $"{url_pagina}/DetalleCompetencia/VistaPDFListaResultadosFinal?competencia={competencia}";
+
+
+
+
+            var pdf = new HtmlToPdfDocument()
+            {
+                GlobalSettings = new GlobalSettings()
+                {
+                    PaperSize = PaperKind.A4,
+                    Orientation = Orientation.Portrait
+                },
+                Objects = {
+                    new ObjectSettings(){
+                        Page = url_pagina
+                    }
+                }
+
+            };
+
+            var archivoPDF = _converter.Convert(pdf);
+
+
+            return File(archivoPDF, "application/pdf");
         }
     }
 }

@@ -51,12 +51,18 @@ public partial class ProyectoFdiV2Context : DbContext
 
     public virtual DbSet<VistaPuntajesDeportista> VistaPuntajesDeportistas { get; set; }
 
+    public virtual DbSet<VistaVeloClasificacion> VistaVeloClasificacions { get; set; }
+
+    public virtual DbSet<VistaVeloFinal> VistaVeloFinals { get; set; }
+
+    public virtual DbSet<VistaViasClasificacion> VistaViasClasificacions { get; set; }
+
     public virtual DbSet<VistaViasResultado> VistaViasResultados { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        //=> optionsBuilder.UseSqlServer("Data Source=(localdb)\\proyectofdi.database.windows.net;Initial Catalog=ProyectoFDI.v2;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False");
         => optionsBuilder.UseSqlServer("Data Source=MSI;Initial Catalog=ProyectoFDI.v2;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.UseCollation("SQL_Latin1_General_CP1_CI_AS");
@@ -530,6 +536,83 @@ public partial class ProyectoFdiV2Context : DbContext
                 .HasColumnName("nombre_dep");
             entity.Property(e => e.TopsRealizados).HasColumnName("tops_realizados");
             entity.Property(e => e.ZonasRealizadas).HasColumnName("zonas_realizados");
+        });
+
+        modelBuilder.Entity<VistaVeloClasificacion>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("vista_velo_clasificacion");
+
+            entity.Property(e => e.Deportista)
+                .IsRequired()
+                .HasMaxLength(101)
+                .IsUnicode(false)
+                .HasColumnName("deportista");
+            entity.Property(e => e.IdCompe).HasColumnName("id_compe");
+            entity.Property(e => e.Puesto).HasColumnName("puesto");
+            entity.Property(e => e.ResultadoClasificacion)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("resultado_clasificacion");
+        });
+
+        modelBuilder.Entity<VistaVeloFinal>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("vista_velo_final");
+
+            entity.Property(e => e.Deportista)
+                .IsRequired()
+                .HasMaxLength(101)
+                .IsUnicode(false)
+                .HasColumnName("deportista");
+            entity.Property(e => e.IdCompe).HasColumnName("id_compe");
+            entity.Property(e => e.Puesto).HasColumnName("puesto");
+            entity.Property(e => e.ResultadoClasificacion)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("resultado_clasificacion");
+            entity.Property(e => e.ResultadoCuartos)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("resultado_cuartos");
+            entity.Property(e => e.ResultadoFinal)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("resultado_final");
+            entity.Property(e => e.ResultadoOctavos)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("resultado_octavos");
+            entity.Property(e => e.ResultadoSemifinal)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("resultado_semifinal");
+        });
+
+        modelBuilder.Entity<VistaViasClasificacion>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("vista_vias_clasificacion");
+
+            entity.Property(e => e.Clasificacion1)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("clasificacion_1");
+            entity.Property(e => e.Clasificacion2)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("clasificacion_2");
+            entity.Property(e => e.Deportista)
+                .IsRequired()
+                .HasMaxLength(101)
+                .IsUnicode(false)
+                .HasColumnName("deportista");
+            entity.Property(e => e.IdCompe).HasColumnName("id_compe");
+            entity.Property(e => e.Puesto).HasColumnName("puesto");
         });
 
         modelBuilder.Entity<VistaViasResultado>(entity =>

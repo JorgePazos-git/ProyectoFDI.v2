@@ -59,16 +59,23 @@
         var nuevoClasRes = document.getElementById('nuevoClasRes').value;
         var clasResActual = document.getElementById('ClasRes').value;
 
-        // Convertir los valores a números flotantes
-        var nuevoClasResNum = parseFloat(nuevoClasRes);
-        var clasResActualNum = parseFloat(clasResActual);
+        if(nuevoClasRes == "fs" || clasResActual == "fs"){
+            document.getElementById('ClasRes').value;
+            document.getElementById('ClasRes').value;
+        }else{
+            // Convertir los valores a números flotantes
+            var nuevoClasResNum = parseFloat(nuevoClasRes);
+            var clasResActualNum = parseFloat(clasResActual);
 
-        // Comparar los valores y guardar el número menor
-        if (nuevoClasResNum < clasResActualNum) {
-            document.getElementById('ClasRes').value = nuevoClasResNum.toString();
-        } else {
-            document.getElementById('ClasRes').value = clasResActualNum.toString();
+            // Comparar los valores y guardar el número menor
+            if (nuevoClasResNum < clasResActualNum) {
+                document.getElementById('ClasRes').value = nuevoClasResNum.toString();
+            } else {
+                document.getElementById('ClasRes').value = clasResActualNum.toString();
+            }
         }
+
+        
     }
 </script>
 @section Scripts {

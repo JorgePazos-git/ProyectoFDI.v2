@@ -1,0 +1,134 @@
+﻿@{
+   var competencium = ViewBag.competencium;
+    Layout = null;
+}
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>VistaPDFListaDeportistas</title>
+    <!-- Enlace al archivo CSS de Bootstrap -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Estilos CSS para tu HTML */
+        table {
+            page-break-inside: avoid;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row mb-4">
+
+
+
+
+            <div class="col-md-12">
+                <table class="table table-bordered">
+                    <div class="row mt-3">
+                        <div class="col-md-12 text-center">
+                            <h2 class="font-weight-bold text-uppercase">
+                                <img src="https://www.fedenador.org.ec/wp-content/uploads/2021/05/IMBABURA.png" alt="Logo" style="height: 250px; margin-right: 10px;"> <!-- Aquí se agrega el logo -->
+                                @competencium.NombreCom
+                            </h2>
+                        </div>
+                    </div>
+                    <tbody>
+                        <tr>
+                            <th class="text-right" style="width: 30%">Fecha de inicio:</th>
+                            <td>@competencium.FechaInicioCom</td>
+                            <th class="text-right" style="width: 30%">Fecha de fin:</th>
+                            <td>@competencium.FechaFinCom</td>
+                        </tr>
+                        <tr>
+                            <th class="text-right">Género:</th>
+                            <td>@competencium.Genero</td>
+                            <th class="text-right">Nombre del juez:</th>
+                            <td>@competencium.NombreDelJuez</td>
+                        </tr>
+                        <tr>
+                            <th class="text-right">Categoría:</th>
+                            <td>@competencium.NombreCategoria</td>
+                            <th class="text-right">Modalidad:</th>
+                            <td>@competencium.DescripcionModalidad</td>
+                        </tr>
+                        <tr>
+                            <th class="text-right">Sede:</th>
+                            <td colspan="3">@competencium.NombreDeSede</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+
+            <table class="table table-bordered table-hover text-center">
+                <div class="row mt-3">
+                    <div class="col-md-12 text-center">
+                        <h5 class="font-weight-bold text-uppercase">
+                            DEPORTISTAS CLASIFICADOS
+                        </h5>
+                    </div>
+                </div>
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Puesto de Clasificación</th>
+                        <th scope="col">Deportista</th>
+                        <th scope="col">Clasificación</th>
+
+                        <!-- Agrega más columnas según sea necesario -->
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        @foreach (var registro in ViewBag.detalleCompetencium)
+                        {
+                            <tr>
+                                <td>@(registro.Puesto == null ? "No clasifica" : registro.Puesto.ToString())</td>                             
+                                <td>@registro.Deportista</td>                           
+                                <td>@registro.ResultadoClasificacion</td>
+                             </tr>
+                        }
+                   
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <!-- Contenido del encabezado y la tabla aquí -->
+        <!-- Tabla para las firmas -->
+        <div class="row mt-3">
+            <div class="col-md-12 text-center">
+                <h5 class="font-weight-bold text-uppercase">Firmas</h5>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <table class="table table-borderless">
+                    <tbody>
+                        <tr>
+                            <td class="text-center">
+                                <!-- Espacio para firmar -->
+                                <p class="border border-dark p-4">&nbsp;</p>
+                                <small>Firma del Juez</small>
+                            </td>
+                            <td class="text-center">
+                                <!-- Espacio para firmar -->
+                                <p class="border border-dark p-4">&nbsp;</p>
+                                <small>Firma del Entrenador</small>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Enlace al archivo JavaScript de Bootstrap (Opcional, pero necesario para ciertas funcionalidades) -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
