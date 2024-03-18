@@ -18,4 +18,5 @@ public partial class VistaViasResultado
     public string Clasificacion2 { get; set; }
 
     public string Final { get; set; }
+    public TimeSpan? Tiempo { get; set; }
 }

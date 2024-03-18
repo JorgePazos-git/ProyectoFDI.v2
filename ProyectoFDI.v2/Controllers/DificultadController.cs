@@ -83,6 +83,7 @@ namespace ProyectoFDI.v2.Controllers
                 Clas1Res = f.Clas1Res,
                 Clas2Res = f.Clas2Res,
                 FinalRes = f.FinalRes,
+                TiempoRes = f.TiempoRes,
                 Puesto = f.Puesto,
                 PuestoInicialRes = f.PuestoInicialRes,
                 IdComNavigation = f.IdComNavigation,
@@ -197,7 +198,7 @@ namespace ProyectoFDI.v2.Controllers
         }
 
         [HttpPost]
-        public ActionResult AgregarFinal(int idDetalle, string deportistaNombre, string final)
+        public ActionResult AgregarFinal(int idDetalle, string deportistaNombre, string final, TimeSpan tiempo)
         {
             try
             {
@@ -205,6 +206,8 @@ namespace ProyectoFDI.v2.Controllers
                 DetalleCompetenciaDificultad detallenew = detalleOld;
 
                 detallenew.FinalRes = final;
+                TimeSpan newtime = new TimeSpan(0, tiempo.Hours, tiempo.Minutes);
+                detallenew.TiempoRes = newtime;
 
                 try
                 {
@@ -298,16 +301,32 @@ namespace ProyectoFDI.v2.Controllers
                     // Si hay más de un competidor con el mismo resultado final, manejar el empate
                     if (grupo.Count() > 1)
                     {
-                        // Ordenar los competidores dentro del empate según los resultados de clasificación
-                        var empateOrdenado = grupo.OrderByDescending(d => d.Clas1Res).ThenByDescending(d => d.Clas2Res).ToList();
-
-                        // Asignar los puestos dentro del empate
-                        foreach (var detalle in empateOrdenado)
+                        if (grupo.All(d => d.Clas1Res == grupo.First().Clas1Res && d.Clas2Res == grupo.First().Clas2Res))
                         {
-                            detalle.Puesto = puesto;
-                            APIConsumer<DetalleCompetenciaDificultad>.Update(apiUrl + detalle.IdDetalleDificultad.ToString(), detalle);
-                            puesto++;
+                            // Ordenar los competidores dentro del empate según el tiempo
+                            var empateOrdenadoPorTiempo = grupo.OrderBy(d => d.TiempoRes).ToList();
+
+                            // Asignar los puestos dentro del empate basados en el tiempo
+                            foreach (var detalle in empateOrdenadoPorTiempo)
+                            {
+                                detalle.Puesto = puesto;
+                                APIConsumer<DetalleCompetenciaDificultad>.Update(apiUrl + detalle.IdDetalleDificultad.ToString(), detalle);
+                                puesto++;
+                            }
                         }
+                        else
+                        {
+                            // Ordenar los competidores dentro del empate según los resultados de clasificación
+                            var empateOrdenadoPorClasificacion = grupo.OrderByDescending(d => d.Clas1Res).ThenByDescending(d => d.Clas2Res).ToList();
+
+                            // Asignar los puestos dentro del empate basados en la clasificación
+                            foreach (var detalle in empateOrdenadoPorClasificacion)
+                            {
+                                detalle.Puesto = puesto;
+                                APIConsumer<DetalleCompetenciaDificultad>.Update(apiUrl + detalle.IdDetalleDificultad.ToString(), detalle);
+                                puesto++;
+                            }
+                        }                      
                     }
                     else
                     {
@@ -340,6 +359,7 @@ namespace ProyectoFDI.v2.Controllers
                         Clas1Res = f.Clas1Res,
                         Clas2Res = f.Clas2Res,
                         FinalRes = f.FinalRes,
+                        TiempoRes = f.TiempoRes,
                         IdCom = f.IdCom,
                         IdDep = f.IdDep,
                         IdComNavigation = f.IdComNavigation,

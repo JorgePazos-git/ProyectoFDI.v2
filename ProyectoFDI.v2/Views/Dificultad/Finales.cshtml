@@ -38,6 +38,9 @@
                 Resultado Final
             </th>
             <th>
+                Tiempo
+            </th>
+            <th>
                 Opciones
             </th>
         </tr>
@@ -56,6 +59,9 @@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.FinalRes)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TiempoRes)                      
                     </td>
                     <td>
                         <input type="button" class="agregar btn btn-info" data-id="@item.IdDetalleDificultad" value="Agregar Finales" />
@@ -99,7 +105,8 @@
         Swal.fire({
             title: 'Agregar Final',
             html:
-                `<input id="final" class="swal2-input" placeholder="Resultado Final">`,
+                `<input id="final" class="swal2-input" placeholder="Resultado Final">
+                    <input id="tiempo" type=time class="swal2-input" placeholder="Tiempo">`,
             showCancelButton: true,
             confirmButtonText: 'Guardar',
             cancelButtonText: 'Cancelar',
@@ -107,6 +114,7 @@
             preConfirm: () => {
                 // Obtener los valores ingresados
                 var final = document.getElementById('final').value;
+                var tiempo = document.getElementById('tiempo').value;
                 var idDetalle = botonAgregar.data("id");
 
                 // Realizar una solicitud AJAX para enviar los valores al controlador
@@ -116,13 +124,15 @@
                     data: {
                         idDetalle: idDetalle,
                         deportistaNombre: deportistaNombre,
-                        final: final
+                        final: final,
+                        tiempo: tiempo
                     },
                     success: function (response) {
                         if (response.success) {
                             // Actualizar el valor en la tabla
                             var fila = botonAgregar.closest("tr");
                             fila.find("td:eq(2)").text(final);
+                            fila.find("td:eq(3)").text(tiempo);
 
                             // Verificar si todos los resultados están llenos después de actualizar
                             verificarResultadosLlenos();
@@ -156,10 +166,16 @@
         var todosLlenos = true;
         $("table tbody tr").each(function () {
             var final = $(this).find("td:eq(2)").text();
+            var tiempo = $(this).find("td:eq(3)").text();
+
             if (final === "") {
                 todosLlenos = false;
                 return false; // Rompe el bucle si encuentra una fila incompleta
             }
+            if (tiempo === "") {
+                todosLlenos = false;
+                return false; // Rompe el bucle si encuentra una fila incompleta
+            }          
         });
 
         // Muestra u oculta el botón en función de si todos los campos están llenos

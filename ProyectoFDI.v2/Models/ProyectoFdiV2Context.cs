@@ -232,6 +232,9 @@ public partial class ProyectoFdiV2Context : DbContext
             entity.Property(e => e.IdDep).HasColumnName("id_dep");
             entity.Property(e => e.Puesto).HasColumnName("puesto");
             entity.Property(e => e.PuestoInicialRes).HasColumnName("puesto_inicial_res");
+            entity.Property(e => e.TiempoRes)
+                .HasPrecision(3)
+                .HasColumnName("tiempo_res");
 
             entity.HasOne(d => d.IdComNavigation).WithMany(p => p.DetalleCompetenciaDificultads)
                 .HasForeignKey(d => d.IdCom)
@@ -641,6 +644,9 @@ public partial class ProyectoFdiV2Context : DbContext
             entity.Property(e => e.IdCompe).HasColumnName("id_compe");
             entity.Property(e => e.PuestoClasificacion).HasColumnName("puesto_clasificacion");
             entity.Property(e => e.PuestoFinal).HasColumnName("puesto_final");
+            entity.Property(e => e.Tiempo)
+                .HasPrecision(3)
+                .HasColumnName("tiempo");
         });
 
         OnModelCreatingPartial(modelBuilder);

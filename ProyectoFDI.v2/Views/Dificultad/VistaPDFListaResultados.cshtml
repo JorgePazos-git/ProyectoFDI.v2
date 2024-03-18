@@ -82,6 +82,7 @@
                         <th scope="col">Clasificación 1</th>
                         <th scope="col">Clasificación 2</th>
                         <th scope="col">Resultado Final</th>
+                        <th scope="col">Tiempo Final</th>
                         <!-- Agrega más columnas según sea necesario -->
                     </tr>
                 </thead>
@@ -107,7 +108,8 @@
                             <td>@registro.Deportista</td>
                             <td>@registro.Clasificacion1</td>
                             <td>@registro.Clasificacion2</td>
-                            <td>@registro.Final</td>
+                            <td>@(registro.Final == null ? "No clasificó" : registro.Final.ToString())</td>                              
+                            <td>@(registro.Tiempo == null ? "No Clasificó" : registro.Tiempo.ToString())</td>
                         </tr>
                     }
                 </tbody>
