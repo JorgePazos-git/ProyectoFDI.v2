@@ -86,7 +86,7 @@
         var actualEsFs = clasResActual.includes("fs");
 
         // Manejo de todas las combinaciones posibles
-        if ((nuevoEsFs && nuevoEsFall) || (actualEsFs && actualEsFall)) {
+        if ((nuevoEsFs && actualEsFall) || (actualEsFs && nuevoEsFall)) {
             // Si ambos contienen "fall" y "fs", tomar "fs"
             document.getElementById('ClasRes').value = "fs";
         } else if (nuevoEsFall && actualEsFs) {
