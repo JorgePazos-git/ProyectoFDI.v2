@@ -89,6 +89,9 @@
         if ((nuevoEsFs && nuevoEsFall) || (actualEsFs && actualEsFall)) {
             // Si ambos contienen "fall" y "fs", tomar "fs"
             document.getElementById('ClasRes').value = "fs";
+        } else if (nuevoEsFall && actualEsFs) {
+            // Si uno contiene "fall" y el otro "fs", tomar "fs"
+            document.getElementById('ClasRes').value = "fs";
         } else if (nuevoEsFall || actualEsFall) {
             // Si alguno contiene "fall" y el otro no, tomar el valor numérico si es que existe
             var nuevoNum = parseFloat(nuevoClasRes.replace("fall", ""));
@@ -118,6 +121,7 @@
             }
         }
     }
+
 </script>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
