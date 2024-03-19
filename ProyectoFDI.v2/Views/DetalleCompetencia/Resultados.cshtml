@@ -55,27 +55,68 @@
 </div>
 
 <script>
+    //function agregarClasRes() {
+    //    var nuevoClasRes = document.getElementById('nuevoClasRes').value;
+    //    var clasResActual = document.getElementById('ClasRes').value;
+
+    //    if(nuevoClasRes == "fs" || clasResActual == "fs"){
+    //        document.getElementById('ClasRes').value;
+    //        document.getElementById('ClasRes').value;
+    //    }else{
+    //        // Convertir los valores a números flotantes
+    //        var nuevoClasResNum = parseFloat(nuevoClasRes);
+    //        var clasResActualNum = parseFloat(clasResActual);
+
+    //        // Comparar los valores y guardar el número menor
+    //        if (nuevoClasResNum < clasResActualNum) {
+    //            document.getElementById('ClasRes').value = nuevoClasResNum.toString();
+    //        } else {
+    //            document.getElementById('ClasRes').value = clasResActualNum.toString();
+    //        }
+    //    }       
+    //}
     function agregarClasRes() {
         var nuevoClasRes = document.getElementById('nuevoClasRes').value;
         var clasResActual = document.getElementById('ClasRes').value;
 
-        if(nuevoClasRes == "fs" || clasResActual == "fs"){
-            document.getElementById('ClasRes').value;
-            document.getElementById('ClasRes').value;
-        }else{
-            // Convertir los valores a números flotantes
-            var nuevoClasResNum = parseFloat(nuevoClasRes);
-            var clasResActualNum = parseFloat(clasResActual);
+        // Comprobando si alguno de los valores contiene "fall" o "fs"
+        var nuevoEsFall = nuevoClasRes.includes("fall");
+        var actualEsFall = clasResActual.includes("fall");
+        var nuevoEsFs = nuevoClasRes.includes("fs");
+        var actualEsFs = clasResActual.includes("fs");
 
-            // Comparar los valores y guardar el número menor
-            if (nuevoClasResNum < clasResActualNum) {
-                document.getElementById('ClasRes').value = nuevoClasResNum.toString();
-            } else {
-                document.getElementById('ClasRes').value = clasResActualNum.toString();
+        // Manejo de todas las combinaciones posibles
+        if ((nuevoEsFs && nuevoEsFall) || (actualEsFs && actualEsFall)) {
+            // Si ambos contienen "fall" y "fs", tomar "fs"
+            document.getElementById('ClasRes').value = "fs";
+        } else if (nuevoEsFall || actualEsFall) {
+            // Si alguno contiene "fall" y el otro no, tomar el valor numérico si es que existe
+            var nuevoNum = parseFloat(nuevoClasRes.replace("fall", ""));
+            var actualNum = parseFloat(clasResActual.replace("fall", ""));
+
+            if (!isNaN(nuevoNum) && !isNaN(actualNum)) {
+                document.getElementById('ClasRes').value = Math.min(nuevoNum, actualNum).toString();
+            } else if (!isNaN(nuevoNum)) {
+                document.getElementById('ClasRes').value = nuevoNum.toString();
+            } else if (!isNaN(actualNum)) {
+                document.getElementById('ClasRes').value = actualNum.toString();
+            }
+        } else if (nuevoEsFs || actualEsFs) {
+            // Si alguno contiene "fs" y el otro no, tomar "fs"
+            document.getElementById('ClasRes').value = "fs";
+        } else {
+            // Si ninguno contiene "fall" ni "fs", comparar valores numéricos
+            var nuevoNum = parseFloat(nuevoClasRes);
+            var actualNum = parseFloat(clasResActual);
+
+            if (!isNaN(nuevoNum) && !isNaN(actualNum)) {
+                document.getElementById('ClasRes').value = Math.min(nuevoNum, actualNum).toString();
+            } else if (!isNaN(nuevoNum)) {
+                document.getElementById('ClasRes').value = nuevoNum.toString();
+            } else if (!isNaN(actualNum)) {
+                document.getElementById('ClasRes').value = actualNum.toString();
             }
         }
-
-        
     }
 </script>
 @section Scripts {
