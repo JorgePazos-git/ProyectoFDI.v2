@@ -67,30 +67,87 @@ namespace ProyectoFDI.v2.Controllers
             this.idCom = competencia;
             ViewBag.idcompetencia = competencia;
             GetCompetencia(idCom);
-            List<DetalleCompetenciaDificultad> deportistasOrdenados = listaDetallesFinales();
+            List<DetalleCompetenciaDificultad> deportistasOrdenados = listaDetallesFinales(competencia);
 
             return View(deportistasOrdenados);
         }
 
-        private List<DetalleCompetenciaDificultad> listaDetallesFinales()
+        private List<DetalleCompetenciaDificultad> listaDetallesFinales(int idCompetencia)
         {
-            var detalles = APIConsumer<DetalleCompetenciaDificultad>.Select(apiUrl);
-            var lista = detalles.Select(f => new DetalleCompetenciaDificultad
-            {
-                IdDetalleDificultad = f.IdDetalleDificultad,
-                IdCom = f.IdCom,
-                IdDep = f.IdDep,
-                Clas1Res = f.Clas1Res,
-                Clas2Res = f.Clas2Res,
-                FinalRes = f.FinalRes,
-                TiempoRes = f.TiempoRes,
-                Puesto = f.Puesto,
-                PuestoInicialRes = f.PuestoInicialRes,
-                IdComNavigation = f.IdComNavigation,
-                IdDepNavigation = f.IdDepNavigation
-            }).OrderBy(f => f.PuestoInicialRes).Take(8).ToList();
+            //var detalles = APIConsumer<DetalleCompetenciaDificultad>.Select(apiUrl);
+            //var lista = detalles.Select(f => new DetalleCompetenciaDificultad
+            //{
+            //    IdDetalleDificultad = f.IdDetalleDificultad,
+            //    IdCom = f.IdCom,
+            //    IdDep = f.IdDep,
+            //    Clas1Res = f.Clas1Res,
+            //    Clas2Res = f.Clas2Res,
+            //    FinalRes = f.FinalRes,
+            //    TiempoRes = f.TiempoRes,
+            //    Puesto = f.Puesto,
+            //    PuestoInicialRes = f.PuestoInicialRes,
+            //    IdComNavigation = f.IdComNavigation,
+            //    IdDepNavigation = f.IdDepNavigation
+            //}).OrderBy(f => f.PuestoInicialRes).Take(8).ToList();
 
-            return lista;
+            //return lista;
+
+            // Obtener todos los detalles de la competencia
+            var detalles = APIConsumer<DetalleCompetenciaDificultad>.Select(apiUrl);
+            // Calcular el puesto combinado para cada participante
+            var detallesConPuestoCombinado = detalles.Select(d =>
+            {
+                double.TryParse(d.Clas1Res, out double clas1);
+                double.TryParse(d.Clas2Res, out double clas2);
+
+                // Convertir "top" a un valor alto para que sea mayor que cualquier número
+                if (d.Clas1Res.ToLower() == "top") clas1 = double.MaxValue;
+                if (d.Clas2Res.ToLower() == "top") clas2 = double.MaxValue;
+
+                // Convertir "+n" a un valor numérico que incluya el valor medio
+                if (d.Clas1Res.Contains("+")) clas1 += 0.5;
+                if (d.Clas2Res.Contains("+")) clas2 += 0.5;
+
+                // Calcular el puesto combinado
+                double puestoCombinado = Math.Sqrt(clas1 * clas2);
+
+                return new
+                {
+                    Detalle = d,
+                    PuestoCombinado = puestoCombinado
+                };
+            });
+
+            if(detalles.Length >= 8)
+            {
+                // Ordenar la lista de detalles basada en el puesto combinado
+                var detallesOrdenados = detallesConPuestoCombinado.OrderByDescending(d => d.PuestoCombinado).ToList();
+                // Identificar el puntaje del octavo puesto
+                double puestoOctavo = detallesOrdenados.Skip(7).First().PuestoCombinado;
+                // Obtener los detalles de los participantes empatados con el octavo puesto
+                var detallesEmpatadosOctavo = detallesOrdenados.Where(d => d.PuestoCombinado == puestoOctavo).Select(d => d.Detalle).ToList();
+                // Obtener los detalles de los participantes que pasaron a la final (los 8 primeros)
+                var detallesPasaron = detallesOrdenados.Take(8).Select(d => d.Detalle).ToList();
+
+                // Filtrar los detalles empatados con el octavo puesto que no están en la lista de los que pasaron
+                var detallesFinales = detallesEmpatadosOctavo.Where(d => !detallesPasaron.Contains(d)).ToList();
+
+                // Combinar los participantes que pasaron con los empatados con el octavo puesto que no están duplicados
+                var listaFinal = detallesPasaron.Concat(detallesFinales).ToList();
+
+                // Si no hay empate con el octavo, devolver los primeros 8 de todas formas
+                if (detallesEmpatadosOctavo.Count == 0)
+                {
+                    listaFinal = detallesOrdenados.Take(8).Select(d => d.Detalle).ToList();
+                }
+
+                return listaFinal;
+            }
+            else
+            {
+                return detalles.OrderBy(d => d.PuestoInicialRes).ToList();
+            }
+                       
         }
 
         private List<DetalleCompetenciaDificultad> listaDetalles()
@@ -114,6 +171,7 @@ namespace ProyectoFDI.v2.Controllers
               .ToList();
 
             return lista;
+
         }
 
         private void GetCompetencia(int idCom)
@@ -292,8 +350,16 @@ namespace ProyectoFDI.v2.Controllers
                 var detalles = APIConsumer<DetalleCompetenciaDificultad>.Select(apiUrl).Where(f => f.IdCom == idCompetencia).ToList();
                 List<Tuple<int, int>> puestosFinal= CalcularPuestosClasificacion(detalles, 3);
 
+                // Obtener detalles de los participantes que pasaron a la final
+                var detallesFinal = detalles.Where(d => d.FinalRes != null).ToList();
+
                 // Agrupar los detalles por resultado final para manejar los empates
-                var detallesAgrupados = detalles.GroupBy(d => d.FinalRes).ToList();
+                var detallesAgrupados = detallesFinal
+                    .GroupBy(d => d.FinalRes)
+                    .OrderByDescending(group => group.Key)
+                    .ToList();
+
+
 
                 int puesto = 1;
                 foreach (var grupo in detallesAgrupados)
@@ -301,17 +367,48 @@ namespace ProyectoFDI.v2.Controllers
                     // Si hay más de un competidor con el mismo resultado final, manejar el empate
                     if (grupo.Count() > 1)
                     {
-                        if (grupo.All(d => d.Clas1Res == grupo.First().Clas1Res && d.Clas2Res == grupo.First().Clas2Res))
+                        if (grupo.All(d => d.FinalRes == "top"))
                         {
-                            // Ordenar los competidores dentro del empate según el tiempo
-                            var empateOrdenadoPorTiempo = grupo.OrderBy(d => d.TiempoRes).ToList();
-
-                            // Asignar los puestos dentro del empate basados en el tiempo
-                            foreach (var detalle in empateOrdenadoPorTiempo)
+                            // Verificar si todos los competidores tienen "top" en la clasificación y la final y desempatar por tiempo
+                            if (grupo.Count(d => d.Clas1Res == "top" && d.Clas2Res == "top" && d.FinalRes == "top") >= 2)
                             {
-                                detalle.Puesto = puesto;
-                                APIConsumer<DetalleCompetenciaDificultad>.Update(apiUrl + detalle.IdDetalleDificultad.ToString(), detalle);
-                                puesto++;
+                                var grupoTop = grupo.Where(d => d.Clas1Res == "top" && d.Clas2Res == "top" && d.FinalRes == "top").ToList();
+                                var grupoNoTop = grupo.Except(grupoTop).ToList();
+                                // Ordenar los competidores dentro del empate según el tiempo
+                                var empateOrdenadoPorTiempo = grupoTop.OrderBy(d => d.TiempoRes).ToList(); 
+                                
+
+                                // Asignar los puestos dentro del empate basados en el tiempo
+                                foreach (var detalle in empateOrdenadoPorTiempo)
+                                {
+                                    detalle.Puesto = puesto;
+                                    APIConsumer<DetalleCompetenciaDificultad>.Update(apiUrl + detalle.IdDetalleDificultad.ToString(), detalle);
+                                    puesto++;
+                                }
+
+                                // Ordenar los competidores dentro del empate según los resultados de clasificación
+                                var empateOrdenadoPorClasificacionNoTop = grupoNoTop.OrderByDescending(d => d.Clas1Res).ThenByDescending(d => d.Clas2Res).ToList();
+
+                                // Asignar los puestos dentro del empate basados en la clasificación
+                                foreach (var detalle in empateOrdenadoPorClasificacionNoTop)
+                                {
+                                    detalle.Puesto = puesto;
+                                    APIConsumer<DetalleCompetenciaDificultad>.Update(apiUrl + detalle.IdDetalleDificultad.ToString(), detalle);
+                                    puesto++;
+                                }
+                            }
+                            else
+                            {
+                                // Ordenar los competidores dentro del empate según los resultados de clasificación
+                                var empateOrdenadoPorClasificacion = grupo.OrderByDescending(d => d.Clas1Res).ThenByDescending(d => d.Clas2Res).ToList();
+
+                                // Asignar los puestos dentro del empate basados en la clasificación
+                                foreach (var detalle in empateOrdenadoPorClasificacion)
+                                {
+                                    detalle.Puesto = puesto;
+                                    APIConsumer<DetalleCompetenciaDificultad>.Update(apiUrl + detalle.IdDetalleDificultad.ToString(), detalle);
+                                    puesto++;
+                                }
                             }
                         }
                         else
@@ -326,7 +423,7 @@ namespace ProyectoFDI.v2.Controllers
                                 APIConsumer<DetalleCompetenciaDificultad>.Update(apiUrl + detalle.IdDetalleDificultad.ToString(), detalle);
                                 puesto++;
                             }
-                        }                      
+                        }
                     }
                     else
                     {
