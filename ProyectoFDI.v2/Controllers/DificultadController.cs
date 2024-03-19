@@ -92,21 +92,45 @@ namespace ProyectoFDI.v2.Controllers
 
             //return lista;
 
+
             // Obtener todos los detalles de la competencia
-            var detalles = APIConsumer<DetalleCompetenciaDificultad>.Select(apiUrl);
+            var detalles = APIConsumer<DetalleCompetenciaDificultad>.Select(apiUrl).Where(d => d.IdCom == idCompetencia);
             // Calcular el puesto combinado para cada participante
             var detallesConPuestoCombinado = detalles.Select(d =>
             {
-                double.TryParse(d.Clas1Res, out double clas1);
-                double.TryParse(d.Clas2Res, out double clas2);
+                double clas1 = 0;
+                double clas2 = 0;
 
                 // Convertir "top" a un valor alto para que sea mayor que cualquier número
                 if (d.Clas1Res.ToLower() == "top") clas1 = double.MaxValue;
-                if (d.Clas2Res.ToLower() == "top") clas2 = double.MaxValue;
+                else
+                {
+                    // Convertir "+n" a un valor numérico que incluya el valor medio
+                    if (d.Clas1Res.Contains("+"))
+                    {
+                        double.TryParse(d.Clas1Res.Split('+')[0], out clas1);
+                        clas1 += 0.5;
+                    }
+                    else
+                    {
+                        double.TryParse(d.Clas1Res, out clas1);
+                    }
+                }
 
-                // Convertir "+n" a un valor numérico que incluya el valor medio
-                if (d.Clas1Res.Contains("+")) clas1 += 0.5;
-                if (d.Clas2Res.Contains("+")) clas2 += 0.5;
+                if (d.Clas2Res.ToLower() == "top") clas2 = double.MaxValue;
+                else
+                {
+                    // Convertir "+n" a un valor numérico que incluya el valor medio
+                    if (d.Clas2Res.Contains("+"))
+                    {
+                        double.TryParse(d.Clas2Res.Split('+')[0], out clas2);
+                        clas2 += 0.5;
+                    }
+                    else
+                    {
+                        double.TryParse(d.Clas2Res, out clas2);
+                    }
+                }
 
                 // Calcular el puesto combinado
                 double puestoCombinado = Math.Sqrt(clas1 * clas2);
@@ -118,7 +142,7 @@ namespace ProyectoFDI.v2.Controllers
                 };
             });
 
-            if(detalles.Length >= 8)
+            if (detalles.Count() >= 8)
             {
                 // Ordenar la lista de detalles basada en el puesto combinado
                 var detallesOrdenados = detallesConPuestoCombinado.OrderByDescending(d => d.PuestoCombinado).ToList();
@@ -136,7 +160,7 @@ namespace ProyectoFDI.v2.Controllers
                 var listaFinal = detallesPasaron.Concat(detallesFinales).ToList();
 
                 // Si no hay empate con el octavo, devolver los primeros 8 de todas formas
-                if (detallesEmpatadosOctavo.Count == 0)
+                if (detallesEmpatadosOctavo.Count() == 0)
                 {
                     listaFinal = detallesOrdenados.Take(8).Select(d => d.Detalle).ToList();
                 }
@@ -147,7 +171,7 @@ namespace ProyectoFDI.v2.Controllers
             {
                 return detalles.OrderBy(d => d.PuestoInicialRes).ToList();
             }
-                       
+
         }
 
         private List<DetalleCompetenciaDificultad> listaDetalles()
@@ -286,12 +310,15 @@ namespace ProyectoFDI.v2.Controllers
             }
         }
 
+        // Variable de clase para almacenar a los deportistas que pasan
+        private List<DetalleCompetenciaDificultad> _deportistasQuePasan;
+
         [HttpPost]
         public IActionResult AsignarPuestos(int idCompetencia)
         {
             try
             {
-                // Obtener detalles y calcular puestos de ambas clasificaciones
+                // Obtener detalles y calcular puestos de ambas clasificaciones 
                 var detalles = APIConsumer<DetalleCompetenciaDificultad>.Select(apiUrl).Where(f => f.IdCom == idCompetencia).ToList();
                 List<Tuple<int, int>> puestosClas1 = CalcularPuestosClasificacion(detalles, 1);
                 List<Tuple<int, int>> puestosClas2 = CalcularPuestosClasificacion(detalles, 2);
@@ -332,6 +359,7 @@ namespace ProyectoFDI.v2.Controllers
                         IdDepNavigation = f.IdDepNavigation,
                         PuestoInicialRes = f.PuestoInicialRes
                     }).ToList();
+                
 
                 return Json(new { success = true, deportistas = deportistasOrdenados });
             }
