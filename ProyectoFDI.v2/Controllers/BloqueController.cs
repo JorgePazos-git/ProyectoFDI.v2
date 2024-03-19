@@ -61,6 +61,16 @@ namespace ProyectoFDI.v2.Controllers
             return View();
         }
 
+        public IActionResult VistaPDFListaResultadosC(int competencia)
+        {
+            this.idCompetencia = competencia;
+
+            ViewBag.ListadoPosicionesClasificatoria = ListadoPosicionesClasificatoria(competencia, "Clasificatoria");
+            ViewBag.competencium = APIConsumer<VistaCompetencium>.SelectOne(apiUrl.Replace("PuntajeBloques", "VistaCompetenciums") + competencia);
+
+            return View();
+        }
+
 
         [HttpGet]
         public IActionResult ObtenerDatosDeportista(int com, int dep, string etapa)
@@ -98,6 +108,45 @@ namespace ProyectoFDI.v2.Controllers
             }
         }
 
+        public IActionResult MostrarPDFNuevaPaginaC(int competencia)
+        {
+
+            string pagina_actual = HttpContext.Request.Path;
+            string url_pagina = HttpContext.Request.GetEncodedUrl();
+            url_pagina = url_pagina.Replace(pagina_actual, "");
+
+            // Eliminar el primer parámetro competencia=11 de la URL
+            int index = url_pagina.IndexOf("?competencia=");
+            if (index != -1)
+            {
+                url_pagina = url_pagina.Remove(index);
+            }
+
+            url_pagina = $"{url_pagina}/Bloque/VistaPDFListaResultadosC?competencia={competencia}";
+
+
+
+
+            var pdf = new HtmlToPdfDocument()
+            {
+                GlobalSettings = new GlobalSettings()
+                {
+                    PaperSize = PaperKind.A4,
+                    Orientation = Orientation.Portrait
+                },
+                Objects = {
+            new ObjectSettings(){
+                Page = url_pagina
+            }
+        }
+
+            };
+
+            var archivoPDF = _converter.Convert(pdf);
+
+
+            return File(archivoPDF, "application/pdf");
+        }
 
 
         public IActionResult MostrarPDFNuevaPagina(int competencia)
