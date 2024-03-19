@@ -437,7 +437,8 @@ namespace ProyectoFDI.v2.Controllers
             CultureInfo culture = CultureInfo.InvariantCulture;
             foreach (DetalleCompetencium resultado in listaDetalles)
             {
-                if(resultado.ClasRes != "fs")
+                
+                if(resultado.ClasRes != "fs" && resultado.ClasRes != "fall")
                 {
                     
                     double tiempo = double.Parse(resultado.ClasRes,culture);
